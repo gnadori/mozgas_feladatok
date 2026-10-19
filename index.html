@@ -103,6 +103,34 @@
       color: #635E59;
     }
 
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-link {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 2px solid var(--border-dark);
+      text-decoration: none;
+      color: var(--text-color);
+      background: var(--surface-sand);
+      box-shadow: var(--hard-shadow-sm);
+      transition: transform 0.08s ease, background-color 0.1s ease;
+    }
+
+    .nav-link:hover {
+      background: #FFFFFF;
+      transform: translate(-1px, -1px);
+    }
+
+    .nav-link.active {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
     .stats-badge {
       display: flex;
       align-items: center;
@@ -567,6 +595,10 @@
           <div class="brand-subtitle">Kinematika és egyenletes mozgások</div>
         </div>
       </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link active">Gyakorló feladatok</a>
+        <a href="vonatkoztatasi_rendszerek.html" class="nav-link">Vonatkoztatási rendszerek</a>
+      </nav>
       <div class="stats-badge" id="stats-badge">
         <span>Sikeres feladatok: <strong id="solved-count">0</strong></span>
       </div>

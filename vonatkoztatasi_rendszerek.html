@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rozsomák tanár úr szemléltetője – Vonatkoztatási rendszerek</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Slab:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #F8F9FA;
+      --text-color: #2D2A26;
+      --accent-amber: #D97725;
+      --accent-amber-hover: #b8621b;
+      --accent-green: #2C5E4B;
+      --accent-green-hover: #224b3b;
+      --error-color: #B83227;
+      --surface-white: #FFFFFF;
+      --surface-sand: #EAE6DF;
+      --border-dark: #2D2A26;
+      --hard-shadow: 4px 4px 0px #2D2A26;
+      --hard-shadow-sm: 2px 2px 0px #2D2A26;
+      --hard-shadow-lg: 6px 6px 0px #2D2A26;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Roboto Slab', serif;
+      color: var(--text-color);
+      font-weight: 700;
+      text-transform: none;
+    }
+
+    /* Fejléc */
+    header {
+      background-color: var(--surface-white);
+      border-bottom: 3px solid var(--border-dark);
+      padding: 1rem 1.5rem;
+    }
+
+    .header-content {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-color);
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-amber);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #FFFFFF;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-family: 'Roboto Slab', serif;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #635E59;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-link {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 2px solid var(--border-dark);
+      text-decoration: none;
+      color: var(--text-color);
+      background: var(--surface-sand);
+      box-shadow: var(--hard-shadow-sm);
+      transition: transform 0.08s ease, background-color 0.1s ease;
+    }
+
+    .nav-link:hover {
+      background: #FFFFFF;
+      transform: translate(-1px, -1px);
+    }
+
+    .nav-link.active {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
+    /* Fő tartalom */
+    main {
+      flex: 1;
+      max-width: 1040px;
+      width: 100%;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: var(--surface-white);
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Gombok */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.65rem 1.1rem;
+      border: 2px solid var(--border-dark);
+      border-radius: 0;
+      cursor: pointer;
+      box-shadow: var(--hard-shadow);
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      text-decoration: none;
+      color: var(--text-color);
+      background: var(--surface-sand);
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--hard-shadow-lg);
+    }
+
+    .btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border-dark);
+    }
+
+    .btn-primary {
+      background-color: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
+    .btn-green {
+      background-color: var(--accent-green);
+      color: #FFFFFF;
+    }
+
+    .btn-sm {
+      padding: 0.35rem 0.75rem;
+      font-size: 0.8rem;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    /* Megfigyelő választó szekció */
+    .selector-section {
+      margin-bottom: 1rem;
+    }
+
+    .selector-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .selector-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .observer-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--border-dark);
+      background: var(--surface-sand);
+      cursor: pointer;
+      box-shadow: var(--hard-shadow-sm);
+      text-align: left;
+      transition: transform 0.08s, background-color 0.15s, border-color 0.15s;
+    }
+
+    .observer-btn:hover {
+      background: #FFFFFF;
+      transform: translate(-1px, -1px);
+      box-shadow: var(--hard-shadow);
+    }
+
+    .observer-btn.active {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+      border-color: var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      transform: translate(1px, 1px);
+    }
+
+    .observer-btn.active .observer-sub {
+      color: #FFF2E6;
+    }
+
+    .observer-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .observer-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .observer-sub {
+      font-size: 0.78rem;
+      color: #635E59;
+    }
+
+    /* Animációs vászon */
+    .canvas-container {
+      position: relative;
+      background: #D9EEF7;
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    #sim-canvas {
+      display: block;
+      width: 100%;
+      height: 420px;
+      background: #D9EEF7;
+      cursor: default;
+    }
+
+    .canvas-hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 2px solid var(--border-dark);
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      box-shadow: var(--hard-shadow-sm);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .canvas-hint {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 2px solid var(--border-dark);
+      padding: 0.3rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      box-shadow: var(--hard-shadow-sm);
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    /* Vezérlősáv */
+    .controls-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .controls-left, .controls-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .speed-btn-group {
+      display: inline-flex;
+      border: 2px solid var(--border-dark);
+    }
+
+    .speed-btn {
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: none;
+      border-right: 1px solid var(--border-dark);
+      background: #FFFFFF;
+      cursor: pointer;
+    }
+
+    .speed-btn:last-child {
+      border-right: none;
+    }
+
+    .speed-btn.active {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
+    .checkbox-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-label input {
+      accent-color: var(--accent-amber);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* Sebességtáblázat */
+    .table-section h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .speed-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 2px solid var(--border-dark);
+      background: #FFFFFF;
+      font-size: 0.9rem;
+      box-shadow: var(--hard-shadow-sm);
+      margin-bottom: 1rem;
+    }
+
+    .speed-table th, .speed-table td {
+      border: 1px solid var(--border-dark);
+      padding: 0.65rem 0.85rem;
+      text-align: left;
+    }
+
+    .speed-table th {
+      background: var(--surface-sand);
+      font-family: 'Roboto Slab', serif;
+      font-weight: 700;
+    }
+
+    .speed-table tr.observer-row {
+      background: #FFF4E8;
+      font-weight: 700;
+    }
+
+    .speed-badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      font-weight: 700;
+      font-family: monospace;
+      font-size: 0.95rem;
+      border: 1px solid var(--border-dark);
+    }
+
+    .speed-pos {
+      background: #E8F5E9;
+      color: #1B5E20;
+    }
+
+    .speed-neg {
+      background: #FFEBEE;
+      color: #B71C1C;
+    }
+
+    .speed-zero {
+      background: #ECEFF1;
+      color: #37474F;
+    }
+
+    /* Magyarázó kártya */
+    .theory-box {
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      border-left: 6px solid var(--accent-green);
+      padding: 1.25rem;
+      margin-top: 1.5rem;
+    }
+
+    .theory-box h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent-green);
+    }
+
+    .math-block {
+      background: #FFFFFF;
+      border: 1px solid #C8C3BA;
+      padding: 0.3rem 0.6rem;
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 1rem;
+      display: inline-block;
+      margin: 0.3rem 0;
+    }
+
+    /* Lábléc */
+    footer {
+      background-color: var(--border-dark);
+      color: #F8F9FA;
+      padding: 2rem 1.5rem;
+      margin-top: auto;
+      border-top: 3px solid var(--border-dark);
+    }
+
+    .footer-content {
+      max-width: 1040px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .footer-content a {
+      color: #F8F9FA;
+    }
+
+    @media (max-width: 700px) {
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .controls-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .selector-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fejléc -->
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="brand">
+        <div class="brand-icon" title="Rozsomák mancsnyom">
+          <svg viewBox="0 0 24 24">
+            <ellipse cx="6" cy="8" rx="2" ry="3"/>
+            <ellipse cx="11" cy="5.5" rx="2" ry="3.2"/>
+            <ellipse cx="16" cy="6" rx="2" ry="3.2"/>
+            <ellipse cx="20.5" cy="9.5" rx="1.8" ry="2.7"/>
+            <path d="M14.5 10.5 C12 9.5, 9.5 9.8, 7.5 11 C5 12.5, 4 15, 6 18 C7.5 20, 10.5 21, 14 20 C18 19, 19.5 15.5, 18.5 13 C17.8 11.5, 16.5 10.9, 14.5 10.5 Z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">Rozsomák tanár úr szemléltetője</div>
+          <div class="brand-subtitle">Kinematika és relatív mozgás</div>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Gyakorló feladatok</a>
+        <a href="vonatkoztatasi_rendszerek.html" class="nav-link active">Vonatkoztatási rendszerek</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Fő tartalom -->
+  <main>
+    <div class="card">
+      <div class="selector-section">
+        <div class="selector-title">
+          <span>Válassz vonatkoztatási rendszert:</span>
+        </div>
+        <div class="selector-grid">
+          <button class="observer-btn active" data-id="part">
+            <div class="observer-icon">🏞️</div>
+            <div>
+              <div class="observer-name">Parton álló megfigyelő</div>
+              <div class="observer-sub">Parthoz viszonyított sebesség: 0 m/s</div>
+            </div>
+          </button>
+
+          <button class="observer-btn" data-id="kacsa">
+            <div class="observer-icon">🦆</div>
+            <div>
+              <div class="observer-name">Sodródó kacsa (víz)</div>
+              <div class="observer-sub">Parthoz viszonyított sebesség: +2 m/s</div>
+            </div>
+          </button>
+
+          <button class="observer-btn" data-id="csonak">
+            <div class="observer-icon">🚣</div>
+            <div>
+              <div class="observer-name">Evezős csónak</div>
+              <div class="observer-sub">Parthoz viszonyított sebesség: +4 m/s</div>
+            </div>
+          </button>
+
+          <button class="observer-btn" data-id="hajo">
+            <div class="observer-icon">🚢</div>
+            <div>
+              <div class="observer-name">Hajó</div>
+              <div class="observer-sub">Parthoz viszonyított sebesség: -5 m/s</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Animáció vászon -->
+      <div class="canvas-container">
+        <div class="canvas-hud" id="active-hud">Aktuális megfigyelő: Parton álló (0 m/s)</div>
+        <div class="canvas-hint">Tipp: A vásznon lévő szereplőkre közvetlenül is rákattinthatsz!</div>
+        <canvas id="sim-canvas" width="980" height="420"></canvas>
+      </div>
+
+      <!-- Vezérlősáv -->
+      <div class="controls-bar">
+        <div class="controls-left">
+          <button id="play-pause-btn" class="btn btn-sm btn-primary">⏸️ Szünet</button>
+          <button id="reset-btn" class="btn btn-sm">↺ Újraindítás</button>
+          
+          <div style="display: flex; align-items: center; gap: 0.35rem; margin-left: 0.5rem;">
+            <span style="font-size: 0.8rem; font-weight: 600;">Sebesség:</span>
+            <div class="speed-btn-group">
+              <button class="speed-btn" data-speed="0.5">0.5x</button>
+              <button class="speed-btn active" data-speed="1.0">1x</button>
+              <button class="speed-btn" data-speed="2.0">2x</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls-right">
+          <label class="checkbox-label">
+            <input type="checkbox" id="show-vectors-check" checked>
+            <span>Sebességvektorok mutatása</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" id="show-grid-check" checked>
+            <span>Méterjelző póznák a parton</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Relatív sebesség táblázat -->
+      <div class="table-section">
+        <h3>Sebességek a kiválasztott vonatkoztatási rendszerben</h3>
+        <table class="speed-table">
+          <thead>
+            <tr>
+              <th>Szereplő</th>
+              <th>Parthoz képesti sebesség (v)</th>
+              <th>Relatív sebesség (v<sub>rel</sub> = v - v<sub>megfigyelő</sub>)</th>
+              <th>Mozgás iránya a megfigyelő szemszögéből</th>
+            </tr>
+          </thead>
+          <tbody id="speed-table-body">
+            <!-- Dinamikusan frissülő táblázat -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Fizikai magyarázat -->
+      <div class="theory-box">
+        <h4>Galilei-féle relativitási elv</h4>
+        <p>A mozgás mindig relatív: nincs önmagában létező, abszolút sebesség, csak valamihez viszonyított mozgás. Amikor kiválasztasz egy megfigyelőt, a koordináta-rendszerünket hozzá rögzítjük, így az ő szemszögéből <strong>ő maga áll (0 m/s)</strong>, a világ többi része pedig hozzá képest mozog.</p>
+        <p style="margin-top: 0.5rem;">
+          A relatív sebesség kiszámítása egyszerű kivonással történik:
+          <br>
+          <span class="math-block">v_relatív = v_szereplő - v_megfigyelő</span>
+        </p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem; color: #4A4641;">
+          <em>Figyeld meg:</em> Amikor a csónakból nézed a világot, a part és a víz hátrafelé rohan, míg a hajó még sokkal gyorsabban közeledik szemből, mint a partról nézve!
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Lábléc -->
+  <footer>
+    <div class="footer-content">
+      <div>Készítette: Rozsomák tanár úr | 2026</div>
+      <div>Licenc: CC0 / Public Domain forrásmegjelölés | Természettudományos gyakorlótér</div>
+    </div>
+  </footer>
+
+  <script>
+    // Szereplők és fizikai alapadatok (sebességek a parthoz képest m/s-ban)
+    // Pozitív irány: folyásirány (jobbra, ->)
+    // Negatív irány: folyással szemben (balra, <-)
+    const ENTITIES = {
+      part: {
+        id: "part",
+        name: "Parton álló megfigyelő",
+        shortName: "Parton álló",
+        icon: "🏞️",
+        v_part: 0.0,
+        y: 60, // y koordináta a vásznon
+        x: 0,  // világkoordináta méterben
+        width: 30,
+        height: 50,
+        color: "#2C5E4B"
+      },
+      kacsa: {
+        id: "kacsa",
+        name: "Sodródó kacsa (víz)",
+        shortName: "Kacsa",
+        icon: "🦆",
+        v_part: 2.0,
+        y: 165,
+        x: 10,
+        width: 36,
+        height: 30,
+        color: "#E5A912"
+      },
+      csonak: {
+        id: "csonak",
+        name: "Evezős csónak",
+        shortName: "Csónak",
+        icon: "🚣",
+        v_part: 4.0,
+        y: 255,
+        x: -20,
+        width: 75,
+        height: 35,
+        color: "#8B4513"
+      },
+      hajo: {
+        id: "hajo",
+        name: "Hajó",
+        shortName: "Hajó",
+        icon: "🚢",
+        v_part: -5.0,
+        y: 350,
+        x: 60,
+        width: 140,
+        height: 55,
+        color: "#2D2A26"
+      }
+    };
+
+    // Állapotváltozók
+    let activeObserverId = "part";
+    let isPlaying = true;
+    let timeScale = 1.0;
+    let showVectors = true;
+    let showGrid = true;
+    let hoveredEntityId = null;
+
+    // Vászon inicializálás
+    const canvas = document.getElementById("sim-canvas");
+    const ctx = canvas.getContext("2d");
+    const activeHud = document.getElementById("active-hud");
+    const tableBody = document.getElementById("speed-table-body");
+
+    // Méretarány: 1 méter = hány pixel a vásznon
+    const PIXELS_PER_METER = 35;
+    // Ciklikus világ szélessége méterben (hogy a távolodó szereplők ésszerű távon belül visszatérjenek a képbe)
+    const WORLD_WRAP_METERS = 80;
+
+    // Víz hullámok / textúra pontok
+    const ripples = [];
+    for (let i = 0; i < 40; i++) {
+      ripples.push({
+        x: (Math.random() - 0.5) * WORLD_WRAP_METERS,
+        y: 120 + Math.random() * 280,
+        len: 15 + Math.random() * 30,
+        speed: 2.0
+      });
+    }
+
+    // Segédfüggvény: világkoordináta -> vászon X pixel koordináta
+    function worldToScreenX(worldMeters, observerWorldMeters, canvasWidth) {
+      let relMeters = worldMeters - observerWorldMeters;
+      // Ciklikus átfordulás a képernyőn kívül, hogy végtelen animáció legyen
+      const half = WORLD_WRAP_METERS / 2;
+      relMeters = ((relMeters + half) % WORLD_WRAP_METERS + WORLD_WRAP_METERS) % WORLD_WRAP_METERS - half;
+      return (canvasWidth / 2) + (relMeters * PIXELS_PER_METER);
+    }
+
+    // Segédfüggvény formázáshoz
+    function formatSpeed(v) {
+      const sign = v > 0 ? "+" : "";
+      return `${sign}${v.toFixed(1).replace(".", ",")} m/s`;
+    }
+
+    // Táblázat frissítése
+    function updateTable() {
+      const obs = ENTITIES[activeObserverId];
+      activeHud.innerHTML = `Aktuális megfigyelő: <strong>${obs.shortName}</strong> (${formatSpeed(obs.v_part)})`;
+
+      tableBody.innerHTML = "";
+      Object.keys(ENTITIES).forEach(key => {
+        const ent = ENTITIES[key];
+        const v_rel = ent.v_part - obs.v_part;
+        const isCurrentObs = (key === activeObserverId);
+
+        let badgeClass = "speed-zero";
+        if (v_rel > 0) badgeClass = "speed-pos";
+        if (v_rel < 0) badgeClass = "speed-neg";
+
+        let dirText = "";
+        if (isCurrentObs) {
+          dirText = "<strong>Áll (a vonatkoztatási rendszer nyugalomban van)</strong>";
+        } else if (v_rel > 0) {
+          dirText = "Jobbra halad (folyásirányba) ▶";
+        } else if (v_rel < 0) {
+          dirText = "◀ Balra halad (folyással szemben / hátrál)";
+        } else {
+          dirText = "Áll a megfigyelőhöz képest";
+        }
+
+        const tr = document.createElement("tr");
+        if (isCurrentObs) tr.classList.add("observer-row");
+
+        tr.innerHTML = `
+          <td><strong>${ent.icon} ${ent.name}</strong> ${isCurrentObs ? '<span style="color:var(--accent-amber); font-size:0.8rem; font-weight:700;">(MEGFIGYELŐ)</span>' : ''}</td>
+          <td><span class="speed-badge">${formatSpeed(ent.v_part)}</span></td>
+          <td><span class="speed-badge ${badgeClass}">${formatSpeed(v_rel)}</span></td>
+          <td>${dirText}</td>
+        `;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    // Rajzoló rutinok
+    function drawScene() {
+      const w = canvas.width;
+      const h = canvas.height;
+      const obs = ENTITIES[activeObserverId];
+
+      ctx.clearRect(0, 0, w, h);
+
+      // 1. Háttér: Víz (kék sáv)
+      const riverGradient = ctx.createLinearGradient(0, 100, 0, h);
+      riverGradient.addColorStop(0, "#C7E8F6");
+      riverGradient.addColorStop(0.3, "#A8D8EE");
+      riverGradient.addColorStop(1, "#74B8DE");
+      ctx.fillStyle = riverGradient;
+      ctx.fillRect(0, 100, w, h - 100);
+
+      // Víz áramlási hullámocskák rajzolása
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.65)";
+      ctx.lineWidth = 2;
+      ripples.forEach(rip => {
+        const rx = worldToScreenX(rip.x, obs.x, w);
+        if (rx > -50 && rx < w + 50) {
+          ctx.beginPath();
+          ctx.moveTo(rx, rip.y);
+          ctx.quadraticCurveTo(rx + rip.len / 2, rip.y - 3, rx + rip.len, rip.y);
+          ctx.stroke();
+        }
+      });
+
+      // 2. Felső sáv: Part (Fű és parti sáv)
+      // Fű háttér
+      const grassGrad = ctx.createLinearGradient(0, 0, 0, 95);
+      grassGrad.addColorStop(0, "#D5E4D1");
+      grassGrad.addColorStop(0.8, "#B4D3AD");
+      grassGrad.addColorStop(1, "#8EAF86");
+      ctx.fillStyle = grassGrad;
+      ctx.fillRect(0, 0, w, 95);
+
+      // Parti kavicsos/homokos sáv
+      ctx.fillStyle = "#D6CEBF";
+      ctx.fillRect(0, 95, w, 15);
+      ctx.fillStyle = "#2D2A26";
+      ctx.fillRect(0, 108, w, 3); // Vízvonal határvonal
+
+      // Méterjelzők és fák a parton
+      if (showGrid) {
+        // Környező méterjelző póznák rajzolása
+        const minM = Math.floor((obs.x - (w / PIXELS_PER_METER) / 2) / 5) * 5 - 10;
+        const maxM = Math.ceil((obs.x + (w / PIXELS_PER_METER) / 2) / 5) * 5 + 10;
+
+        for (let m = minM; m <= maxM; m += 5) {
+          const px = worldToScreenX(m, obs.x, w);
+          if (px >= -30 && px <= w + 30) {
+            // Pózna
+            ctx.fillStyle = "#6B5B49";
+            ctx.fillRect(px - 2, 68, 4, 27);
+            
+            // Kis tábla a méterszámmal
+            ctx.fillStyle = "#FFFFFF";
+            ctx.strokeStyle = "#2D2A26";
+            ctx.lineWidth = 1.5;
+            ctx.fillRect(px - 14, 50, 28, 18);
+            ctx.strokeRect(px - 14, 50, 28, 18);
+
+            ctx.fillStyle = "#2D2A26";
+            ctx.font = "bold 10px 'Inter', sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText(`${m}m`, px, 63);
+
+            // Fák elszórtan minden 10. méternél
+            if (m % 10 === 0) {
+              drawPineTree(px + 20, 48);
+            }
+          }
+        }
+      }
+
+      // 3. Szereplők kirajzolása
+      // A) Parton álló figura
+      drawPerson(ENTITIES.part, obs, w);
+
+      // B) Sodródó kacsa
+      drawDuck(ENTITIES.kacsa, obs, w);
+
+      // C) Evezős csónak
+      drawBoat(ENTITIES.csonak, obs, w);
+
+      // D) Hajó
+      drawShip(ENTITIES.hajo, obs, w);
+
+      // 4. Sebességvektorok és megfigyelő jelölések
+      if (showVectors) {
+        Object.keys(ENTITIES).forEach(key => {
+          drawVelocityVector(ENTITIES[key], obs, w);
+        });
+      }
+    }
+
+    // Fenyőfa rajzolása a partra
+    function drawPineTree(x, y) {
+      ctx.fillStyle = "#5C4033"; // törzs
+      ctx.fillRect(x - 3, y, 6, 20);
+
+      ctx.fillStyle = "#2C5E4B"; // lomb
+      ctx.beginPath();
+      ctx.moveTo(x, y - 28);
+      ctx.lineTo(x + 14, y - 2);
+      ctx.lineTo(x - 14, y - 2);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(x, y - 38);
+      ctx.lineTo(x + 10, y - 16);
+      ctx.lineTo(x - 10, y - 16);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // Parton álló figura rajzolása
+    function drawPerson(ent, obs, canvasWidth) {
+      const sx = worldToScreenX(ent.x, obs.x, canvasWidth);
+      const sy = ent.y;
+      const isObs = (activeObserverId === ent.id);
+      const isHovered = (hoveredEntityId === ent.id);
+
+      ctx.save();
+      ctx.translate(sx, sy);
+
+      // Hover vagy aktív fénykeret
+      if (isHovered || isObs) {
+        ctx.strokeStyle = isObs ? "#D97725" : "#2C5E4B";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(-18, -35, 36, 68);
+      }
+
+      // Test és fej
+      // Fej (barna haj/kalap)
+      ctx.fillStyle = "#F5D0A9";
+      ctx.beginPath();
+      ctx.arc(0, -20, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Kalap
+      ctx.fillStyle = "#2C5E4B";
+      ctx.fillRect(-9, -27, 18, 4);
+      ctx.fillRect(-6, -33, 12, 6);
+
+      // Törzs (kabát)
+      ctx.fillStyle = "#D97725";
+      ctx.fillRect(-7, -13, 14, 22);
+
+      // Lábak
+      ctx.fillStyle = "#2D2A26";
+      ctx.fillRect(-6, 9, 5, 18);
+      ctx.fillRect(1, 9, 5, 18);
+
+      // Cipő
+      ctx.fillStyle = "#111111";
+      ctx.fillRect(-8, 25, 7, 5);
+      ctx.fillRect(1, 25, 7, 5);
+
+      // Távcső a kézben
+      ctx.fillStyle = "#333333";
+      ctx.fillRect(4, -10, 8, 4);
+
+      ctx.restore();
+    }
+
+    // Sodródó kacsa rajzolása
+    function drawDuck(ent, obs, canvasWidth) {
+      const sx = worldToScreenX(ent.x, obs.x, canvasWidth);
+      const sy = ent.y;
+      const isObs = (activeObserverId === ent.id);
+      const isHovered = (hoveredEntityId === ent.id);
+
+      ctx.save();
+      ctx.translate(sx, sy);
+
+      if (isHovered || isObs) {
+        ctx.strokeStyle = isObs ? "#D97725" : "#2C5E4B";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(-22, -20, 44, 38);
+      }
+
+      // Vízfodrok a kacsa alatt
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.7)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.ellipse(0, 10, 18, 5, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Test (sárga)
+      ctx.fillStyle = "#FFD700";
+      ctx.beginPath();
+      ctx.ellipse(-2, 4, 14, 9, -0.1, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Farok toll
+      ctx.beginPath();
+      ctx.moveTo(-14, 4);
+      ctx.lineTo(-20, -2);
+      ctx.lineTo(-12, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      // Fej
+      ctx.beginPath();
+      ctx.arc(8, -4, 7, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Szem
+      ctx.fillStyle = "#2D2A26";
+      ctx.beginPath();
+      ctx.arc(10, -6, 1.3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Csőr (narancs)
+      ctx.fillStyle = "#FF6600";
+      ctx.beginPath();
+      ctx.moveTo(14, -4);
+      ctx.lineTo(21, -2);
+      ctx.lineTo(14, 0);
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.restore();
+    }
+
+    // Evezős csónak rajzolása
+    function drawBoat(ent, obs, canvasWidth) {
+      const sx = worldToScreenX(ent.x, obs.x, canvasWidth);
+      const sy = ent.y;
+      const isObs = (activeObserverId === ent.id);
+      const isHovered = (hoveredEntityId === ent.id);
+
+      ctx.save();
+      ctx.translate(sx, sy);
+
+      if (isHovered || isObs) {
+        ctx.strokeStyle = isObs ? "#D97725" : "#2C5E4B";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(-42, -26, 84, 48);
+      }
+
+      // Hullámok a csónak körül
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(-45, 10);
+      ctx.lineTo(-30, 14);
+      ctx.stroke();
+
+      // Csónak fa test (jobbra tart)
+      ctx.fillStyle = "#8B4513";
+      ctx.beginPath();
+      ctx.moveTo(-35, -5);
+      ctx.lineTo(30, -5);
+      ctx.lineTo(40, 8);
+      ctx.lineTo(-30, 8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = "#5C2E0B";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Evezős figura
+      ctx.fillStyle = "#2C5E4B"; // ruhája
+      ctx.fillRect(-6, -14, 10, 11);
+      ctx.fillStyle = "#F5D0A9"; // feje
+      ctx.beginPath();
+      ctx.arc(-1, -19, 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Evezők (átlós)
+      ctx.strokeStyle = "#D2B48C";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(-2, -9);
+      ctx.lineTo(14, 17);
+      ctx.moveTo(-2, -9);
+      ctx.lineTo(-18, 17);
+      ctx.stroke();
+
+      // Evezőlapátok
+      ctx.fillStyle = "#C49A45";
+      ctx.fillRect(12, 14, 7, 4);
+      ctx.fillRect(-22, 14, 7, 4);
+
+      ctx.restore();
+    }
+
+    // Hajó rajzolása (balra tart, -5 m/s)
+    function drawShip(ent, obs, canvasWidth) {
+      const sx = worldToScreenX(ent.x, obs.x, canvasWidth);
+      const sy = ent.y;
+      const isObs = (activeObserverId === ent.id);
+      const isHovered = (hoveredEntityId === ent.id);
+
+      ctx.save();
+      ctx.translate(sx, sy);
+
+      if (isHovered || isObs) {
+        ctx.strokeStyle = isObs ? "#D97725" : "#2C5E4B";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(-75, -38, 150, 68);
+      }
+
+      // Hullám a hajó orránál (balra tart, tehát az orra bal oldalon van!)
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.75)";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-65, 14);
+      ctx.lineTo(-80, 18);
+      ctx.stroke();
+
+      // Hajótest: alsó sötét, felső fehér
+      // Alsó piros/sötét vízvonal
+      ctx.fillStyle = "#B83227";
+      ctx.beginPath();
+      ctx.moveTo(-70, 6);
+      ctx.lineTo(60, 6);
+      ctx.lineTo(50, 18);
+      ctx.lineTo(-58, 18);
+      ctx.closePath();
+      ctx.fill();
+
+      // Felső acéltest (fehér/szürke)
+      ctx.fillStyle = "#F0ECE1";
+      ctx.beginPath();
+      ctx.moveTo(-70, 6);
+      ctx.lineTo(-65, -8);
+      ctx.lineTo(65, -8);
+      ctx.lineTo(60, 6);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = "#2D2A26";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Kabin / Híd
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(-25, -26, 45, 18);
+      ctx.strokeRect(-25, -26, 45, 18);
+
+      // Kémény
+      ctx.fillStyle = "#D97725";
+      ctx.fillRect(26, -28, 14, 20);
+      ctx.strokeRect(26, -28, 14, 20);
+      ctx.fillStyle = "#2D2A26";
+      ctx.fillRect(26, -33, 14, 5);
+
+      // Kis füstfelhőcske
+      ctx.fillStyle = "rgba(180, 180, 180, 0.5)";
+      ctx.beginPath();
+      ctx.arc(36, -38, 6, 0, Math.PI * 2);
+      ctx.arc(42, -44, 8, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Ablakok (kékesszürke)
+      ctx.fillStyle = "#5D8AA8";
+      for (let w = -20; w <= 10; w += 9) {
+        ctx.fillRect(w, -21, 6, 8);
+      }
+
+      ctx.restore();
+    }
+
+    // Sebességvektorok és feliratok rajzolása
+    function drawVelocityVector(ent, obs, canvasWidth) {
+      const sx = worldToScreenX(ent.x, obs.x, canvasWidth);
+      const sy = ent.y;
+      const v_rel = ent.v_part - obs.v_part;
+      const isObs = (activeObserverId === ent.id);
+
+      ctx.save();
+
+      // Ha ő a megfigyelő: különleges kitüntetett jelvény
+      if (isObs) {
+        ctx.fillStyle = "#D97725";
+        ctx.strokeStyle = "#2D2A26";
+        ctx.lineWidth = 1.5;
+        
+        const badgeY = sy - ent.height / 2 - 20;
+        ctx.fillRect(sx - 48, badgeY, 96, 20);
+        ctx.strokeRect(sx - 48, badgeY, 96, 20);
+
+        ctx.fillStyle = "#FFFFFF";
+        ctx.font = "bold 10px 'Inter', sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText("👁️ MEGFIGYELŐ", sx, badgeY + 14);
+
+        // V = 0 m/s felirat
+        ctx.fillStyle = "#2D2A26";
+        ctx.font = "bold 12px monospace";
+        ctx.fillText("v = 0,0 m/s (áll)", sx, badgeY - 5);
+
+        ctx.restore();
+        return;
+      }
+
+      // Nem a megfigyelő: vektor nyíl rajzolása a relatív sebesség nagyságának megfelelően
+      const arrowY = sy - ent.height / 2 - 15;
+      const arrowLength = v_rel * 14; // arányos pixelhossz
+
+      // Szöveg háttér címke
+      ctx.font = "bold 12px monospace";
+      const txt = `v = ${formatSpeed(v_rel)}`;
+      const txtW = ctx.measureText(txt).width;
+
+      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+      ctx.strokeStyle = "#2D2A26";
+      ctx.lineWidth = 1;
+      ctx.fillRect(sx - txtW / 2 - 5, arrowY - 18, txtW + 10, 16);
+      ctx.strokeRect(sx - txtW / 2 - 5, arrowY - 18, txtW + 10, 16);
+
+      ctx.fillStyle = v_rel > 0 ? "#1B5E20" : "#B71C1C";
+      ctx.textAlign = "center";
+      ctx.fillText(txt, sx, arrowY - 6);
+
+      // Nyíltest
+      if (Math.abs(v_rel) > 0.05) {
+        ctx.strokeStyle = v_rel > 0 ? "#2C5E4B" : "#B83227";
+        ctx.fillStyle = v_rel > 0 ? "#2C5E4B" : "#B83227";
+        ctx.lineWidth = 3;
+
+        ctx.beginPath();
+        ctx.moveTo(sx, arrowY);
+        ctx.lineTo(sx + arrowLength, arrowY);
+        ctx.stroke();
+
+        // Nyílhegy
+        const headDir = v_rel > 0 ? 1 : -1;
+        ctx.beginPath();
+        ctx.moveTo(sx + arrowLength, arrowY);
+        ctx.lineTo(sx + arrowLength - headDir * 7, arrowY - 5);
+        ctx.lineTo(sx + arrowLength - headDir * 7, arrowY + 5);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      ctx.restore();
+    }
+
+    // Kattintásérzékelés a vásznon
+    function getEntityAtPoint(mouseX, mouseY) {
+      const w = canvas.width;
+      const obs = ENTITIES[activeObserverId];
+
+      for (let key of Object.keys(ENTITIES)) {
+        const ent = ENTITIES[key];
+        const sx = worldToScreenX(ent.x, obs.x, w);
+        const sy = ent.y;
+
+        const left = sx - ent.width / 2 - 10;
+        const right = sx + ent.width / 2 + 10;
+        const top = sy - ent.height / 2 - 15;
+        const bottom = sy + ent.height / 2 + 15;
+
+        if (mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom) {
+          return ent.id;
+        }
+      }
+      return null;
+    }
+
+    // Eseménykezelők: Egérmozgás és kattintás a vásznon
+    canvas.addEventListener("mousemove", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const mx = (e.clientX - rect.left) * scaleX;
+      const my = (e.clientY - rect.top) * scaleY;
+
+      const found = getEntityAtPoint(mx, my);
+      if (found !== hoveredEntityId) {
+        hoveredEntityId = found;
+        canvas.style.cursor = found ? "pointer" : "default";
+      }
+    });
+
+    canvas.addEventListener("mouseleave", () => {
+      hoveredEntityId = null;
+      canvas.style.cursor = "default";
+    });
+
+    canvas.addEventListener("click", (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
+      const mx = (e.clientX - rect.left) * scaleX;
+      const my = (e.clientY - rect.top) * scaleY;
+
+      const clickedId = getEntityAtPoint(mx, my);
+      if (clickedId) {
+        selectObserver(clickedId);
+      }
+    });
+
+    // Megfigyelő kiválasztása
+    function selectObserver(id) {
+      if (!ENTITIES[id]) return;
+      activeObserverId = id;
+
+      // Gombok vizuális frissítése
+      document.querySelectorAll(".observer-btn").forEach(btn => {
+        if (btn.dataset.id === id) {
+          btn.classList.add("active");
+        } else {
+          btn.classList.remove("active");
+        }
+      });
+
+      updateTable();
+    }
+
+    // Gomb eseménykezelők a felső rácsban
+    document.querySelectorAll(".observer-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        selectObserver(btn.dataset.id);
+      });
+    });
+
+    // Vezérlősáv eseménykezelők
+    const playPauseBtn = document.getElementById("play-pause-btn");
+    playPauseBtn.addEventListener("click", () => {
+      isPlaying = !isPlaying;
+      playPauseBtn.innerHTML = isPlaying ? "⏸️ Szünet" : "▶️ Indítás";
+    });
+
+    const resetBtn = document.getElementById("reset-btn");
+    resetBtn.addEventListener("click", () => {
+      ENTITIES.part.x = 0;
+      ENTITIES.kacsa.x = 10;
+      ENTITIES.csonak.x = -20;
+      ENTITIES.hajo.x = 60;
+    });
+
+    document.querySelectorAll(".speed-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".speed-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        timeScale = parseFloat(btn.dataset.speed);
+      });
+    });
+
+    document.getElementById("show-vectors-check").addEventListener("change", (e) => {
+      showVectors = e.target.checked;
+    });
+
+    document.getElementById("show-grid-check").addEventListener("change", (e) => {
+      showGrid = e.target.checked;
+    });
+
+    // Fő animációs ciklus (60 FPS)
+    let lastTime = performance.now();
+    function animate(currentTime) {
+      const dt = (currentTime - lastTime) / 1000;
+      lastTime = currentTime;
+
+      if (isPlaying && dt > 0 && dt < 0.2) {
+        const effectiveDt = dt * timeScale;
+
+        // Pozíciók frissítése parthoz viszonyított sebességük szerint
+        Object.keys(ENTITIES).forEach(key => {
+          const ent = ENTITIES[key];
+          ent.x += ent.v_part * effectiveDt;
+        });
+
+        // Víz hullámok mozgatása (+2 m/s folyás)
+        ripples.forEach(rip => {
+          rip.x += rip.speed * effectiveDt;
+          if (rip.x > WORLD_WRAP_METERS / 2) {
+            rip.x -= WORLD_WRAP_METERS;
+          }
+        });
+      }
+
+      drawScene();
+      requestAnimationFrame(animate);
+    }
+
+    // Inicializálás
+    updateTable();
+    requestAnimationFrame((t) => {
+      lastTime = t;
+      animate(t);
+    });
+  </script>
+</body>
+</html>
