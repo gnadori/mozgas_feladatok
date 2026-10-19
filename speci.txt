@@ -1,0 +1,49 @@
+Rendszerspecifikáció: Interaktív Fizikapélda-gyakorló Webalkalmazás
+Ez a dokumentum egy kliensoldali, tisztán böngészőben futó (HTML5, CSS3, modern vanília JavaScript) webalkalmazás funkcionális és technikai leírását tartalmazza.
+
+1. A rendszer célja és pedagógiai fókusza
+Az alkalmazás célja, hogy középiskolai/általános iskolai diákok számára végtelenített számú, paraméterezett fizikai feladatot generáljon a kiválasztott témakörökből.
+A beépített 15 másodperces késleltetés a levezetés megtekintése előtt azt szolgálja, hogy elkerülje a diákok azonnali feladását ("csak megnézem a megoldást" reflex), és arra ösztönözze őket, hogy fussanak neki újra a számításnak vagy lépjenek át egy következő példára.
+
+2. Felhasználói folyamat (User Flow)
+Beállítás / Témaválasztás:
+
+A diák megérkezik a kezdőképernyőre, ahol jelölőnégyzetekkel (checkbox) kiválaszt egy vagy több feladattípust (pl. Egyenes vonalú egyenletes mozgás, Sűrűség, Munka és teljesítmény, Ohm-törvény).
+
+Kattintás a "Gyakorlás indítása" gombra.
+
+Feladatmegoldás:
+
+A rendszer véletlenszerűen választ egy feladatsablont a kijelölt kategóriákból, és behelyettesít reális, véletlenszerű számértékeket.
+
+Megjelenik a feladat szövege, a mértékegységek és az input mező.
+
+A diák beírja az eredményt, majd rákattint az "Ellenőrzés" gombra (vagy megnyomja az Entert).
+
+Visszajelzés és ágak:
+
+Helyes válasz:
+
+Vizuális megerősítés (zöld jelzés, sikerüzenet).
+
+Megjelenik a részletes levezetés.
+
+Automatikusan aktív a "Következő feladat" gomb.
+
+Helytelen válasz:
+
+Vizuális visszajelzés (piros jelzés, hibás érték).
+
+Lehetőség az érték módosítására és újbóli ellenőrzésére.
+
+Megjelenik a "Megoldás levezetése (15 mp várakozás)" gomb és a "Következő feladat (kihagyás)" gomb.
+
+Késleltetett megoldás megjelenítés:
+
+Ha a diák a levezetés kérésére kattint, elindul egy 15 másodperces visszaszámláló.
+
+A visszaszámlálás alatt a levezetés rejtve marad, a számláló valós időben csökken.
+
+Ezalatt a diák bármikor megnyomhatja a "Következő feladat" gombot, amivel eldobja az aktuális feladatot és újat kér várakozás nélkül.
+
+Ha a 15 másodperc lejár, a gomb helyén felfedi magát a teljes, lépésről lépésre kidolgozott levezetés és a pontos végeredmény.

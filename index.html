@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Slab:wght@500;700;800&display=swap" rel="stylesheet">
+  <script src="feladat_adatok.js"></script>
   <style>
     :root {
       --bg-color: #F8F9FA;
@@ -581,30 +582,8 @@
         <p>Jelöld be azokat a feladattípusokat, amelyekből feladványokat szeretnél kapni, majd indítsd el a gyakorlást!</p>
       </div>
 
-      <div class="topic-list">
-        <label class="topic-item">
-          <input type="checkbox" id="topic-type1" checked>
-          <div class="topic-text">
-            <div class="topic-title">1. Egyenletes mozgás alapképlete (v = x / t)</div>
-            <div class="topic-desc">Hiányzó érték (sebesség, út vagy idő) kiszámítása tiszta SI alapegységekben (m/s, m, s).</div>
-          </div>
-        </label>
-
-        <label class="topic-item">
-          <input type="checkbox" id="topic-type2" checked>
-          <div class="topic-text">
-            <div class="topic-title">2. Egyenletes mozgás mértékegység-átváltással</div>
-            <div class="topic-desc">Számítások km/h és m/s, percek és másodpercek, valamint kilométerek és méterek közötti átváltásokkal.</div>
-          </div>
-        </label>
-
-        <label class="topic-item">
-          <input type="checkbox" id="topic-type3" checked>
-          <div class="topic-text">
-            <div class="topic-title">3. Összetett mozgás átlagsebessége</div>
-            <div class="topic-desc">2, 3 vagy 4 szakaszból álló mozgás teljes átlagsebességének kiszámítása a szakaszok ismert részadataiból.</div>
-          </div>
-        </label>
+      <div class="topic-list" id="topic-list">
+        <!-- A feladattípusok listája dinamikusan a feladat_adatok.json / feladat_adatok.js-ből töltődik be -->
       </div>
 
       <div style="margin-top: 1.5rem;">
@@ -687,36 +666,19 @@
   </footer>
 
   <script>
-    // 10 féle állat és 10 féle jármű a megadott specifikáció alapján
-    const ANIMALS = [
-      { name: "rozsomák", subject: "A rozsomák" },
-      { name: "kecske", subject: "A kecske" },
-      { name: "tengerimalac", subject: "A tengerimalac" },
-      { name: "tatárantilop", subject: "A tatárantilop" },
-      { name: "vízidisznó", subject: "A vízidisznó" },
-      { name: "sarki róka", subject: "A sarki róka" },
-      { name: "mosómedve", subject: "A mosómedve" },
-      { name: "láma", subject: "A láma" },
-      { name: "vombat", subject: "A vombat" },
-      { name: "gepárd", subject: "A gepárd" }
-    ];
-
-    // Reális sebességtartományok m/s-ban
-    const VEHICLES = [
-      { name: "tricikli", instr: "egy triciklivel", minV: 1.2, maxV: 2.8 },
-      { name: "roller", instr: "egy rollerrel", minV: 3.0, maxV: 5.5 },
-      { name: "városi bicikli", instr: "egy városi biciklivel", minV: 4.0, maxV: 7.0 },
-      { name: "versenykerékpár", instr: "egy versenykerékpárral", minV: 8.0, maxV: 13.5 },
-      { name: "elektromos moped", instr: "egy elektromos mopettel", minV: 7.0, maxV: 12.0 },
-      { name: "kis traktor", instr: "egy kis traktorral", minV: 4.0, maxV: 8.0 },
-      { name: "személyautó", instr: "egy személyautóval", minV: 14.0, maxV: 33.0 },
-      { name: "Bugatti Chiron", instr: "egy Bugatti Chironnal", minV: 50.0, maxV: 100.0 },
-      { name: "mágnesvasút (Maglev)", instr: "egy mágnesvasúttal", minV: 80.0, maxV: 125.0 },
-      { name: "SpaceX rakéta", instr: "egy SpaceX rakétával", minV: 1500.0, maxV: 3200.0 }
-    ];
+    // Konfiguráció kezelése: a feladat_adatok.js-ből betöltött globális FELADAT_ADATOK-at
+    // használjuk alapként (így a helyi file:// megnyitás is működik), de megpróbáljuk
+    // frissíteni a feladat_adatok.json fájlból is (ha webszerveren / GitHub Pages-en fut).
+    let appConfig = (typeof FELADAT_ADATOK !== 'undefined') ? FELADAT_ADATOK : {
+      settings: { countdownSeconds: 15, precisionDecimals: 2, tolerance: { absolute: 0.02, relative: 0.015 } },
+      animals: [],
+      vehicles: [],
+      taskTypes: []
+    };
 
     // Véletlenszám segédfüggvények
     function getRandomItem(arr) {
+      if (!arr || arr.length === 0) return null;
       return arr[Math.floor(Math.random() * arr.length)];
     }
 
@@ -748,19 +710,14 @@
 
     // 1. Típus: v = x / t alapegységekben (m/s, m, s)
     function generateType1() {
-      const animal = getRandomItem(ANIMALS);
-      const vehicle = getRandomItem(VEHICLES);
+      const animal = getRandomItem(appConfig.animals);
+      const vehicle = getRandomItem(appConfig.vehicles);
       
       const v = getRandomFloat(vehicle.minV, vehicle.maxV, 1); // m/s
-      // Ésszerű időtartam a járműhöz mérten
-      let t;
-      if (vehicle.name === "SpaceX rakéta") {
-        t = getRandomInt(10, 60); // 10-60 másodperc
-      } else if (v > 40) {
-        t = getRandomInt(15, 90);
-      } else {
-        t = getRandomInt(10, 120);
-      }
+      // Ésszerű időtartam a járműhöz mérten a konfigurációból
+      const minT = vehicle.timeRange ? vehicle.timeRange.min : 10;
+      const maxT = vehicle.timeRange ? vehicle.timeRange.max : 60;
+      const t = getRandomInt(minT, maxT);
       const x = Math.round(v * t * 10) / 10; // méter
 
       // Véletlenszerűen választunk egy hiányzót: 'v', 'x', vagy 't'
@@ -819,8 +776,8 @@
 
     // 2. Típus: Mértékegység-átváltásokkal kombinált feladatok (km/h, m/s, perc, óra, km, m)
     function generateType2() {
-      const animal = getRandomItem(ANIMALS);
-      const vehicle = getRandomItem(VEHICLES);
+      const animal = getRandomItem(appConfig.animals);
+      const vehicle = getRandomItem(appConfig.vehicles);
       const subVariants = ['v_to_kmh', 'v_to_ms', 'x_calc', 't_calc'];
       const variant = getRandomItem(subVariants);
 
@@ -940,9 +897,12 @@
 
     // 3. Típus: Összetett mozgás átlagsebessége (2, 3 vagy 4 szakasz, mindegyiknél a 3-ból 2 ismert)
     function generateType3() {
-      const animal = getRandomItem(ANIMALS);
-      const vehicle = getRandomItem(VEHICLES);
-      const stageCount = getRandomInt(2, 4); // 2, 3 vagy 4 szakasz
+      const animal = getRandomItem(appConfig.animals);
+      const vehicle = getRandomItem(appConfig.vehicles);
+      const type3Config = appConfig?.taskTypes?.find(t => t.id === 3);
+      const minStages = type3Config?.minStages ?? 2;
+      const maxStages = type3Config?.maxStages ?? 4;
+      const stageCount = getRandomInt(minStages, maxStages); // szakaszok száma
       
       const askUnit = Math.random() < 0.5 ? "m/s" : "km/h";
       const stages = [];
@@ -1083,16 +1043,42 @@
     const solutionSteps = document.getElementById('solution-steps');
     const solvedCountElem = document.getElementById('solved-count');
 
+    // Témaválasztó lista renderelése a konfiguráció alapján
+    function renderTopicList() {
+      const container = document.getElementById('topic-list');
+      if (!container || !appConfig.taskTypes) return;
+      container.innerHTML = appConfig.taskTypes.map(t => `
+        <label class="topic-item">
+          <input type="checkbox" class="topic-checkbox" data-type-id="${t.id}" checked>
+          <div class="topic-text">
+            <div class="topic-title">${t.title}</div>
+            <div class="topic-desc">${t.description}</div>
+          </div>
+        </label>
+      `).join('');
+    }
+
+    // JSON konfiguráció aszinkron betöltése (ha HTTP/HTTPS környezetben fut)
+    async function loadConfigJson() {
+      try {
+        const res = await fetch('feladat_adatok.json');
+        if (res.ok) {
+          appConfig = await res.json();
+          renderTopicList();
+        }
+      } catch (err) {
+        // file:// esetén csendes tartalék: a feladat_adatok.js marad érvényben
+      }
+    }
+
+    // Kezdeti inicializálás
+    renderTopicList();
+    loadConfigJson();
+
     // Kezdés
     startBtn.addEventListener('click', () => {
-      const t1 = document.getElementById('topic-type1').checked;
-      const t2 = document.getElementById('topic-type2').checked;
-      const t3 = document.getElementById('topic-type3').checked;
-
-      state.activeTypes = [];
-      if (t1) state.activeTypes.push(1);
-      if (t2) state.activeTypes.push(2);
-      if (t3) state.activeTypes.push(3);
+      const checkedBoxes = document.querySelectorAll('.topic-checkbox:checked');
+      state.activeTypes = Array.from(checkedBoxes).map(cb => parseInt(cb.dataset.typeId, 10));
 
       if (state.activeTypes.length === 0) {
         alert("Kérlek, válassz ki legalább egy feladattípust!");
@@ -1121,7 +1107,8 @@
     function loadNextExercise() {
       clearInterval(state.countdownTimer);
       state.isResolved = false;
-      state.countdownLeft = 15;
+      const countdownSec = appConfig?.settings?.countdownSeconds ?? 15;
+      state.countdownLeft = countdownSec;
       
       // UI elemek visszaállítása
       feedbackCorrect.style.display = 'none';
@@ -1130,7 +1117,7 @@
       showSolutionBtn.style.display = 'inline-flex';
       showSolutionBtn.disabled = false;
       showSolutionBtn.classList.remove('timer-active');
-      showSolutionBtn.innerText = "Megoldás levezetése (15 mp várakozás)";
+      showSolutionBtn.innerText = `Megoldás levezetése (${countdownSec} mp várakozás)`;
       
       userInput.value = "";
       userInput.disabled = false;
@@ -1172,13 +1159,17 @@
 
       const userNum = parseFloat(rawVal);
       const expected = state.currentTask.expectedValue;
-      const expectedRounded = Math.round(expected * 100) / 100;
+      const decimals = appConfig?.settings?.precisionDecimals ?? 2;
+      const factor = Math.pow(10, decimals);
+      const expectedRounded = Math.round(expected * factor) / factor;
 
-      // Elfogadási kritérium:
-      // Pontos kerekített egyezés (2 tizedesjegy), vagy ±0.02 abszolút hiba, vagy 1.5% relatív tolerancia
+      // Elfogadási kritérium a beállításokból
+      const tolAbs = appConfig?.settings?.tolerance?.absolute ?? 0.02;
+      const tolRel = appConfig?.settings?.tolerance?.relative ?? 0.015;
+
       const absDiff = Math.abs(userNum - expectedRounded);
       const relDiff = Math.abs(expected) > 0.001 ? Math.abs(userNum - expected) / Math.abs(expected) : absDiff;
-      const isCorrect = (absDiff <= 0.02) || (relDiff < 0.015);
+      const isCorrect = (absDiff <= tolAbs) || (relDiff < tolRel);
 
       if (isCorrect) {
         // Helyes ág
@@ -1189,7 +1180,7 @@
 
         feedbackIncorrect.style.display = 'none';
         feedbackCorrect.style.display = 'block';
-        document.getElementById('correct-summary').innerHTML = `Pontos érték: <strong>${formatNumber(expectedRounded, 2)} ${state.currentTask.expectedUnit}</strong> (Te válaszod: ${formatNumber(userNum, 2)}).`;
+        document.getElementById('correct-summary').innerHTML = `Pontos érték: <strong>${formatNumber(expectedRounded, decimals)} ${state.currentTask.expectedUnit}</strong> (Te válaszod: ${formatNumber(userNum, decimals)}).`;
         
         // Levezetés megjelenítése a helyes válasz alatt
         showSolutionSteps();
@@ -1212,13 +1203,14 @@
       solutionSteps.innerHTML = state.currentTask.steps.map(step => `<div class="solution-step">${step}</div>`).join('');
     }
 
-    // 15 másodperces levezetés visszaszámláló gomb kezelése
+    // Késleltetett levezetés visszaszámláló gomb kezelése
     showSolutionBtn.addEventListener('click', () => {
       if (showSolutionBtn.disabled || state.countdownTimer) return;
 
+      const countdownSec = appConfig?.settings?.countdownSeconds ?? 15;
       showSolutionBtn.disabled = true;
       showSolutionBtn.classList.add('timer-active');
-      state.countdownLeft = 15;
+      state.countdownLeft = countdownSec;
       showSolutionBtn.innerText = `Megoldás felfedése: ${state.countdownLeft} mp...`;
 
       state.countdownTimer = setInterval(() => {

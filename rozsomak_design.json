@@ -1,0 +1,104 @@
+{
+  "design_system": {
+    "name": "Rozsomák Tanár Úr Interaktív Tudományos Oldalai",
+    "concept": "A rozsomák (Gulo gulo) természetes környezete és tulajdonságai: erdei és tajgai földszínek, éles és határozott formák, szigorúan alárendelve a tudományos pontosságnak és a figyelemelterelés-mentes tanulási környezetnek.",
+    "typography": {
+      "rules": [
+        "A címeknek szigorúan csak az első betűje nagybetű (sentence case)."
+      ],
+      "fonts": {
+        "headings": {
+          "family": "Roboto Slab",
+          "type": "slab serif",
+          "description": "Vastag, szögletes talpak a 'karmos', határozott, tudományos folyóiratokra emlékeztető karakterért."
+        },
+        "body": {
+          "family": "Inter vagy Figtree",
+          "type": "sans-serif",
+          "description": "Letisztult, modern font, kiváló olvashatóság számokhoz és matematikai/fizikai képletekhez."
+        }
+      }
+    },
+    "color_palette": {
+      "background": {
+        "hex": "#F8F9FA",
+        "name": "Tajga hó",
+        "usage": "Fő háttérszín. Nem vakító hófehér, így jobban kíméli a szemet a hosszú olvasás során."
+      },
+      "primary_text": {
+        "hex": "#2D2A26",
+        "name": "Medvebarna / Faszén",
+        "usage": "Folyószöveg és címsorok. Olvashatóbb és természetesebb hatású a tiszta feketénél."
+      },
+      "accent_1": {
+        "hex": "#D97725",
+        "name": "Rozsomák borostyán",
+        "usage": "Elsődleges interakciók: gombok, aktív csúszkák, fontos fogalmak kiemelése."
+      },
+      "accent_2": {
+        "hex": "#2C5E4B",
+        "name": "Fenyő zöld",
+        "usage": "Másodlagos elemek: helyes válasz visszajelzések, keretek, kiegészítő UI elemek."
+      },
+      "surfaces": {
+        "hex": ["#FFFFFF", "#EAE6DF"],
+        "name": "Tiszta fehér vagy Halvány homokszín",
+        "usage": "Interaktív modulok, szimulációk és kalkulátorok kártyáinak háttérszíne, a tartalom vizuális elkülönítésére."
+      }
+    },
+    "ui_styling": {
+      "buttons_and_inputs": {
+        "shape": "Határozott, kissé szögletes.",
+        "border_radius": "0px vagy max 4px",
+        "avoid": "Túlzottan lekerekített, 'buborékos', gyerekes formák kerülése."
+      },
+      "shadows": {
+        "type": "Hard shadow",
+        "css_example": "box-shadow: 4px 4px 0px #2D2A26",
+        "description": "Éles, határozott árnyékok a kártyákon és gombokon. A lágy, elmosódott (soft) árnyékok kerülendők."
+      },
+      "borders": {
+        "interactive_containers": "Vastagabb (2-3px), sötét (#2D2A26) keret a határozott megjelenésért."
+      }
+    },
+    "layout": {
+      "core_principle": "Maximális átláthatóság, egyértelmű vizuális elválasztás az elmélet (olvasás) és a gyakorlat (interakció) között.",
+      "mobile_and_basic": {
+        "columns": 1,
+        "max_width": "800px",
+        "alignment": "Középre igazított konténer a túl hosszú és fárasztó szövegsorok elkerülésére."
+      },
+      "desktop_interactive": {
+        "columns": 2,
+        "type": "Aszimmetrikus grid",
+        "left_column": "Kb. 40% szélesség: Elméleti bevezető, feladatleírás, instrukciók.",
+        "right_column": "Kb. 60% szélesség: Maga az interaktív widget (szimuláció, canvas, kalkulátor) egy dedikált kártyán."
+      }
+    },
+    "page_structure": {
+      "header": {
+        "style": "Vékony, minimalista, vastag alsó határvonallal (border-bottom).",
+        "elements": ["Logó/Ikon (PD mancsnyom vagy fenyő)", "Aktuális kurzus vagy témakör neve"]
+      },
+      "footer": {
+        "background": "#2D2A26",
+        "text_color": "#F8F9FA",
+        "elements": [
+          "Szerzői infó: 'Készítette: Rozsomák tanár úr | [Évszám]'",
+          "Szerzői jogi edukáció: CC0 / Public Domain forrásmegjelölések listája."
+        ]
+      }
+    },
+    "assets": {
+      "license_requirement": "Kizárólag Public Domain (CC0) vagy szabadon felhasználható elemek.",
+      "icons": {
+        "recommended_libraries": ["Lucide Icons", "Phosphor Icons"],
+        "svg_search_keywords": ["wolverine", "forest", "science", "nature"]
+      },
+      "illustrations": {
+        "recommended_sources": ["Wikimedia Commons (régi, lejárt jogvédelmű természettudományos metszetek)", "Unsplash (természetfotók)", "Pixabay"],
+        "style": "Vintage tudományos metszetek vagy tiszta természetfotók, amelyek illeszkednek az alternatív, erdei hangulathoz."
+      }
+    }
+  }
+}
