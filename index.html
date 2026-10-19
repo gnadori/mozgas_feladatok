@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rozsomák tanár úr fizikapélda-gyakorlója</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Slab:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #F8F9FA;
+      --text-color: #2D2A26;
+      --accent-amber: #D97725;
+      --accent-amber-hover: #b8621b;
+      --accent-green: #2C5E4B;
+      --accent-green-hover: #224b3b;
+      --error-color: #B83227;
+      --surface-white: #FFFFFF;
+      --surface-sand: #EAE6DF;
+      --border-dark: #2D2A26;
+      --hard-shadow: 4px 4px 0px #2D2A26;
+      --hard-shadow-sm: 2px 2px 0px #2D2A26;
+      --hard-shadow-lg: 6px 6px 0px #2D2A26;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Roboto Slab', serif;
+      color: var(--text-color);
+      font-weight: 700;
+      text-transform: none; /* Sentence case rule */
+    }
+
+    /* Fejléc */
+    header {
+      background-color: var(--surface-white);
+      border-bottom: 3px solid var(--border-dark);
+      padding: 1rem 1.5rem;
+    }
+
+    .header-content {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-color);
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-amber);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #FFFFFF;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-family: 'Roboto Slab', serif;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #635E59;
+    }
+
+    .stats-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    /* Fő tartalom */
+    main {
+      flex: 1;
+      max-width: 960px;
+      width: 100%;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Kártya stílus */
+    .card {
+      background: var(--surface-white);
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-sand {
+      background: var(--surface-sand);
+    }
+
+    /* Gombok */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.75rem 1.4rem;
+      border: 2px solid var(--border-dark);
+      border-radius: 0;
+      cursor: pointer;
+      box-shadow: var(--hard-shadow);
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      text-decoration: none;
+      color: var(--text-color);
+      background: var(--surface-sand);
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--hard-shadow-lg);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border-dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    .btn-primary {
+      background-color: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--accent-amber-hover);
+    }
+
+    .btn-green {
+      background-color: var(--accent-green);
+      color: #FFFFFF;
+    }
+
+    .btn-green:hover:not(:disabled) {
+      background-color: var(--accent-green-hover);
+    }
+
+    .btn-sm {
+      padding: 0.45rem 0.85rem;
+      font-size: 0.85rem;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    /* Témaválasztó képernyő */
+    .setup-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .setup-header h2 {
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .setup-header p {
+      color: #4A4641;
+      font-size: 0.95rem;
+    }
+
+    .topic-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+
+    .topic-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.1rem;
+      background: var(--surface-white);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.1s ease;
+    }
+
+    .topic-item:hover {
+      background: #FAF8F5;
+    }
+
+    .topic-item input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--border-dark);
+      background: #FFFFFF;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+      display: grid;
+      place-content: center;
+    }
+
+    .topic-item input[type="checkbox"]:checked {
+      background: var(--accent-amber);
+    }
+
+    .topic-item input[type="checkbox"]:checked::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      background: #FFFFFF;
+      clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    }
+
+    .topic-text {
+      flex: 1;
+    }
+
+    .topic-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 0.2rem;
+      color: var(--text-color);
+    }
+
+    .topic-desc {
+      font-size: 0.85rem;
+      color: #55504A;
+    }
+
+    /* Gyakorló felület */
+    .exercise-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 2px solid var(--border-dark);
+      background: var(--surface-sand);
+    }
+
+    .badge-amber {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
+    .badge-green {
+      background: var(--accent-green);
+      color: #FFFFFF;
+    }
+
+    .story-card {
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .story-text {
+      font-size: 1.15rem;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    .stage-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      font-size: 0.95rem;
+    }
+
+    .stage-table th, .stage-table td {
+      border: 1px solid var(--border-dark);
+      padding: 0.6rem 0.75rem;
+      text-align: left;
+    }
+
+    .stage-table th {
+      background: #ECE7DF;
+      font-family: 'Roboto Slab', serif;
+      font-weight: 700;
+    }
+
+    .question-prompt {
+      margin-top: 1rem;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .question-prompt::before {
+      content: "▶";
+      color: var(--accent-amber);
+      font-size: 0.9rem;
+    }
+
+    /* Input zóna */
+    .input-panel {
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 2px dashed #C8C3BA;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .number-input-wrapper {
+      display: inline-flex;
+      align-items: center;
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    .number-input {
+      padding: 0.7rem 0.9rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      border: none;
+      outline: none;
+      width: 160px;
+      color: var(--text-color);
+      background: transparent;
+    }
+
+    .unit-addon {
+      padding: 0.7rem 0.9rem;
+      background: #EAE6DF;
+      border-left: 2px solid var(--border-dark);
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-color);
+    }
+
+    .hint-subtext {
+      font-size: 0.8rem;
+      color: #635E59;
+      margin-top: 0.4rem;
+    }
+
+    /* Visszajelzés szekciók */
+    .feedback-box {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      display: none;
+    }
+
+    .feedback-correct {
+      background: #EBF4F0;
+      border-color: var(--accent-green);
+    }
+
+    .feedback-incorrect {
+      background: #FDF1F0;
+      border-color: var(--error-color);
+    }
+
+    .feedback-header {
+      font-family: 'Roboto Slab', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .feedback-correct .feedback-header {
+      color: var(--accent-green);
+    }
+
+    .feedback-incorrect .feedback-header {
+      color: var(--error-color);
+    }
+
+    .actions-row {
+      margin-top: 1.25rem;
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    /* Levezetés doboz */
+    .solution-box {
+      margin-top: 1.5rem;
+      padding: 1.25rem;
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      border-left: 6px solid var(--accent-amber);
+    }
+
+    .solution-title {
+      font-family: 'Roboto Slab', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--text-color);
+    }
+
+    .solution-step {
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .solution-step:last-child {
+      margin-bottom: 0;
+    }
+
+    .math-block {
+      background: #F4F1EA;
+      border: 1px solid #D6D0C5;
+      padding: 0.35rem 0.6rem;
+      font-family: monospace;
+      font-size: 1rem;
+      font-weight: 600;
+      display: inline-block;
+      margin: 0.2rem 0;
+    }
+
+    /* Visszaszámláló gomb animáció */
+    .timer-active {
+      background: #EAE6DF !important;
+      color: var(--text-color) !important;
+      cursor: wait !important;
+    }
+
+    /* Lábléc */
+    footer {
+      background-color: var(--border-dark);
+      color: #F8F9FA;
+      padding: 2rem 1.5rem;
+      margin-top: auto;
+      border-top: 3px solid var(--border-dark);
+    }
+
+    .footer-content {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .footer-content a {
+      color: #F8F9FA;
+    }
+
+    @media (max-width: 600px) {
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .actions-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn {
+        width: 100%;
+      }
+      .input-group {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .number-input-wrapper {
+        width: 100%;
+      }
+      .number-input {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fejléc -->
+  <header>
+    <div class="header-content">
+      <a href="#" class="brand" id="brand-link">
+        <div class="brand-icon" title="Rozsomák mancsnyom">
+          <!-- Mancsnyom SVG (CC0) -->
+          <svg viewBox="0 0 24 24">
+            <ellipse cx="6" cy="8" rx="2" ry="3"/>
+            <ellipse cx="11" cy="5.5" rx="2" ry="3.2"/>
+            <ellipse cx="16" cy="6" rx="2" ry="3.2"/>
+            <ellipse cx="20.5" cy="9.5" rx="1.8" ry="2.7"/>
+            <path d="M14.5 10.5 C12 9.5, 9.5 9.8, 7.5 11 C5 12.5, 4 15, 6 18 C7.5 20, 10.5 21, 14 20 C18 19, 19.5 15.5, 18.5 13 C17.8 11.5, 16.5 10.9, 14.5 10.5 Z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">Rozsomák tanár úr gyakorlója</div>
+          <div class="brand-subtitle">Kinematika és egyenletes mozgások</div>
+        </div>
+      </a>
+      <div class="stats-badge" id="stats-badge">
+        <span>Sikeres feladatok: <strong id="solved-count">0</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Fő tartalom -->
+  <main>
+    <!-- 1. Témaválasztó képernyő -->
+    <section id="setup-screen" class="card">
+      <div class="setup-header">
+        <h2>Válassz feladattípusokat a gyakorláshoz</h2>
+        <p>Jelöld be azokat a feladattípusokat, amelyekből feladványokat szeretnél kapni, majd indítsd el a gyakorlást!</p>
+      </div>
+
+      <div class="topic-list">
+        <label class="topic-item">
+          <input type="checkbox" id="topic-type1" checked>
+          <div class="topic-text">
+            <div class="topic-title">1. Egyenletes mozgás alapképlete (v = x / t)</div>
+            <div class="topic-desc">Hiányzó érték (sebesség, út vagy idő) kiszámítása tiszta SI alapegységekben (m/s, m, s).</div>
+          </div>
+        </label>
+
+        <label class="topic-item">
+          <input type="checkbox" id="topic-type2" checked>
+          <div class="topic-text">
+            <div class="topic-title">2. Egyenletes mozgás mértékegység-átváltással</div>
+            <div class="topic-desc">Számítások km/h és m/s, percek és másodpercek, valamint kilométerek és méterek közötti átváltásokkal.</div>
+          </div>
+        </label>
+
+        <label class="topic-item">
+          <input type="checkbox" id="topic-type3" checked>
+          <div class="topic-text">
+            <div class="topic-title">3. Összetett mozgás átlagsebessége</div>
+            <div class="topic-desc">2, 3 vagy 4 szakaszból álló mozgás teljes átlagsebességének kiszámítása a szakaszok ismert részadataiból.</div>
+          </div>
+        </label>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <button id="start-btn" class="btn btn-primary">Gyakorlás indítása</button>
+      </div>
+    </section>
+
+    <!-- 2. Feladatmegoldó képernyő -->
+    <section id="exercise-screen" class="card" style="display: none;">
+      <div class="exercise-meta">
+        <div>
+          <span class="badge badge-amber" id="exercise-type-badge">1. Típus</span>
+          <span class="badge" id="exercise-num-badge">Feladat #1</span>
+        </div>
+        <button id="back-to-setup-btn" class="btn btn-sm">Témakörök módosítása</button>
+      </div>
+
+      <div class="story-card">
+        <p class="story-text" id="exercise-story"></p>
+        <div id="exercise-extra-table"></div>
+        <div class="question-prompt" id="exercise-question"></div>
+      </div>
+
+      <div class="input-panel">
+        <div class="input-group">
+          <div class="number-input-wrapper">
+            <input type="text" id="user-input" class="number-input" placeholder="pl. 12,34" autocomplete="off">
+            <span class="unit-addon" id="expected-unit">m/s</span>
+          </div>
+          <button id="check-btn" class="btn btn-primary">Ellenőrzés</button>
+          <button id="next-btn-skip" class="btn">Következő feladat</button>
+        </div>
+        <div class="hint-subtext">A választ mindig 2 tizedesjegyre kerekítve add meg! Tizedesvesszőt és tizedespontot is beírhatsz.</div>
+      </div>
+
+      <!-- Helyes visszajelzés doboz -->
+      <div id="feedback-correct" class="feedback-box feedback-correct">
+        <div class="feedback-header">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Helyes válasz! Szép munka!
+        </div>
+        <p id="correct-summary"></p>
+        <div class="actions-row">
+          <button id="next-btn-correct" class="btn btn-green">Következő feladat ▶</button>
+        </div>
+      </div>
+
+      <!-- Helytelen visszajelzés doboz -->
+      <div id="feedback-incorrect" class="feedback-box feedback-incorrect">
+        <div class="feedback-header">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+          Sajnos nem pontos vagy hibás érték!
+        </div>
+        <p id="incorrect-message">Próbáld meg újraszámolni, vagy ellenőrizd az átváltásokat és a kerekítést!</p>
+        <div class="actions-row">
+          <button id="show-solution-btn" class="btn btn-primary">Megoldás levezetése (15 mp várakozás)</button>
+          <button id="next-btn-incorrect" class="btn">Következő feladat (kihagyás)</button>
+        </div>
+      </div>
+
+      <!-- Levezetés megjelenítő doboz -->
+      <div id="solution-container" class="solution-box" style="display: none;">
+        <div class="solution-title">Részletes levezetés lépésről lépésre:</div>
+        <div id="solution-steps"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Lábléc -->
+  <footer>
+    <div class="footer-content">
+      <div>Készítette: Rozsomák tanár úr | 2026</div>
+      <div>Licenc: CC0 / Public Domain forrásmegjelölés | Természettudományos gyakorlótér</div>
+    </div>
+  </footer>
+
+  <script>
+    // 10 féle állat és 10 féle jármű a megadott specifikáció alapján
+    const ANIMALS = [
+      { name: "rozsomák", subject: "A rozsomák" },
+      { name: "kecske", subject: "A kecske" },
+      { name: "tengerimalac", subject: "A tengerimalac" },
+      { name: "tatárantilop", subject: "A tatárantilop" },
+      { name: "vízidisznó", subject: "A vízidisznó" },
+      { name: "sarki róka", subject: "A sarki róka" },
+      { name: "mosómedve", subject: "A mosómedve" },
+      { name: "láma", subject: "A láma" },
+      { name: "vombat", subject: "A vombat" },
+      { name: "gepárd", subject: "A gepárd" }
+    ];
+
+    // Reális sebességtartományok m/s-ban
+    const VEHICLES = [
+      { name: "tricikli", instr: "egy triciklivel", minV: 1.2, maxV: 2.8 },
+      { name: "roller", instr: "egy rollerrel", minV: 3.0, maxV: 5.5 },
+      { name: "városi bicikli", instr: "egy városi biciklivel", minV: 4.0, maxV: 7.0 },
+      { name: "versenykerékpár", instr: "egy versenykerékpárral", minV: 8.0, maxV: 13.5 },
+      { name: "elektromos moped", instr: "egy elektromos mopettel", minV: 7.0, maxV: 12.0 },
+      { name: "kis traktor", instr: "egy kis traktorral", minV: 4.0, maxV: 8.0 },
+      { name: "személyautó", instr: "egy személyautóval", minV: 14.0, maxV: 33.0 },
+      { name: "Bugatti Chiron", instr: "egy Bugatti Chironnal", minV: 50.0, maxV: 100.0 },
+      { name: "mágnesvasút (Maglev)", instr: "egy mágnesvasúttal", minV: 80.0, maxV: 125.0 },
+      { name: "SpaceX rakéta", instr: "egy SpaceX rakétával", minV: 1500.0, maxV: 3200.0 }
+    ];
+
+    // Véletlenszám segédfüggvények
+    function getRandomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function getRandomFloat(min, max, decimals = 1) {
+      const factor = Math.pow(10, decimals);
+      return Math.round((Math.random() * (max - min) + min) * factor) / factor;
+    }
+
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function formatNumber(num, decimals = 2) {
+      return Number(num).toFixed(decimals).replace('.', ',');
+    }
+
+    // Állapotváltozók
+    let state = {
+      solvedCount: 0,
+      currentExerciseNum: 0,
+      activeTypes: [1, 2, 3],
+      currentTask: null,
+      countdownTimer: null,
+      countdownLeft: 15,
+      isResolved: false
+    };
+
+    // --- FELADAT GENERÁTOROK ---
+
+    // 1. Típus: v = x / t alapegységekben (m/s, m, s)
+    function generateType1() {
+      const animal = getRandomItem(ANIMALS);
+      const vehicle = getRandomItem(VEHICLES);
+      
+      const v = getRandomFloat(vehicle.minV, vehicle.maxV, 1); // m/s
+      // Ésszerű időtartam a járműhöz mérten
+      let t;
+      if (vehicle.name === "SpaceX rakéta") {
+        t = getRandomInt(10, 60); // 10-60 másodperc
+      } else if (v > 40) {
+        t = getRandomInt(15, 90);
+      } else {
+        t = getRandomInt(10, 120);
+      }
+      const x = Math.round(v * t * 10) / 10; // méter
+
+      // Véletlenszerűen választunk egy hiányzót: 'v', 'x', vagy 't'
+      const unknowns = ['v', 'x', 't'];
+      const target = getRandomItem(unknowns);
+
+      let story = "";
+      let question = "";
+      let expectedUnit = "";
+      let expectedValue = 0;
+      let steps = [];
+
+      if (target === 'v') {
+        expectedValue = x / t;
+        expectedUnit = "m/s";
+        story = `${animal.subject} ${vehicle.instr} egyenes vonalban egyenletesen halad. Az út során pontosan ${formatNumber(x, 1)} m utat tesz meg ${t} s alatt.`;
+        question = `Mekkora a mozgás sebessége?`;
+        steps = [
+          `1. Adatok kigyűjtése: út: <span class="math-block">x = ${formatNumber(x, 1)} m</span>, idő: <span class="math-block">t = ${t} s</span>.`,
+          `2. Alkalmazott képlet az egyenletes mozgás sebességére: <span class="math-block">v = x / t</span>.`,
+          `3. Behelyettesítés: <span class="math-block">v = ${formatNumber(x, 1)} m / ${t} s = ${formatNumber(expectedValue, 2)} m/s</span>.`
+        ];
+      } else if (target === 'x') {
+        expectedValue = v * t;
+        expectedUnit = "m";
+        story = `${animal.subject} ${vehicle.instr} ${formatNumber(v, 1)} m/s állandó sebességgel halad ${t} s-en keresztül.`;
+        question = `Mekkora utat tesz meg ez alatt az idő alatt?`;
+        steps = [
+          `1. Adatok kigyűjtése: sebesség: <span class="math-block">v = ${formatNumber(v, 1)} m/s</span>, idő: <span class="math-block">t = ${t} s</span>.`,
+          `2. Képlet átrendezése a megtett útra: <span class="math-block">x = v · t</span>.`,
+          `3. Behelyettesítés és számítás: <span class="math-block">x = ${formatNumber(v, 1)} m/s · ${t} s = ${formatNumber(expectedValue, 2)} m</span>.`
+        ];
+      } else { // target === 't'
+        expectedValue = x / v;
+        expectedUnit = "s";
+        story = `${animal.subject} ${vehicle.instr} ${formatNumber(v, 1)} m/s állandó sebességgel haladva egy ${formatNumber(x, 1)} m hosszú szakaszon megy végig.`;
+        question = `Mennyi időre van szüksége ezen útszakasz megtételéhez?`;
+        steps = [
+          `1. Adatok kigyűjtése: út: <span class="math-block">x = ${formatNumber(x, 1)} m</span>, sebesség: <span class="math-block">v = ${formatNumber(v, 1)} m/s</span>.`,
+          `2. Képlet átrendezése az időtartamra: <span class="math-block">t = x / v</span>.`,
+          `3. Behelyettesítés és számítás: <span class="math-block">t = ${formatNumber(x, 1)} m / ${formatNumber(v, 1)} m/s = ${formatNumber(expectedValue, 2)} s</span>.`
+        ];
+      }
+
+      return {
+        typeId: 1,
+        typeTitle: "1. Egyenletes mozgás (v = x / t)",
+        story,
+        tableHtml: null,
+        question,
+        expectedUnit,
+        expectedValue,
+        steps
+      };
+    }
+
+    // 2. Típus: Mértékegység-átváltásokkal kombinált feladatok (km/h, m/s, perc, óra, km, m)
+    function generateType2() {
+      const animal = getRandomItem(ANIMALS);
+      const vehicle = getRandomItem(VEHICLES);
+      const subVariants = ['v_to_kmh', 'v_to_ms', 'x_calc', 't_calc'];
+      const variant = getRandomItem(subVariants);
+
+      let story = "";
+      let question = "";
+      let expectedUnit = "";
+      let expectedValue = 0;
+      let steps = [];
+
+      // Reális alapértékek km/h-ban
+      const v_kmh_raw = vehicle.minV * 3.6 + Math.random() * (vehicle.maxV - vehicle.minV) * 3.6;
+      const v_kmh = Math.round(v_kmh_raw * 10) / 10;
+      const v_ms = v_kmh / 3.6;
+
+      if (variant === 'v_to_kmh') {
+        // Megadva: x (méterben vagy km-ben) és t (percben vagy másodpercben) -> Kérdés: v (km/h)
+        const t_min = getRandomInt(3, 45);
+        const t_s = t_min * 60;
+        const x_m = Math.round(v_ms * t_s);
+        expectedValue = (x_m / 1000) / (t_min / 60); // km/h
+        expectedUnit = "km/h";
+
+        story = `${animal.subject} ${vehicle.instr} egyenes úton egyenletesen haladva ${formatNumber(x_m, 0)} méter utat tesz meg ${t_min} perc alatt.`;
+        question = `Számítsd ki a sebességét km/h mértékegységben!`;
+        steps = [
+          `1. Adatok átváltása egységes mértékegységekbe:`,
+          `&nbsp;&nbsp;• Megtett út km-ben: <span class="math-block">x = ${formatNumber(x_m, 0)} m = ${formatNumber(x_m / 1000, 3)} km</span>`,
+          `&nbsp;&nbsp;• Eltelt idő órában: <span class="math-block">t = ${t_min} perc = ${t_min} / 60 h = ${formatNumber(t_min / 60, 4)} h</span>`,
+          `2. Sebesség számítása: <span class="math-block">v = x / t = ${formatNumber(x_m / 1000, 3)} km / ${formatNumber(t_min / 60, 4)} h = ${formatNumber(expectedValue, 2)} km/h</span>.`,
+          `<em>(Alternatív levezetés: SI alapegységekben v = ${formatNumber(x_m, 0)} m / ${t_s} s = ${formatNumber(v_ms, 2)} m/s, majd szorozva 3,6-tal: ${formatNumber(v_ms * 3.6, 2)} km/h).</em>`
+        ];
+
+      } else if (variant === 'v_to_ms') {
+        // Megadva: v km/h-ban, de kérdés m/s-ben VAGY megadva km és óra -> kérdés m/s
+        const t_h_choices = [0.25, 0.5, 0.75, 1.2, 1.5, 2];
+        const t_h = getRandomItem(t_h_choices);
+        const x_km = Math.round(v_kmh * t_h * 10) / 10;
+        expectedValue = (x_km * 1000) / (t_h * 3600); // m/s
+        expectedUnit = "m/s";
+
+        story = `${animal.subject} ${vehicle.instr} ${formatNumber(x_km, 1)} km távolságot tesz meg egyenletesen pontosan ${formatNumber(t_h, 2)} óra alatt.`;
+        question = `Mekkora a sebessége m/s mértékegységben kifejezve?`;
+        steps = [
+          `1. Számítsuk ki először a sebességet km/h-ban: <span class="math-block">v = x / t = ${formatNumber(x_km, 1)} km / ${formatNumber(t_h, 2)} h = ${formatNumber(x_km / t_h, 2)} km/h</span>.`,
+          `2. Váltás m/s-ba (osztás 3,6-tal): <span class="math-block">${formatNumber(x_km / t_h, 2)} / 3,6 = ${formatNumber(expectedValue, 2)} m/s</span>.`,
+          `<em>(Vagy SI-ben közvetlenül: x = ${formatNumber(x_km * 1000, 0)} m, t = ${formatNumber(t_h * 3600, 0)} s, így v = ${formatNumber(expectedValue, 2)} m/s).</em>`
+        ];
+
+      } else if (variant === 'x_calc') {
+        // Megadva: v km/h-ban, t percben -> Kérdés: x km-ben vagy m-ben
+        const askInMeters = Math.random() < 0.5;
+        const t_min = getRandomInt(6, 45);
+        const t_h = t_min / 60;
+        const x_km = v_kmh * t_h;
+
+        if (askInMeters) {
+          expectedValue = x_km * 1000;
+          expectedUnit = "m";
+          story = `${animal.subject} ${vehicle.instr} ${formatNumber(v_kmh, 1)} km/h állandó sebességgel halad ${t_min} percen át.`;
+          question = `Hány méter utat tesz meg ez alatt?`;
+          steps = [
+            `1. Idő átváltása órába: <span class="math-block">t = ${t_min} perc = ${t_min} / 60 h = ${formatNumber(t_h, 3)} h</span>.`,
+            `2. Út kiszámítása kilométerben: <span class="math-block">x = v · t = ${formatNumber(v_kmh, 1)} km/h · ${formatNumber(t_h, 3)} h = ${formatNumber(x_km, 3)} km</span>.`,
+            `3. Kilométer átváltása méterbe (szorzás 1000-rel): <span class="math-block">x = ${formatNumber(expectedValue, 2)} m</span>.`
+          ];
+        } else {
+          expectedValue = x_km;
+          expectedUnit = "km";
+          const t_s = getRandomInt(120, 1800);
+          story = `${animal.subject} ${vehicle.instr} ${formatNumber(v_ms, 2)} m/s sebességgel száguld egyenletesen ${t_s} másodpercen keresztül.`;
+          question = `Mekkora utat tesz meg kilométerben (km) megadva?`;
+          steps = [
+            `1. Út kiszámítása méterben: <span class="math-block">x = v · t = ${formatNumber(v_ms, 2)} m/s · ${t_s} s = ${formatNumber(v_ms * t_s, 1)} m</span>.`,
+            `2. Átváltás kilométerbe (osztás 1000-rel): <span class="math-block">${formatNumber(v_ms * t_s, 1)} m / 1000 = ${formatNumber(expectedValue, 2)} km</span>.`
+          ];
+        }
+
+      } else { // t_calc
+        // Megadva: x és v eltérő egységekben -> t percekben vagy másodpercekben
+        const askInMinutes = Math.random() < 0.5;
+        const x_km = getRandomFloat(2.0, 35.0, 1);
+        const t_hours = x_km / v_kmh;
+
+        if (askInMinutes) {
+          expectedValue = t_hours * 60;
+          expectedUnit = "perc";
+          story = `${animal.subject} ${vehicle.instr} ${formatNumber(v_kmh, 1)} km/h átlagos tempóval egy ${formatNumber(x_km, 1)} km hosszú pályán halad.`;
+          question = `Hány perc alatt ér végig a pályán?`;
+          steps = [
+            `1. Idő kiszámítása órában: <span class="math-block">t = x / v = ${formatNumber(x_km, 1)} km / ${formatNumber(v_kmh, 1)} km/h = ${formatNumber(t_hours, 4)} h</span>.`,
+            `2. Óra átváltása percekbe (szorzás 60-nal): <span class="math-block">t = ${formatNumber(t_hours, 4)} · 60 = ${formatNumber(expectedValue, 2)} perc</span>.`
+          ];
+        } else {
+          expectedValue = t_hours * 3600;
+          expectedUnit = "s";
+          const x_m = Math.round(x_km * 1000);
+          story = `${animal.subject} ${vehicle.instr} ${formatNumber(v_kmh, 1)} km/h sebességgel halad. Egy ${formatNumber(x_m, 0)} m hosszú egyenes szakaszon kell áthaladnia.`;
+          question = `Mennyi ideig tart ez másodpercekben (s) kifejezve?`;
+          steps = [
+            `1. Sebesség átváltása m/s-ba: <span class="math-block">v = ${formatNumber(v_kmh, 1)} / 3,6 = ${formatNumber(v_ms, 2)} m/s</span>.`,
+            `2. Idő kiszámítása másodpercben: <span class="math-block">t = x / v = ${formatNumber(x_m, 0)} m / ${formatNumber(v_ms, 2)} m/s = ${formatNumber(expectedValue, 2)} s</span>.`
+          ];
+        }
+      }
+
+      return {
+        typeId: 2,
+        typeTitle: "2. Egyenletes mozgás átváltásokkal",
+        story,
+        tableHtml: null,
+        question,
+        expectedUnit,
+        expectedValue,
+        steps
+      };
+    }
+
+    // 3. Típus: Összetett mozgás átlagsebessége (2, 3 vagy 4 szakasz, mindegyiknél a 3-ból 2 ismert)
+    function generateType3() {
+      const animal = getRandomItem(ANIMALS);
+      const vehicle = getRandomItem(VEHICLES);
+      const stageCount = getRandomInt(2, 4); // 2, 3 vagy 4 szakasz
+      
+      const askUnit = Math.random() < 0.5 ? "m/s" : "km/h";
+      const stages = [];
+      let totalX_m = 0;
+      let totalT_s = 0;
+
+      // Szakaszok generálása
+      for (let i = 0; i < stageCount; i++) {
+        // Alap járműsebesség kis szórásával a szakaszokra
+        const stageV_ms = getRandomFloat(vehicle.minV * 0.8, vehicle.maxV * 1.1, 1);
+        let stageT_s;
+        if (vehicle.name === "SpaceX rakéta") {
+          stageT_s = getRandomInt(15, 60);
+        } else if (stageV_ms > 40) {
+          stageT_s = getRandomInt(30, 180);
+        } else {
+          stageT_s = getRandomInt(60, 300);
+        }
+        const stageX_m = Math.round(stageV_ms * stageT_s);
+
+        // Melyik 2 ismert a 3-ból?
+        // 'xt': x és t ismert, v ismeretlen
+        // 'vt': v és t ismert, x ismeretlen
+        // 'vx': v és x ismert, t ismeretlen
+        const knownTypes = ['xt', 'vt', 'vx'];
+        const known = getRandomItem(knownTypes);
+
+        // Mértékegység vegyítés a feladat leírásában (néha km/h, néha perc, néha km)
+        let desc = "";
+        let calcStep = "";
+
+        if (known === 'xt') {
+          // x és t adott
+          const useKm = stageX_m >= 1000 && Math.random() < 0.5;
+          const useMin = stageT_s >= 60 && Math.random() < 0.5;
+
+          const dispX = useKm ? `${formatNumber(stageX_m / 1000, 2)} km` : `${stageX_m} m`;
+          const dispT = useMin ? `${formatNumber(stageT_s / 60, 2)} perc` : `${stageT_s} s`;
+          desc = `${i + 1}. szakasz: megtett út: ${dispX}, időtartam: ${dispT}`;
+          calcStep = `• <strong>${i + 1}. szakasz:</strong> út: <span class="math-block">x_${i + 1} = ${stageX_m} m</span>, idő: <span class="math-block">t_${i + 1} = ${stageT_s} s</span>.`;
+
+        } else if (known === 'vt') {
+          // v és t adott, x-et kell számolni
+          const useKmh = Math.random() < 0.5;
+          const dispV = useKmh ? `${formatNumber(stageV_ms * 3.6, 1)} km/h` : `${formatNumber(stageV_ms, 1)} m/s`;
+          const useMin = stageT_s >= 60 && Math.random() < 0.5;
+          const dispT = useMin ? `${formatNumber(stageT_s / 60, 2)} perc` : `${stageT_s} s`;
+          
+          desc = `${i + 1}. szakasz: sebesség: ${dispV}, időtartam: ${dispT}`;
+          calcStep = `• <strong>${i + 1}. szakasz:</strong> sebesség: ${dispV} (${formatNumber(stageV_ms, 2)} m/s), idő: ${dispT} (${stageT_s} s) <br>&nbsp;&nbsp;➔ Hiányzó út: <span class="math-block">x_${i + 1} = v_${i + 1} · t_${i + 1} = ${formatNumber(stageV_ms, 2)} m/s · ${stageT_s} s = ${stageX_m} m</span>.`;
+
+        } else { // 'vx'
+          // v és x adott, t-t kell számolni
+          const useKmh = Math.random() < 0.5;
+          const dispV = useKmh ? `${formatNumber(stageV_ms * 3.6, 1)} km/h` : `${formatNumber(stageV_ms, 1)} m/s`;
+          const useKm = stageX_m >= 1000 && Math.random() < 0.5;
+          const dispX = useKm ? `${formatNumber(stageX_m / 1000, 2)} km` : `${stageX_m} m`;
+
+          desc = `${i + 1}. szakasz: sebesség: ${dispV}, megtett út: ${dispX}`;
+          calcStep = `• <strong>${i + 1}. szakasz:</strong> sebesség: ${dispV} (${formatNumber(stageV_ms, 2)} m/s), út: ${dispX} (${stageX_m} m) <br>&nbsp;&nbsp;➔ Hiányzó idő: <span class="math-block">t_${i + 1} = x_${i + 1} / v_${i + 1} = ${stageX_m} m / ${formatNumber(stageV_ms, 2)} m/s = ${stageT_s} s</span>.`;
+        }
+
+        stages.push({
+          num: i + 1,
+          desc,
+          calcStep,
+          x_m: stageX_m,
+          t_s: stageT_s
+        });
+
+        totalX_m += stageX_m;
+        totalT_s += stageT_s;
+      }
+
+      // Átlagsebesség SI-ben: v_atlag = totalX_m / totalT_s (m/s)
+      const v_avg_ms = totalX_m / totalT_s;
+      const expectedValue = askUnit === "m/s" ? v_avg_ms : v_avg_ms * 3.6;
+
+      const story = `${animal.subject} ${vehicle.instr} egy ${stageCount} szakaszból álló túrát tesz meg. Az egyes szakaszokon a következő adatok ismertek:`;
+
+      let tableHtml = `<table class="stage-table"><thead><tr><th>Szakasz</th><th>Megadott adatok</th></tr></thead><tbody>`;
+      stages.forEach(s => {
+        tableHtml += `<tr><td><strong>${s.num}. szakasz</strong></td><td>${s.desc.replace(s.num + '. szakasz: ', '')}</td></tr>`;
+      });
+      tableHtml += `</tbody></table>`;
+
+      const question = `Számítsd ki a teljes mozgás átlagsebességét ${askUnit} mértékegységben!`;
+
+      const steps = [
+        `1. <strong>Szakaszonkénti adatok kiegészítése SI-be (méter és másodperc):</strong>`,
+        ...stages.map(s => s.calcStep),
+        `2. <strong>Összes megtett út és összes eltelt idő összegzése:</strong>`,
+        `&nbsp;&nbsp;• Összes út: <span class="math-block">x_össz = ${stages.map(s => s.x_m + ' m').join(' + ')} = ${totalX_m} m</span>`,
+        `&nbsp;&nbsp;• Összes idő: <span class="math-block">t_össz = ${stages.map(s => s.t_s + ' s').join(' + ')} = ${totalT_s} s</span>`,
+        `3. <strong>Átlagsebesség képlete és kiszámítása:</strong>`,
+        `&nbsp;&nbsp;<span class="math-block">v_átlag = x_össz / t_össz = ${totalX_m} m / ${totalT_s} s = ${formatNumber(v_avg_ms, 2)} m/s</span>`,
+        askUnit === "km/h" 
+          ? `4. <strong>Átváltás a kért km/h mértékegységbe:</strong><br>&nbsp;&nbsp;<span class="math-block">${formatNumber(v_avg_ms, 2)} · 3,6 = ${formatNumber(expectedValue, 2)} km/h</span>.`
+          : `4. <strong>Végeredmény:</strong> az átlagsebesség kerekítve: <span class="math-block">${formatNumber(expectedValue, 2)} m/s</span>.`
+      ];
+
+      return {
+        typeId: 3,
+        typeTitle: `3. Átlagsebesség (${stageCount} szakasz)`,
+        story,
+        tableHtml,
+        question,
+        expectedUnit: askUnit,
+        expectedValue,
+        steps
+      };
+    }
+
+    // --- ALKALMAZÁS VEZÉRLÉS ---
+
+    const setupScreen = document.getElementById('setup-screen');
+    const exerciseScreen = document.getElementById('exercise-screen');
+    const startBtn = document.getElementById('start-btn');
+    const checkBtn = document.getElementById('check-btn');
+    const nextBtnSkip = document.getElementById('next-btn-skip');
+    const nextBtnCorrect = document.getElementById('next-btn-correct');
+    const nextBtnIncorrect = document.getElementById('next-btn-incorrect');
+    const showSolutionBtn = document.getElementById('show-solution-btn');
+    const backToSetupBtn = document.getElementById('back-to-setup-btn');
+    const brandLink = document.getElementById('brand-link');
+
+    const exerciseTypeBadge = document.getElementById('exercise-type-badge');
+    const exerciseNumBadge = document.getElementById('exercise-num-badge');
+    const exerciseStory = document.getElementById('exercise-story');
+    const exerciseExtraTable = document.getElementById('exercise-extra-table');
+    const exerciseQuestion = document.getElementById('exercise-question');
+    const expectedUnitElem = document.getElementById('expected-unit');
+    const userInput = document.getElementById('user-input');
+
+    const feedbackCorrect = document.getElementById('feedback-correct');
+    const feedbackIncorrect = document.getElementById('feedback-incorrect');
+    const solutionContainer = document.getElementById('solution-container');
+    const solutionSteps = document.getElementById('solution-steps');
+    const solvedCountElem = document.getElementById('solved-count');
+
+    // Kezdés
+    startBtn.addEventListener('click', () => {
+      const t1 = document.getElementById('topic-type1').checked;
+      const t2 = document.getElementById('topic-type2').checked;
+      const t3 = document.getElementById('topic-type3').checked;
+
+      state.activeTypes = [];
+      if (t1) state.activeTypes.push(1);
+      if (t2) state.activeTypes.push(2);
+      if (t3) state.activeTypes.push(3);
+
+      if (state.activeTypes.length === 0) {
+        alert("Kérlek, válassz ki legalább egy feladattípust!");
+        return;
+      }
+
+      setupScreen.style.display = 'none';
+      exerciseScreen.style.display = 'block';
+      loadNextExercise();
+    });
+
+    backToSetupBtn.addEventListener('click', () => {
+      clearInterval(state.countdownTimer);
+      exerciseScreen.style.display = 'none';
+      setupScreen.style.display = 'block';
+    });
+
+    brandLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      clearInterval(state.countdownTimer);
+      exerciseScreen.style.display = 'none';
+      setupScreen.style.display = 'block';
+    });
+
+    // Következő feladat betöltése
+    function loadNextExercise() {
+      clearInterval(state.countdownTimer);
+      state.isResolved = false;
+      state.countdownLeft = 15;
+      
+      // UI elemek visszaállítása
+      feedbackCorrect.style.display = 'none';
+      feedbackIncorrect.style.display = 'none';
+      solutionContainer.style.display = 'none';
+      showSolutionBtn.style.display = 'inline-flex';
+      showSolutionBtn.disabled = false;
+      showSolutionBtn.classList.remove('timer-active');
+      showSolutionBtn.innerText = "Megoldás levezetése (15 mp várakozás)";
+      
+      userInput.value = "";
+      userInput.disabled = false;
+      checkBtn.disabled = false;
+
+      state.currentExerciseNum++;
+      exerciseNumBadge.innerText = `Feladat #${state.currentExerciseNum}`;
+
+      // Véletlenszerű típus kiválasztása az aktívak közül
+      const chosenType = getRandomItem(state.activeTypes);
+      if (chosenType === 1) {
+        state.currentTask = generateType1();
+      } else if (chosenType === 2) {
+        state.currentTask = generateType2();
+      } else {
+        state.currentTask = generateType3();
+      }
+
+      // Feladat adatok megjelenítése
+      exerciseTypeBadge.innerText = state.currentTask.typeTitle;
+      exerciseStory.innerText = state.currentTask.story;
+      exerciseExtraTable.innerHTML = state.currentTask.tableHtml || "";
+      exerciseQuestion.innerText = state.currentTask.question;
+      expectedUnitElem.innerText = state.currentTask.expectedUnit;
+
+      userInput.focus();
+    }
+
+    // Válasz ellenőrzése
+    function checkAnswer() {
+      if (state.isResolved) return;
+
+      const rawVal = userInput.value.trim().replace(',', '.');
+      if (rawVal === "" || isNaN(Number(rawVal))) {
+        alert("Kérlek, adj meg egy érvényes számot válaszként!");
+        userInput.focus();
+        return;
+      }
+
+      const userNum = parseFloat(rawVal);
+      const expected = state.currentTask.expectedValue;
+      const expectedRounded = Math.round(expected * 100) / 100;
+
+      // Elfogadási kritérium:
+      // Pontos kerekített egyezés (2 tizedesjegy), vagy ±0.02 abszolút hiba, vagy 1.5% relatív tolerancia
+      const absDiff = Math.abs(userNum - expectedRounded);
+      const relDiff = Math.abs(expected) > 0.001 ? Math.abs(userNum - expected) / Math.abs(expected) : absDiff;
+      const isCorrect = (absDiff <= 0.02) || (relDiff < 0.015);
+
+      if (isCorrect) {
+        // Helyes ág
+        clearInterval(state.countdownTimer);
+        state.isResolved = true;
+        state.solvedCount++;
+        solvedCountElem.innerText = state.solvedCount;
+
+        feedbackIncorrect.style.display = 'none';
+        feedbackCorrect.style.display = 'block';
+        document.getElementById('correct-summary').innerHTML = `Pontos érték: <strong>${formatNumber(expectedRounded, 2)} ${state.currentTask.expectedUnit}</strong> (Te válaszod: ${formatNumber(userNum, 2)}).`;
+        
+        // Levezetés megjelenítése a helyes válasz alatt
+        showSolutionSteps();
+        solutionContainer.style.display = 'block';
+
+        userInput.disabled = true;
+        checkBtn.disabled = true;
+        nextBtnCorrect.focus();
+      } else {
+        // Helytelen ág
+        feedbackCorrect.style.display = 'none';
+        feedbackIncorrect.style.display = 'block';
+        userInput.focus();
+        userInput.select();
+      }
+    }
+
+    // Levezetés megjelenítése
+    function showSolutionSteps() {
+      solutionSteps.innerHTML = state.currentTask.steps.map(step => `<div class="solution-step">${step}</div>`).join('');
+    }
+
+    // 15 másodperces levezetés visszaszámláló gomb kezelése
+    showSolutionBtn.addEventListener('click', () => {
+      if (showSolutionBtn.disabled || state.countdownTimer) return;
+
+      showSolutionBtn.disabled = true;
+      showSolutionBtn.classList.add('timer-active');
+      state.countdownLeft = 15;
+      showSolutionBtn.innerText = `Megoldás felfedése: ${state.countdownLeft} mp...`;
+
+      state.countdownTimer = setInterval(() => {
+        state.countdownLeft--;
+        if (state.countdownLeft > 0) {
+          showSolutionBtn.innerText = `Megoldás felfedése: ${state.countdownLeft} mp...`;
+        } else {
+          clearInterval(state.countdownTimer);
+          state.countdownTimer = null;
+          showSolutionBtn.style.display = 'none';
+          showSolutionSteps();
+          solutionContainer.style.display = 'block';
+        }
+      }, 1000);
+    });
+
+    // Eseménykezelők
+    checkBtn.addEventListener('click', checkAnswer);
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        checkAnswer();
+      }
+    });
+
+    nextBtnSkip.addEventListener('click', loadNextExercise);
+    nextBtnCorrect.addEventListener('click', loadNextExercise);
+    nextBtnIncorrect.addEventListener('click', loadNextExercise);
+
+  </script>
+</body>
+</html>
