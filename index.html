@@ -1319,23 +1319,23 @@
         question = `Mekkora utat tesz meg ez alatt az idő alatt méterben (m)?`;
         steps = [
           `1. Adatok: <span class="math-block">v_0 = 0 m/s</span>, <span class="math-block">a = ${formatNumber(a, 2)} m/s²</span>, <span class="math-block">t = ${t} s</span>.`,
-          `2. Nyugalomból induló egyenletesen gyorsuló mozgás útképlete: <span class="math-block">s = (a / 2) · t²</span>.`,
+          `2. Nyugalomból induló egyenletesen gyorsuló mozgás útképlete: <span class="math-block">x = (a / 2) · t²</span>.`,
           `3. Behelyettesítés és számolás:`,
-          `&nbsp;&nbsp;<span class="math-block">s = (${formatNumber(a, 2)} / 2) · ${t}² = ${formatNumber(a / 2, 3)} · ${t * t} = ${formatNumber(expectedValue, 2)} m</span>.`,
-          `<em>(Átlagsebességgel is számolható: v = a · t = ${formatNumber(a * t, 2)} m/s, v_átlag = v / 2 = ${formatNumber(a * t / 2, 2)} m/s, s = v_átlag · t = ${formatNumber(expectedValue, 2)} m).</em>`
+          `&nbsp;&nbsp;<span class="math-block">x = (${formatNumber(a, 2)} / 2) · ${t}² = ${formatNumber(a / 2, 3)} · ${t * t} = ${formatNumber(expectedValue, 2)} m</span>.`,
+          `<em>(Átlagsebességgel is számolható: v = a · t = ${formatNumber(a * t, 2)} m/s, v_átlag = v / 2 = ${formatNumber(a * t / 2, 2)} m/s, x = v_átlag · t = ${formatNumber(expectedValue, 2)} m).</em>`
         ];
 
       } else if (variant === 'rest_calc_a_from_st') {
-        const s = Math.round((0.5 * a * t * t) * 10) / 10;
-        expectedValue = (2 * s) / (t * t);
+        const x = Math.round((0.5 * a * t * t) * 10) / 10;
+        expectedValue = (2 * x) / (t * t);
         expectedUnit = "m/s²";
-        story = `${animal.subject} ${vehicle.instr} álló helyzetből indulva egyenes úton egyenletesen gyorsít, és ${t} másodperc alatt pontosan ${formatNumber(s, 1)} méter utat tesz meg.`;
+        story = `${animal.subject} ${vehicle.instr} álló helyzetből indulva egyenes úton egyenletesen gyorsít, és ${t} másodperc alatt pontosan ${formatNumber(x, 1)} méter utat tesz meg.`;
         question = `Mekkora a jármű gyorsulása m/s²-ben?`;
         steps = [
-          `1. Adatok: <span class="math-block">v_0 = 0 m/s</span>, <span class="math-block">t = ${t} s</span>, <span class="math-block">s = ${formatNumber(s, 1)} m</span>.`,
-          `2. Az útképlet: <span class="math-block">s = (a / 2) · t²</span>, ebből a gyorsulást kifejezve: <span class="math-block">a = 2s / t²</span>.`,
+          `1. Adatok: <span class="math-block">v_0 = 0 m/s</span>, <span class="math-block">t = ${t} s</span>, <span class="math-block">x = ${formatNumber(x, 1)} m</span>.`,
+          `2. Az útképlet: <span class="math-block">x = (a / 2) · t²</span>, ebből a gyorsulást kifejezve: <span class="math-block">a = 2x / t²</span>.`,
           `3. Behelyettesítés és számítás:`,
-          `&nbsp;&nbsp;<span class="math-block">a = (2 · ${formatNumber(s, 1)}) / ${t}² = ${formatNumber(2 * s, 1)} / ${t * t} = ${formatNumber(expectedValue, 2)} m/s²</span>.`
+          `&nbsp;&nbsp;<span class="math-block">a = (2 · ${formatNumber(x, 1)}) / ${t}² = ${formatNumber(2 * x, 1)} / ${t * t} = ${formatNumber(expectedValue, 2)} m/s²</span>.`
         ];
 
       } else if (variant === 'rest_calc_s_from_vt') {
@@ -1353,14 +1353,14 @@
             `1. Végsebesség átváltása m/s-ba: <span class="math-block">v = ${formatNumber(v_kmh, 1)} / 3,6 = ${formatNumber(v_ms, 2)} m/s</span>.`,
             `2. Átlagsebesség kiszámítása (mivel 0-ról egyenletesen gyorsul): <span class="math-block">v_átlag = (v_0 + v) / 2 = ${formatNumber(v_ms, 2)} / 2 = ${formatNumber(v_avg, 2)} m/s</span>.`,
             `3. Megtett út az átlagsebesség és az idő szorzataként:`,
-            `&nbsp;&nbsp;<span class="math-block">s = v_átlag · t = ${formatNumber(v_avg, 2)} m/s · ${t} s = ${formatNumber(expectedValue, 2)} m</span>.`
+            `&nbsp;&nbsp;<span class="math-block">x = v_átlag · t = ${formatNumber(v_avg, 2)} m/s · ${t} s = ${formatNumber(expectedValue, 2)} m</span>.`
           ];
         } else {
           story = `${animal.subject} ${vehicle.instr} nyugalomból indulva egyenletesen gyorsít, végsebessége ${t} másodperc elteltével ${formatNumber(v_ms, 1)} m/s.`;
           question = `Hány métert tett meg ezalatt az idő alatt?`;
           steps = [
             `1. Átlagsebesség meghatározása: <span class="math-block">v_átlag = v / 2 = ${formatNumber(v_ms, 1)} / 2 = ${formatNumber(v_avg, 2)} m/s</span>.`,
-            `2. Megtett út kiszámítása: <span class="math-block">s = v_átlag · t = ${formatNumber(v_avg, 2)} m/s · ${t} s = ${formatNumber(expectedValue, 2)} m</span>.`
+            `2. Megtett út kiszámítása: <span class="math-block">x = v_átlag · t = ${formatNumber(v_avg, 2)} m/s · ${t} s = ${formatNumber(expectedValue, 2)} m</span>.`
           ];
         }
 
@@ -1378,7 +1378,7 @@
           `1. Adatok: <span class="math-block">v_0 = ${formatNumber(v0_ms, 1)} m/s</span>, <span class="math-block">v = ${formatNumber(v_ms, 1)} m/s</span>, <span class="math-block">t = ${t} s</span>.`,
           `2. Egyenletesen változó mozgásnál az átlagsebesség a kezdeti és a végső sebesség számtani közepe:`,
           `&nbsp;&nbsp;<span class="math-block">v_átlag = (v_0 + v) / 2 = (${formatNumber(v0_ms, 1)} + ${formatNumber(v_ms, 1)}) / 2 = ${formatNumber(v_avg, 2)} m/s</span>.`,
-          `3. Megtett út az átlagsebességgel: <span class="math-block">s = v_átlag · t = ${formatNumber(v_avg, 2)} m/s · ${t} s = ${formatNumber(expectedValue, 2)} m</span>.`
+          `3. Megtett út az átlagsebességgel: <span class="math-block">x = v_átlag · t = ${formatNumber(v_avg, 2)} m/s · ${t} s = ${formatNumber(expectedValue, 2)} m</span>.`
         ];
 
       } else if (variant === 'with_v0_and_a_calc_s') {
@@ -1395,9 +1395,9 @@
           `2. <em>1. megoldási mód (átlagsebességgel - nincs szükség bonyolult képletre):</em>`,
           `&nbsp;&nbsp;• Végsebesség: <span class="math-block">v = v_0 + a · t = ${formatNumber(v0_ms, 1)} + ${formatNumber(a, 2)} · ${t} = ${formatNumber(v_end, 2)} m/s</span>`,
           `&nbsp;&nbsp;• Átlagsebesség: <span class="math-block">v_átlag = (v_0 + v) / 2 = (${formatNumber(v0_ms, 1)} + ${formatNumber(v_end, 2)}) / 2 = ${formatNumber(v_avg, 2)} m/s</span>`,
-          `&nbsp;&nbsp;• Megtett út: <span class="math-block">s = v_átlag · t = ${formatNumber(v_avg, 2)} · ${t} = ${formatNumber(expectedValue, 2)} m</span>`,
+          `&nbsp;&nbsp;• Megtett út: <span class="math-block">x = v_átlag · t = ${formatNumber(v_avg, 2)} · ${t} = ${formatNumber(expectedValue, 2)} m</span>`,
           `3. <em>2. megoldási mód (közvetlen útképlettel):</em>`,
-          `&nbsp;&nbsp;<span class="math-block">s = v_0 · t + (a / 2) · t² = (${formatNumber(v0_ms, 1)} · ${t}) + (${formatNumber(a / 2, 3)} · ${t * t}) = ${formatNumber(v0_ms * t, 2)} + ${formatNumber(0.5 * a * t * t, 2)} = ${formatNumber(expectedValue, 2)} m</span>.`
+          `&nbsp;&nbsp;<span class="math-block">x = v_0 · t + (a / 2) · t² = (${formatNumber(v0_ms, 1)} · ${t}) + (${formatNumber(a / 2, 3)} · ${t * t}) = ${formatNumber(v0_ms * t, 2)} + ${formatNumber(0.5 * a * t * t, 2)} = ${formatNumber(expectedValue, 2)} m</span>.`
         ];
 
       } else if (variant === 'braking_calc_s_from_v0_t') {
@@ -1414,14 +1414,14 @@
           steps = [
             `1. Kezdősebesség átváltása m/s-ba: <span class="math-block">v_0 = ${formatNumber(v0_kmh, 1)} / 3,6 = ${formatNumber(v0_ms, 2)} m/s</span>.`,
             `2. Átlagsebesség a fékezés alatt: <span class="math-block">v_átlag = v_0 / 2 = ${formatNumber(v0_ms, 2)} / 2 = ${formatNumber(v_avg, 2)} m/s</span>.`,
-            `3. Fékút kiszámítása: <span class="math-block">s = v_átlag · t = ${formatNumber(v_avg, 2)} m/s · ${t} s = ${formatNumber(expectedValue, 2)} m</span>.`
+            `3. Fékút kiszámítása: <span class="math-block">x = v_átlag · t = ${formatNumber(v_avg, 2)} m/s · ${t} s = ${formatNumber(expectedValue, 2)} m</span>.`
           ];
         } else {
           story = `${animal.subject} ${vehicle.instr} ${formatNumber(v0_ms, 1)} m/s sebességről fékezve ${t} s alatt áll meg teljesen egyenletes lassulással.`;
           question = `Hány méter a fékút?`;
           steps = [
             `1. Átlagsebesség megállásig: <span class="math-block">v_átlag = v_0 / 2 = ${formatNumber(v0_ms, 1)} / 2 = ${formatNumber(v_avg, 2)} m/s</span>.`,
-            `2. Fékút: <span class="math-block">s = v_átlag · t = ${formatNumber(v_avg, 2)} m/s · ${t} s = ${formatNumber(expectedValue, 2)} m</span>.`
+            `2. Fékút: <span class="math-block">x = v_átlag · t = ${formatNumber(v_avg, 2)} m/s · ${t} s = ${formatNumber(expectedValue, 2)} m</span>.`
           ];
         }
 
@@ -1439,32 +1439,32 @@
             `1. Kezdősebesség átváltása m/s-ba: <span class="math-block">v_0 = ${formatNumber(v0_kmh, 1)} / 3,6 = ${formatNumber(v0_ms, 2)} m/s</span>.`,
             `2. Fékezési idő kiszámítása: <span class="math-block">t = v_0 / a = ${formatNumber(v0_ms, 2)} / ${formatNumber(a, 2)} = ${formatNumber(v0_ms / a, 2)} s</span>.`,
             `3. Fékút az átlagsebesség segítségével: <span class="math-block">v_átlag = v_0 / 2 = ${formatNumber(v0_ms / 2, 2)} m/s</span>`,
-            `&nbsp;&nbsp;<span class="math-block">s = v_átlag · t = ${formatNumber(v0_ms / 2, 2)} · ${formatNumber(v0_ms / a, 2)} = ${formatNumber(expectedValue, 2)} m</span>`,
-            `<em>(Vagy közvetlen fékútképlettel: s = v_0² / (2a) = ${formatNumber(v0_ms * v0_ms, 2)} / ${formatNumber(2 * a, 2)} = ${formatNumber(expectedValue, 2)} m).</em>`
+            `&nbsp;&nbsp;<span class="math-block">x = v_átlag · t = ${formatNumber(v0_ms / 2, 2)} · ${formatNumber(v0_ms / a, 2)} = ${formatNumber(expectedValue, 2)} m</span>`,
+            `<em>(Vagy közvetlen fékútképlettel: x = v_0² / (2a) = ${formatNumber(v0_ms * v0_ms, 2)} / ${formatNumber(2 * a, 2)} = ${formatNumber(expectedValue, 2)} m).</em>`
           ];
         } else {
           story = `${animal.subject} ${vehicle.instr} ${formatNumber(v0_ms, 1)} m/s sebességgel megy, majd a fékre lépve ${formatNumber(a, 2)} m/s² lassulással megáll.`;
           question = `Mekkora a fékút méterben?`;
           steps = [
             `1. Fékezési idő: <span class="math-block">t = v_0 / a = ${formatNumber(v0_ms, 1)} / ${formatNumber(a, 2)} = ${formatNumber(v0_ms / a, 2)} s</span>.`,
-            `2. Fékút: <span class="math-block">s = (v_0 / 2) · t = ${formatNumber(v0_ms / 2, 2)} · ${formatNumber(v0_ms / a, 2)} = ${formatNumber(expectedValue, 2)} m</span>.`
+            `2. Fékút: <span class="math-block">x = (v_0 / 2) · t = ${formatNumber(v0_ms / 2, 2)} · ${formatNumber(v0_ms / a, 2)} = ${formatNumber(expectedValue, 2)} m</span>.`
           ];
         }
 
       } else { // braking_calc_a_from_v0_s
         const v0_ms = Math.round(a * t * 10) / 10;
-        const s = Math.round(((v0_ms * v0_ms) / (2 * a)) * 10) / 10;
-        expectedValue = (v0_ms * v0_ms) / (2 * s);
+        const x = Math.round(((v0_ms * v0_ms) / (2 * a)) * 10) / 10;
+        expectedValue = (v0_ms * v0_ms) / (2 * x);
         expectedUnit = "m/s²";
 
-        story = `${animal.subject} ${vehicle.instr} ${formatNumber(v0_ms, 1)} m/s sebességgel halad. Egy váratlan akadály miatt ${formatNumber(s, 1)} méteres szakaszon belül kell megállnia.`;
+        story = `${animal.subject} ${vehicle.instr} ${formatNumber(v0_ms, 1)} m/s sebességgel halad. Egy váratlan akadály miatt ${formatNumber(x, 1)} méteres szakaszon belül kell megállnia.`;
         question = `Legalább mekkora lassulással (a) kell egyenletesen fékeznie, hogy megálljon ezen a távolságon?`;
         steps = [
-          `1. Adatok: <span class="math-block">v_0 = ${formatNumber(v0_ms, 1)} m/s</span>, <span class="math-block">v = 0 m/s</span>, <span class="math-block">s = ${formatNumber(s, 1)} m</span>.`,
+          `1. Adatok: <span class="math-block">v_0 = ${formatNumber(v0_ms, 1)} m/s</span>, <span class="math-block">v = 0 m/s</span>, <span class="math-block">x = ${formatNumber(x, 1)} m</span>.`,
           `2. Átlagsebesség a fékezés alatt: <span class="math-block">v_átlag = v_0 / 2 = ${formatNumber(v0_ms / 2, 2)} m/s</span>.`,
-          `3. Megállási idő meghatározása az átlagsebességből: <span class="math-block">t = s / v_átlag = ${formatNumber(s, 1)} / ${formatNumber(v0_ms / 2, 2)} = ${formatNumber(s / (v0_ms / 2), 2)} s</span>.`,
-          `4. Lassulás kiszámítása: <span class="math-block">a = v_0 / t = ${formatNumber(v0_ms, 1)} / ${formatNumber(s / (v0_ms / 2), 2)} = ${formatNumber(expectedValue, 2)} m/s²</span>.`,
-          `<em>(Közvetlenül a fékútképlet átrendezésével: s = v_0² / (2a) ➔ a = v_0² / (2s) = ${formatNumber(v0_ms * v0_ms, 2)} / ${formatNumber(2 * s, 2)} = ${formatNumber(expectedValue, 2)} m/s²).</em>`
+          `3. Megállási idő meghatározása az átlagsebességből: <span class="math-block">t = x / v_átlag = ${formatNumber(x, 1)} / ${formatNumber(v0_ms / 2, 2)} = ${formatNumber(x / (v0_ms / 2), 2)} s</span>.`,
+          `4. Lassulás kiszámítása: <span class="math-block">a = v_0 / t = ${formatNumber(v0_ms, 1)} / ${formatNumber(x / (v0_ms / 2), 2)} = ${formatNumber(expectedValue, 2)} m/s²</span>.`,
+          `<em>(Közvetlenül a fékútképlet átrendezésével: x = v_0² / (2a) ➔ a = v_0² / (2x) = ${formatNumber(v0_ms * v0_ms, 2)} / ${formatNumber(2 * x, 2)} = ${formatNumber(expectedValue, 2)} m/s²).</em>`
         ];
       }
 

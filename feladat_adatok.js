@@ -139,7 +139,7 @@ const FELADAT_ADATOK = {
     {
       "id": 5,
       "title": "5. Egyenletesen gyorsuló mozgás: út és fékút",
-      "description": "Megtett út, fékút és gyorsulás kiszámítása nyugalomból vagy kezdősebességről indulva (másodfokú egyenlet nélkül)."
+      "description": "Megtett út (x), fékút és gyorsulás kiszámítása nyugalomból vagy kezdősebességről indulva (x = a/2·t², x = v_átlag·t)."
     }
   ]
 };
