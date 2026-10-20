@@ -28,7 +28,8 @@ const FELADAT_ADATOK = {
       "instr": "egy triciklivel",
       "minV": 1.2,
       "maxV": 2.8,
-      "timeRange": { "min": 10, "max": 90 }
+      "timeRange": { "min": 10, "max": 90 },
+      "accelRange": { "min": 0.2, "max": 0.5 }
     },
     {
       "id": "roller",
@@ -36,7 +37,8 @@ const FELADAT_ADATOK = {
       "instr": "egy rollerrel",
       "minV": 3.0,
       "maxV": 5.5,
-      "timeRange": { "min": 10, "max": 90 }
+      "timeRange": { "min": 10, "max": 90 },
+      "accelRange": { "min": 0.4, "max": 0.9 }
     },
     {
       "id": "varosi_bicikli",
@@ -44,7 +46,8 @@ const FELADAT_ADATOK = {
       "instr": "egy városi biciklivel",
       "minV": 4.0,
       "maxV": 7.0,
-      "timeRange": { "min": 15, "max": 120 }
+      "timeRange": { "min": 15, "max": 120 },
+      "accelRange": { "min": 0.5, "max": 1.2 }
     },
     {
       "id": "versenykerekpar",
@@ -52,7 +55,8 @@ const FELADAT_ADATOK = {
       "instr": "egy versenykerékpárral",
       "minV": 8.0,
       "maxV": 13.5,
-      "timeRange": { "min": 15, "max": 120 }
+      "timeRange": { "min": 15, "max": 120 },
+      "accelRange": { "min": 0.8, "max": 1.8 }
     },
     {
       "id": "elektromos_moped",
@@ -60,7 +64,8 @@ const FELADAT_ADATOK = {
       "instr": "egy elektromos mopettel",
       "minV": 7.0,
       "maxV": 12.0,
-      "timeRange": { "min": 15, "max": 120 }
+      "timeRange": { "min": 15, "max": 120 },
+      "accelRange": { "min": 1.0, "max": 2.2 }
     },
     {
       "id": "kis_traktor",
@@ -68,7 +73,8 @@ const FELADAT_ADATOK = {
       "instr": "egy kis traktorral",
       "minV": 4.0,
       "maxV": 8.0,
-      "timeRange": { "min": 15, "max": 120 }
+      "timeRange": { "min": 15, "max": 120 },
+      "accelRange": { "min": 0.5, "max": 1.4 }
     },
     {
       "id": "szemelyauto",
@@ -76,7 +82,8 @@ const FELADAT_ADATOK = {
       "instr": "egy személyautóval",
       "minV": 14.0,
       "maxV": 33.0,
-      "timeRange": { "min": 20, "max": 120 }
+      "timeRange": { "min": 20, "max": 120 },
+      "accelRange": { "min": 1.5, "max": 3.5 }
     },
     {
       "id": "bugatti_chiron",
@@ -84,7 +91,8 @@ const FELADAT_ADATOK = {
       "instr": "egy Bugatti Chironnal",
       "minV": 50.0,
       "maxV": 100.0,
-      "timeRange": { "min": 15, "max": 60 }
+      "timeRange": { "min": 15, "max": 60 },
+      "accelRange": { "min": 5.0, "max": 9.5 }
     },
     {
       "id": "magnesvasut",
@@ -92,7 +100,8 @@ const FELADAT_ADATOK = {
       "instr": "egy mágnesvasúttal",
       "minV": 80.0,
       "maxV": 125.0,
-      "timeRange": { "min": 15, "max": 60 }
+      "timeRange": { "min": 15, "max": 60 },
+      "accelRange": { "min": 0.8, "max": 1.6 }
     },
     {
       "id": "spacex_raketa",
@@ -100,7 +109,8 @@ const FELADAT_ADATOK = {
       "instr": "egy SpaceX rakétával",
       "minV": 1500.0,
       "maxV": 3200.0,
-      "timeRange": { "min": 10, "max": 45 }
+      "timeRange": { "min": 10, "max": 45 },
+      "accelRange": { "min": 15.0, "max": 35.0 }
     }
   ],
   "taskTypes": [
@@ -120,6 +130,16 @@ const FELADAT_ADATOK = {
       "description": "2, 3 vagy 4 szakaszból álló mozgás teljes átlagsebességének kiszámítása a szakaszok ismert részadataiból.",
       "minStages": 2,
       "maxStages": 4
+    },
+    {
+      "id": 4,
+      "title": "4. Egyenletesen változó mozgás: sebesség és gyorsulás",
+      "description": "Gyorsulás (a), kezdő- és végsebesség (v₀, v), valamint időtartam (t) kiszámítása az a = Δv / t képlet alapján."
+    },
+    {
+      "id": 5,
+      "title": "5. Egyenletesen gyorsuló mozgás: út és fékút",
+      "description": "Megtett út, fékút és gyorsulás kiszámítása nyugalomból vagy kezdősebességről indulva (másodfokú egyenlet nélkül)."
     }
   ]
 };
