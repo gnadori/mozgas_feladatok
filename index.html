@@ -732,7 +732,7 @@
     let state = {
       solvedCount: 0,
       currentExerciseNum: 0,
-      activeTypes: [1, 2, 3, 4, 5],
+      activeTypes: [1, 2, 3, 4, 5, 6, 7],
       currentTask: null,
       countdownTimer: null,
       countdownLeft: 15,
@@ -1481,6 +1481,209 @@
       };
     }
 
+    const DEFAULT_THROWABLES = [
+      { id: "frizbi", name: "frizbi", acc: "egy frizbit", def: "A frizbi" },
+      { id: "teniszlabda", name: "teniszlabda", acc: "egy teniszlabdát", def: "A teniszlabda" },
+      { id: "bumerang", name: "bumeráng", acc: "egy bumerángot", def: "A bumeráng" },
+      { id: "hogolyo", name: "hógolyó", acc: "egy hógolyót", def: "A hógolyó" },
+      { id: "toboz", name: "fenyőtoboz", acc: "egy fenyőtobozt", def: "A fenyőtoboz" },
+      { id: "kavics", name: "lapos kavics", acc: "egy lapos kavicsot", def: "A lapos kavics" },
+      { id: "alma", name: "piros alma", acc: "egy piros almát", def: "A piros alma" },
+      { id: "gumikacsa", name: "gumikacsa", acc: "egy gumikacsát", def: "A gumikacsa" },
+      { id: "patko", name: "patkó", acc: "egy patkót", def: "A patkó" },
+      { id: "dio", name: "aranydió", acc: "egy aranydiót", def: "Az aranydió" }
+    ];
+
+    // 6. Típus: Vízszintes hajítás magasból (v_x és h szögfüggvények nélkül, g = 10 m/s²)
+    function generateType6() {
+      const animal = getRandomItem(appConfig.animals);
+      const objects = (appConfig.throwableObjects && appConfig.throwableObjects.length > 0)
+        ? appConfig.throwableObjects : DEFAULT_THROWABLES;
+      const item = getRandomItem(objects);
+
+      const elevations = [
+        { loc: "egy magas sziklafal pereméről", base: "a sziklafal lábától" },
+        { loc: "egy kilátótorony legfelső erkélyéről", base: "a torony tövétől" },
+        { loc: "egy öreg tölgyfa vastag ágáról", base: "a fatörzs tövétől" },
+        { loc: "egy középkori várfal bástyájáról", base: "a várfal aljától" },
+        { loc: "egy folyóparti meredek partfal tetejéről", base: "a partfal tövétől" },
+        { loc: "egy dombtető széléről", base: "a domb aljától" }
+      ];
+      const elev = getRandomItem(elevations);
+
+      const g = 10; // m/s^2, szögfüggvény nélküli iskolai alapérték
+      const tChoices = [1.0, 1.2, 1.5, 2.0, 2.5, 3.0, 4.0];
+      const t = getRandomItem(tChoices);
+      const h = Math.round(0.5 * g * t * t * 100) / 100;
+
+      const vxChoices = [5, 6, 8, 10, 12, 15, 18, 20, 24, 25];
+      const vx = getRandomItem(vxChoices);
+      const x = Math.round(vx * t * 10) / 10;
+
+      const variants = ['calc_x', 'calc_t', 'calc_h', 'calc_vx'];
+      const variant = getRandomItem(variants);
+
+      let story = "";
+      let question = "";
+      let expectedUnit = "";
+      let expectedValue = 0;
+      let steps = [];
+
+      if (variant === 'calc_x') {
+        expectedValue = x;
+        expectedUnit = "m";
+        story = `${animal.subject} ${elev.loc} pontosan vízszintesen eldob ${item.acc}. Az eldobás magassága ${formatNumber(h, 2)} m, a vízszintes kezdősebesség pedig ${formatNumber(vx, 1)} m/s. (A nehézségi gyorsulás g = 10 m/s², a közegellenállás elhanyagolható.)`;
+        question = `Milyen távol (hány méterre) csapódik be ${item.def.toLowerCase()} a talajon ${elev.base} mérve?`;
+        steps = [
+          `1. Adatok: magasság: <span class="math-block">h = ${formatNumber(h, 2)} m</span>, vízszintes sebesség: <span class="math-block">v_x = ${formatNumber(vx, 1)} m/s</span>, gyorsulás: <span class="math-block">g = 10 m/s²</span>.`,
+          `2. A vízszintes hajítás függőlegesen szabad esésnek felel meg (nincs függőleges kezdősebesség: v_{0y} = 0).`,
+          `3. Az esési idő kiszámítása a magasságból: <span class="math-block">h = ½ · g · t² ➔ t = √(2 · h / g) = √(2 · ${formatNumber(h, 2)} / 10) = √(${formatNumber((2 * h) / 10, 2)}) = ${formatNumber(t, 2)} s</span>.`,
+          `4. A vízszintes mozgás egyenletes sebességű, ezért a becsapódási távolság: <span class="math-block">x = v_x · t = ${formatNumber(vx, 1)} m/s · ${formatNumber(t, 2)} s = ${formatNumber(expectedValue, 2)} m</span>.`
+        ];
+
+      } else if (variant === 'calc_t') {
+        expectedValue = t;
+        expectedUnit = "s";
+        story = `${animal.subject} ${elev.loc} vízszintesen elhajít ${item.acc} ${formatNumber(vx, 1)} m/s kezdősebességgel. A kiindulási magasság a vízszintes talajszint felett ${formatNumber(h, 2)} m. (g = 10 m/s², a közegellenállás elhanyagolható.)`;
+        question = `Hány másodpercig repül ${item.def.toLowerCase()} a talajra érkezésig?`;
+        steps = [
+          `1. Adatok: <span class="math-block">h = ${formatNumber(h, 2)} m</span>, <span class="math-block">v_x = ${formatNumber(vx, 1)} m/s</span>, <span class="math-block">g = 10 m/s²</span>.`,
+          `2. Fontos felismerés: A vízszintes kezdősebesség nincs hatással a leérkezés idejére! Függőleges irányban a tárgy nyugalomból induló szabad esést végez.`,
+          `3. Repülési idő kifejezése: <span class="math-block">h = ½ · g · t² ➔ t = √(2 · h / g)</span>.`,
+          `4. Behelyettesítés: <span class="math-block">t = √(2 · ${formatNumber(h, 2)} / 10) = √(${formatNumber((2 * h) / 10, 2)}) = ${formatNumber(expectedValue, 2)} s</span>.`
+        ];
+
+      } else if (variant === 'calc_h') {
+        expectedValue = h;
+        expectedUnit = "m";
+        story = `${animal.subject} ${elev.loc} vízszintesen elhajít ${item.acc} ${formatNumber(vx, 1)} m/s kezdősebességgel. A tárgy a talajon pontosan ${formatNumber(x, 1)} méterre csapódik be ${elev.base}. (g = 10 m/s², a közegellenállás elhanyagolható.)`;
+        question = `Milyen magasról (hány méter magasságból) dobták el a tárgyat?`;
+        steps = [
+          `1. Adatok: <span class="math-block">v_x = ${formatNumber(vx, 1)} m/s</span>, <span class="math-block">x = ${formatNumber(x, 1)} m</span>, <span class="math-block">g = 10 m/s²</span>.`,
+          `2. A repülési idő kiszámítása az egyenletes vízszintes mozgásból: <span class="math-block">t = x / v_x = ${formatNumber(x, 1)} m / ${formatNumber(vx, 1)} m/s = ${formatNumber(t, 2)} s</span>.`,
+          `3. A magasság kiszámítása a függőleges szabadesés képletéből: <span class="math-block">h = ½ · g · t² = ½ · 10 m/s² · (${formatNumber(t, 2)} s)² = 5 · ${formatNumber(t * t, 2)} = ${formatNumber(expectedValue, 2)} m</span>.`
+        ];
+
+      } else { // calc_vx
+        expectedValue = vx;
+        expectedUnit = "m/s";
+        story = `${animal.subject} ${elev.loc} ${formatNumber(h, 2)} m magasságból pontosan vízszintesen eldob ${item.acc}. A becsapódás a vízszintes talajon pontosan ${formatNumber(x, 1)} m távolságra történik ${elev.base}. (g = 10 m/s², a közegellenállás elhanyagolható.)`;
+        question = `Mekkora vízszintes kezdősebességgel (v_x) dobták el a tárgyat?`;
+        steps = [
+          `1. Adatok: <span class="math-block">h = ${formatNumber(h, 2)} m</span>, <span class="math-block">x = ${formatNumber(x, 1)} m</span>, <span class="math-block">g = 10 m/s²</span>.`,
+          `2. Az esési idő kiszámítása a magasságból: <span class="math-block">h = ½ · g · t² ➔ t = √(2 · h / g) = √(2 · ${formatNumber(h, 2)} / 10) = ${formatNumber(t, 2)} s</span>.`,
+          `3. Mivel a vízszintes mozgás egyenletes, a vízszintes kezdősebesség: <span class="math-block">v_x = x / t = ${formatNumber(x, 1)} m / ${formatNumber(t, 2)} s = ${formatNumber(expectedValue, 2)} m/s</span>.`
+        ];
+      }
+
+      return {
+        typeId: 6,
+        typeTitle: "6. Vízszintes hajítás magasból",
+        story,
+        tableHtml: null,
+        question,
+        expectedUnit,
+        expectedValue,
+        steps
+      };
+    }
+
+    // 7. Típus: Hajítás sebességkomponensekkel (v_x és v_y szögfüggvények nélkül, g = 10 m/s²)
+    function generateType7() {
+      const animal = getRandomItem(appConfig.animals);
+      const objects = (appConfig.throwableObjects && appConfig.throwableObjects.length > 0)
+        ? appConfig.throwableObjects : DEFAULT_THROWABLES;
+      const item = getRandomItem(objects);
+
+      const g = 10; // m/s^2
+      const vyChoices = [6, 8, 10, 12, 15, 18, 20, 25];
+      const vy = getRandomItem(vyChoices);
+      const vxChoices = [5, 8, 10, 12, 15, 16, 20, 24];
+      const vx = getRandomItem(vxChoices);
+
+      const t_fel = vy / g;
+      const t_total = 2 * t_fel;
+      const h_max = (vy * vy) / (2 * g);
+      const x = Math.round(vx * t_total * 10) / 10;
+
+      const variants = ['calc_x', 'calc_hmax', 'calc_t', 'calc_vx', 'calc_vy'];
+      const variant = getRandomItem(variants);
+
+      let story = "";
+      let question = "";
+      let expectedUnit = "";
+      let expectedValue = 0;
+      let steps = [];
+
+      if (variant === 'calc_x') {
+        expectedValue = x;
+        expectedUnit = "m";
+        story = `${animal.subject} a vízszintes talajról elhajít ${item.acc}. A dobás pillanatában a kezdősebesség vízszintes komponense v_x = ${formatNumber(vx, 1)} m/s, függőleges komponense pedig felfelé v_y = ${formatNumber(vy, 1)} m/s. (A nehézségi gyorsulás g = 10 m/s², a közegellenállás elhanyagolható.)`;
+        question = `Milyen messzire (hány méter távolságra) repül a talajon ${item.def.toLowerCase()} a kiindulási ponttól?`;
+        steps = [
+          `1. Adatok: <span class="math-block">v_x = ${formatNumber(vx, 1)} m/s</span>, <span class="math-block">v_y = ${formatNumber(vy, 1)} m/s</span>, <span class="math-block">g = 10 m/s²</span>.`,
+          `2. A repülési időt kizárólag a függőleges sebességkomponens szabja meg. Az emelkedés ideje a pálya tetejéig: <span class="math-block">t_{fel} = v_y / g = ${formatNumber(vy, 1)} / 10 = ${formatNumber(t_fel, 2)} s</span>.`,
+          `3. Mivel a felfelé és lefelé mozgás szimmetrikus, a teljes repülési idő: <span class="math-block">t_{összes} = 2 · t_{fel} = 2 · ${formatNumber(t_fel, 2)} s = ${formatNumber(t_total, 2)} s</span>.`,
+          `4. Vízszintesen a mozgás állandó v_x sebességű egyenletes mozgás, így a hajítás távolsága: <span class="math-block">x = v_x · t_{összes} = ${formatNumber(vx, 1)} m/s · ${formatNumber(t_total, 2)} s = ${formatNumber(expectedValue, 2)} m</span>.`
+        ];
+
+      } else if (variant === 'calc_hmax') {
+        expectedValue = h_max;
+        expectedUnit = "m";
+        story = `${animal.subject} elhajít ${item.acc} a mezőn. A kezdősebesség komponensei: v_x = ${formatNumber(vx, 1)} m/s (vízszintes) és v_y = ${formatNumber(vy, 1)} m/s (függőlegesen felfelé). (g = 10 m/s², a közegellenállás elhanyagolható.)`;
+        question = `Milyen magasra emelkedik ${item.def.toLowerCase()} a talaj felett a pályája legmagasabb pontján?`;
+        steps = [
+          `1. Adatok: <span class="math-block">v_y = ${formatNumber(vy, 1)} m/s</span>, <span class="math-block">g = 10 m/s²</span> (a vízszintes v_x sebesség nem befolyásolja az emelkedés magasságát).`,
+          `2. A pálya csúcsán a függőleges sebesség pillanatnyilag 0-ra csökken. Az emelkedés ideje: <span class="math-block">t_{fel} = v_y / g = ${formatNumber(vy, 1)} / 10 = ${formatNumber(t_fel, 2)} s</span>.`,
+          `3. A maximális magasság a függőleges lassuló mozgásból: <span class="math-block">h_{max} = v_y² / (2 · g) = (${formatNumber(vy, 1)})² / 20 = ${formatNumber(vy * vy, 1)} / 20 = ${formatNumber(expectedValue, 2)} m</span>.`
+        ];
+
+      } else if (variant === 'calc_t') {
+        expectedValue = t_total;
+        expectedUnit = "s";
+        story = `${animal.subject} a réten eldob ${item.acc}. A kezdősebesség vízszintesen v_x = ${formatNumber(vx, 1)} m/s, felfelé mutató függőleges komponense pedig v_y = ${formatNumber(vy, 1)} m/s. (g = 10 m/s², a közegellenállás elhanyagolható.)`;
+        question = `Összesen hány másodpercig tartózkodik a levegőben ${item.def.toLowerCase()} a becsapódásig?`;
+        steps = [
+          `1. Adatok: <span class="math-block">v_y = ${formatNumber(vy, 1)} m/s</span>, <span class="math-block">g = 10 m/s²</span>.`,
+          `2. A repülés időtartamát a függőleges mozgás határozza meg. Az emelkedés ideje: <span class="math-block">t_{fel} = v_y / g = ${formatNumber(vy, 1)} / 10 = ${formatNumber(t_fel, 2)} s</span>.`,
+          `3. A lefelé esés ideje megegyezik az emelkedés idejével, így a teljes repülési idő: <span class="math-block">t_{összes} = 2 · t_{fel} = 2 · ${formatNumber(t_fel, 2)} s = ${formatNumber(expectedValue, 2)} s</span>.`
+        ];
+
+      } else if (variant === 'calc_vx') {
+        expectedValue = vx;
+        expectedUnit = "m/s";
+        story = `${animal.subject} a vízszintes talajról eldob ${item.acc} úgy, hogy a függőleges kezdősebesség komponens v_y = ${formatNumber(vy, 1)} m/s. A cél egy pontosan ${formatNumber(x, 1)} méterre lévő céltábla eltalálása a talajon. (g = 10 m/s², a közegellenállás elhanyagolható.)`;
+        question = `Mekkora vízszintes kezdősebességet (v_x) kell adni a tárgynak a céltábla eltalálásához?`;
+        steps = [
+          `1. Adatok: <span class="math-block">v_y = ${formatNumber(vy, 1)} m/s</span>, kívánt távolság: <span class="math-block">x = ${formatNumber(x, 1)} m</span>, <span class="math-block">g = 10 m/s²</span>.`,
+          `2. Repülési idő kiszámítása a függőleges komponensből: <span class="math-block">t_{összes} = 2 · (v_y / g) = 2 · (${formatNumber(vy, 1)} / 10) = ${formatNumber(t_total, 2)} s</span>.`,
+          `3. Szükséges vízszintes sebesség: <span class="math-block">v_x = x / t_{összes} = ${formatNumber(x, 1)} m / ${formatNumber(t_total, 2)} s = ${formatNumber(expectedValue, 2)} m/s</span>.`
+        ];
+
+      } else { // calc_vy
+        expectedValue = vy;
+        expectedUnit = "m/s";
+        story = `${animal.subject} a talajról eldob ${item.acc}. Azt szeretné elérni, hogy a repülés csúcspontján a tárgy pontosan ${formatNumber(h_max, 2)} méter magasra emelkedjen. A vízszintes sebesség v_x = ${formatNumber(vx, 1)} m/s. (g = 10 m/s², a közegellenállás elhanyagolható.)`;
+        question = `Mekkora függőleges kezdősebességgel (v_y) kell elindítani a tárgyat felfelé?`;
+        steps = [
+          `1. Adatok: kívánt csúcsmagasság: <span class="math-block">h_{max} = ${formatNumber(h_max, 2)} m</span>, <span class="math-block">g = 10 m/s²</span>.`,
+          `2. A maximális magasság képlete: <span class="math-block">h_{max} = v_y² / (2 · g)</span>.`,
+          `3. A függőleges kezdősebesség kifejezése: <span class="math-block">v_y = √(2 · g · h_{max}) = √(2 · 10 · ${formatNumber(h_max, 2)}) = √(${formatNumber(20 * h_max, 1)}) = ${formatNumber(expectedValue, 2)} m/s</span>.`
+        ];
+      }
+
+      return {
+        typeId: 7,
+        typeTitle: "7. Hajítás sebességkomponensekkel",
+        story,
+        tableHtml: null,
+        question,
+        expectedUnit,
+        expectedValue,
+        steps
+      };
+    }
+
     // --- ALKALMAZÁS VEZÉRLÉS ---
 
     const setupScreen = document.getElementById('setup-screen');
@@ -1601,8 +1804,12 @@
         state.currentTask = generateType3();
       } else if (chosenType === 4) {
         state.currentTask = generateType4();
-      } else {
+      } else if (chosenType === 5) {
         state.currentTask = generateType5();
+      } else if (chosenType === 6) {
+        state.currentTask = generateType6();
+      } else {
+        state.currentTask = generateType7();
       }
 
       // Feladat adatok megjelenítése

@@ -19,6 +19,18 @@
     { "id": "vombat", "name": "vombat", "subject": "A vombat" },
     { "id": "gepard", "name": "gepárd", "subject": "A gepárd" }
   ],
+  "throwableObjects": [
+    { "id": "frizbi", "name": "frizbi", "acc": "egy frizbit", "def": "A frizbi" },
+    { "id": "teniszlabda", "name": "teniszlabda", "acc": "egy teniszlabdát", "def": "A teniszlabda" },
+    { "id": "bumerang", "name": "bumeráng", "acc": "egy bumerángot", "def": "A bumeráng" },
+    { "id": "hogolyo", "name": "hógolyó", "acc": "egy hógolyót", "def": "A hógolyó" },
+    { "id": "toboz", "name": "fenyőtoboz", "acc": "egy fenyőtobozt", "def": "A fenyőtoboz" },
+    { "id": "kavics", "name": "lapos kavics", "acc": "egy lapos kavicsot", "def": "A lapos kavics" },
+    { "id": "alma", "name": "piros alma", "acc": "egy piros almát", "def": "A piros alma" },
+    { "id": "gumikacsa", "name": "gumikacsa", "acc": "egy gumikacsát", "def": "A gumikacsa" },
+    { "id": "patko", "name": "patkó", "acc": "egy patkót", "def": "A patkó" },
+    { "id": "dio", "name": "aranydió", "acc": "egy aranydiót", "def": "Az aranydió" }
+  ],
   "vehicles": [
     {
       "id": "tricikli",
@@ -138,6 +150,16 @@
       "id": 5,
       "title": "5. Egyenletesen gyorsuló mozgás: út és fékút",
       "description": "Megtett út (x), fékút és gyorsulás kiszámítása nyugalomból vagy kezdősebességről indulva (x = a/2·t², x = v_átlag·t)."
+    },
+    {
+      "id": 6,
+      "title": "6. Vízszintes hajítás magasból (v_x és h)",
+      "description": "Egy adott magasságból vízszintes v_x kezdősebességgel elhajított tárgy repülési idejének, hatótávolságának vagy ledobási magasságának kiszámítása (g = 10 m/s²)."
+    },
+    {
+      "id": 7,
+      "title": "7. Hajítás sebességkomponensekkel (v_x és v_y)",
+      "description": "Ferde hajítás szögfüggvények nélkül: repülési idő, maximális emelkedési magasság és távolság kiszámítása a vízszintes és függőleges sebességből (g = 10 m/s²)."
     }
   ]
 }
