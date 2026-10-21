@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rozsomák tanár úr ágyúpárbaja – Hajítások fizikai szimulációja</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Slab:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #F8F9FA;
+      --text-color: #2D2A26;
+      --accent-amber: #D97725;
+      --accent-amber-hover: #b8621b;
+      --accent-green: #2C5E4B;
+      --accent-green-hover: #224b3b;
+      --accent-blue: #1A5276;
+      --accent-blue-hover: #143e5a;
+      --error-color: #B83227;
+      --surface-white: #FFFFFF;
+      --surface-sand: #EAE6DF;
+      --border-dark: #2D2A26;
+      --hard-shadow: 4px 4px 0px #2D2A26;
+      --hard-shadow-sm: 2px 2px 0px #2D2A26;
+      --hard-shadow-lg: 6px 6px 0px #2D2A26;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Roboto Slab', serif;
+      color: var(--text-color);
+      font-weight: 700;
+    }
+
+    /* Fejléc */
+    header {
+      background-color: var(--surface-white);
+      border-bottom: 3px solid var(--border-dark);
+      padding: 0.85rem 1.5rem;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-color);
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      background: var(--accent-amber);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Roboto Slab', serif;
+      font-weight: 800;
+      color: #fff;
+      font-size: 1.25rem;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-family: 'Roboto Slab', serif;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #635E59;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-link {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 2px solid var(--border-dark);
+      text-decoration: none;
+      color: var(--text-color);
+      background: var(--surface-sand);
+      box-shadow: var(--hard-shadow-sm);
+      transition: transform 0.08s ease, background-color 0.1s ease;
+    }
+
+    .nav-link:hover {
+      background: #FFFFFF;
+      transform: translate(-1px, -1px);
+    }
+
+    .nav-link.active {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
+    .header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* Fő tároló */
+    main {
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 1.25rem auto;
+      padding: 0 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--surface-white);
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      padding: 1.25rem;
+    }
+
+    /* Módválasztó sáv */
+    .mode-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      background: var(--surface-sand);
+    }
+
+    .mode-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .mode-pill {
+      background: var(--surface-white);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      padding: 0.45rem 0.9rem;
+      font-family: 'Roboto Slab', serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      user-select: none;
+    }
+
+    .mode-pill:hover {
+      background: #fdfdfd;
+      transform: translate(-1px, -1px);
+    }
+
+    .mode-pill.active {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+      box-shadow: 2px 2px 0px var(--border-dark);
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .setting-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .setting-item select {
+      background: #FFF;
+      border: 2px solid var(--border-dark);
+      padding: 0.25rem 0.5rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      outline: none;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    /* Canvas konténer */
+    .arena-container {
+      position: relative;
+      background: #FAF7F2;
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      overflow: hidden;
+      min-height: 380px;
+    }
+
+    canvas#battlefield {
+      display: block;
+      width: 100%;
+      height: 420px;
+      background: linear-gradient(180deg, #dbe9f4 0%, #edf4f8 70%, #d8e2cf 100%);
+    }
+
+    /* Telemetria és koordináta banner */
+    .telemetry-bar {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+      margin-top: -0.25rem;
+    }
+
+    .telemetry-card {
+      background: var(--surface-white);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      padding: 0.6rem 0.8rem;
+    }
+
+    .telemetry-card .label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #635E59;
+      margin-bottom: 0.15rem;
+    }
+
+    .telemetry-card .value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+
+    /* Irányító panel */
+    .control-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+    }
+
+    @media (max-width: 860px) {
+      .control-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .turn-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0.75rem;
+      border: 2px solid var(--border-dark);
+      margin-bottom: 1rem;
+      font-weight: 700;
+      background: #FFF;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    .turn-banner.p1 {
+      border-left: 8px solid var(--accent-blue);
+    }
+
+    .turn-banner.p2 {
+      border-left: 8px solid var(--accent-amber);
+    }
+
+    .inputs-area {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .input-group label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .input-row input {
+      flex: 1;
+      padding: 0.55rem 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      border: 2px solid var(--border-dark);
+      background: #FFF;
+      box-shadow: var(--hard-shadow-sm);
+      outline: none;
+    }
+
+    .input-row input:focus {
+      border-color: var(--accent-amber);
+      background: #FFFDF9;
+    }
+
+    .input-row input:disabled {
+      background: #EAE6DF;
+      color: #635E59;
+      cursor: not-allowed;
+    }
+
+    .unit-tag {
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      padding: 0.55rem 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.9rem;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 0.65rem 1.1rem;
+      border: 2px solid var(--border-dark);
+      border-radius: 0;
+      cursor: pointer;
+      box-shadow: var(--hard-shadow);
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      text-decoration: none;
+      color: var(--text-color);
+      background: var(--surface-sand);
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--hard-shadow-lg);
+    }
+
+    .btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border-dark);
+    }
+
+    .btn-fire {
+      background: var(--accent-amber);
+      color: #FFF;
+      flex: 1;
+      font-size: 1.05rem;
+    }
+
+    .btn-fire:hover {
+      background: var(--accent-amber-hover);
+    }
+
+    .btn-helper {
+      background: var(--surface-sand);
+    }
+
+    /* Levezetés és Képlet panel */
+    .formula-box {
+      background: #FFFDF9;
+      border: 2px dashed var(--border-dark);
+      padding: 0.85rem;
+      margin-top: 0.75rem;
+      font-size: 0.88rem;
+    }
+
+    .formula-title {
+      font-weight: 700;
+      font-family: 'Roboto Slab', serif;
+      margin-bottom: 0.4rem;
+      color: var(--accent-green);
+    }
+
+    .formula-box code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #ECE8E1;
+      padding: 0.15rem 0.35rem;
+      border-radius: 2px;
+      font-weight: 600;
+    }
+
+    /* Eredmény/Visszajelzés szekció */
+    .log-box {
+      height: 230px;
+      overflow-y: auto;
+      border: 2px solid var(--border-dark);
+      background: #FAF9F6;
+      padding: 0.75rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column-reverse;
+      gap: 0.4rem;
+      box-shadow: inset 2px 2px 0px rgba(0,0,0,0.05);
+    }
+
+    .log-entry {
+      padding: 0.4rem 0.55rem;
+      border-left: 4px solid #635E59;
+      background: #FFF;
+      border-bottom: 1px solid #ECE8E1;
+    }
+
+    .log-entry.hit {
+      border-left-color: var(--accent-green);
+      background: #EBF5F0;
+    }
+
+    .log-entry.mountain-crash {
+      border-left-color: var(--error-color);
+      background: #FDF0ED;
+    }
+
+    .log-entry.miss {
+      border-left-color: var(--accent-amber);
+      background: #FFF9F2;
+    }
+
+    .score-board {
+      display: flex;
+      justify-content: space-around;
+      padding: 0.75rem;
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      margin-bottom: 0.85rem;
+      font-weight: 700;
+    }
+
+    .score-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .score-badge .pts {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      color: var(--accent-green);
+    }
+
+    /* Részletes levezetés modális / kibontható ablak */
+    .solution-details {
+      display: none;
+      margin-top: 0.75rem;
+      padding: 0.85rem;
+      background: #FFF;
+      border: 2px solid var(--accent-green);
+      font-size: 0.88rem;
+    }
+
+    .solution-details.visible {
+      display: block;
+    }
+
+    .step-list {
+      margin-left: 1.25rem;
+      margin-top: 0.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.85rem;
+      color: #635E59;
+      border-top: 2px solid var(--surface-sand);
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-content">
+      <a href="hajitas_parbaj.html" class="brand">
+        <div class="brand-icon" title="Rozsomák mancsnyom">
+          <svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:#FFF;">
+            <ellipse cx="6" cy="8" rx="2" ry="3"/>
+            <ellipse cx="11" cy="5.5" rx="2" ry="3.2"/>
+            <ellipse cx="16" cy="6" rx="2" ry="3.2"/>
+            <ellipse cx="20.5" cy="9.5" rx="1.8" ry="2.7"/>
+            <path d="M14.5 10.5 C12 9.5, 9.5 9.8, 7.5 11 C5 12.5, 4 15, 6 18 C7.5 20, 10.5 21, 14 20 C18 19, 19.5 15.5, 18.5 13 C17.8 11.5, 16.5 10.9, 14.5 10.5 Z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">Rozsomák tanár úr ágyúpárbaja</div>
+          <div class="brand-subtitle">Kinematikai szimuláció & hajításos számítások gyakorlása</div>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Gyakorló feladatok</a>
+        <a href="vonatkoztatasi_rendszerek.html" class="nav-link">Vonatkoztatási rendszerek</a>
+        <a href="hajitas_parbaj.html" class="nav-link active">Hajításpárbaj</a>
+      </nav>
+      <div class="header-badge">
+        <span>2D Mozgások felbontása</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Módválasztó és beállítások kártya -->
+    <div class="card mode-bar">
+      <div class="mode-pills">
+        <button class="mode-pill active" id="btnMode1" onclick="setMode(1)">1. Eset: vx adott &rarr; vy-t keresünk</button>
+        <button class="mode-pill" id="btnMode2" onclick="setMode(2)">2. Eset: vy adott &rarr; vx-et keresünk</button>
+        <button class="mode-pill" id="btnMode3" onclick="setMode(3)">3. Eset: Szabad választás (vx & vy)</button>
+      </div>
+
+      <div class="settings-row">
+        <div class="setting-item">
+          <label for="gravSelect">Nehézségi gyorsulás (g):</label>
+          <select id="gravSelect" onchange="onGravityChange()">
+            <option value="10">g = 10,0 m/s² (kerekített, iskolai)</option>
+            <option value="9.81">g = 9,81 m/s² (precíz földi érték)</option>
+          </select>
+        </div>
+
+        <div class="setting-item">
+          <label for="matchModeSelect">Játékmód:</label>
+          <select id="matchModeSelect" onchange="onMatchModeChange()">
+            <option value="single">Gyakorló mód (Egyjátékos célbalövés)</option>
+            <option value="pvp">Kétjátékos párbaj (Felváltva lőnek)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-helper" onclick="generateNewRound()" title="Új véletlenszerű terep és távolságok generálása">Új pálya</button>
+      </div>
+    </div>
+
+    <!-- Csata animáció (Canvas) -->
+    <div class="arena-container">
+      <canvas id="battlefield" width="1160" height="420"></canvas>
+    </div>
+
+    <!-- Telemetria sáv: koordináták, távolságok -->
+    <div class="telemetry-bar">
+      <div class="telemetry-card">
+        <div class="label">Lövő pozíció (A)</div>
+        <div class="value" id="dispShooterPos">x = 20 m, y = 15 m</div>
+      </div>
+      <div class="telemetry-card">
+        <div class="label">Célpont pozíció (B)</div>
+        <div class="value" id="dispTargetPos">x = 180 m, y = 25 m</div>
+      </div>
+      <div class="telemetry-card">
+        <div class="label">Hegycsúcs koordinátái</div>
+        <div class="value" id="dispMountainPos">x = 95 m, magasság = 62 m</div>
+      </div>
+      <div class="telemetry-card">
+        <div class="label">Vízszintes távolság (&Delta;x)</div>
+        <div class="value" id="dispDeltaX">&Delta;x = 160,0 m</div>
+      </div>
+    </div>
+
+    <!-- Irányító és Levezető pult -->
+    <div class="control-grid">
+      <!-- Bal oldal: Bemenetek és Lövés -->
+      <div class="card">
+        <div class="turn-banner p1" id="turnBanner">
+          <span id="turnLabel">1. JÁTÉKOS LŐ</span>
+          <span id="shotCountLabel">1. lövés kísérlet</span>
+        </div>
+
+        <div class="inputs-area">
+          <div class="input-group">
+            <label>
+              <span>Vízszintes sebességkomponens (v<sub>x</sub>)</span>
+              <span id="vxHint" style="color: #635E59; font-weight: 500;"></span>
+            </label>
+            <div class="input-row">
+              <input type="number" id="inputVx" step="0.1" placeholder="pl. 32.0">
+              <div class="unit-tag">m/s</div>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>
+              <span>Függőleges sebességkomponens (v<sub>y</sub>)</span>
+              <span id="vyHint" style="color: #635E59; font-weight: 500;"></span>
+            </label>
+            <div class="input-row">
+              <input type="number" id="inputVy" step="0.1" placeholder="pl. 41.5">
+              <div class="unit-tag">m/s</div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-fire" id="btnFire" onclick="fireCannon()">TŰZ! (Lövés indítása)</button>
+            <button class="btn" onclick="toggleSolution()">Lépésről lépésre levezetés</button>
+          </div>
+        </div>
+
+        <!-- Elméleti képlet súgó doboz -->
+        <div class="formula-box" id="formulaGuide">
+          <div class="formula-title" id="formulaTitle">Hajítás alapegyenletei</div>
+          <div id="formulaText">
+            Vízszintesen: <code>&Delta;x = v<sub>x</sub> &middot; t</code> &rarr; a repülési idő azonnal meghatározható!<br>
+            Függőlegesen: <code>&Delta;y = v<sub>y</sub> &middot; t - &frac12; g t²</code>.<br>
+            <strong>Feltétel a hegy felett:</strong> az <code>x<sub>hegy</sub></code> helyen a magasság <code>y(t<sub>hegy</sub>) > y<sub>hegy</sub></code> legyen!
+          </div>
+        </div>
+
+        <!-- Részletes megoldás / tanári levezetés panel -->
+        <div class="solution-details" id="solutionBox">
+          <div class="formula-title" style="color: var(--accent-green); margin-bottom: 0.3rem;">Pontos számolás az aktuális terepre:</div>
+          <div id="solutionContent">...</div>
+        </div>
+      </div>
+
+      <!-- Jobb oldal: Eredményjelző és lövésnapló -->
+      <div class="card">
+        <div class="score-board">
+          <div class="score-badge">
+            <span style="font-size: 0.8rem; color: #635E59;">1. JÁTÉKOS PONT</span>
+            <span class="pts" id="scoreP1">0</span>
+          </div>
+          <div class="score-badge">
+            <span style="font-size: 0.8rem; color: #635E59;">TALÁLATI ARÁNY</span>
+            <span class="pts" id="accuracyRate" style="color: var(--accent-amber);">-%</span>
+          </div>
+          <div class="score-badge" id="p2ScoreBadge">
+            <span style="font-size: 0.8rem; color: #635E59;">2. JÁTÉKOS PONT</span>
+            <span class="pts" id="scoreP2">0</span>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+          <h4 style="font-size: 0.95rem;">Lövési telemetria & napló</h4>
+          <button class="btn" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" onclick="clearLog()">Napló törlése</button>
+        </div>
+
+        <div class="log-box" id="logBox">
+          <div class="log-entry">A rendszer készen áll. Válassz játékmódot, számold ki az ismeretlen sebességet, és nyomj a Tűz gombra!</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    Rozsomák tanár úr Interaktív Fizika • Alternatív Közgazdasági Gimnázium (AKG) • Kétdimenziós hajítások számítása
+  </footer>
+
+  <script>
+    // --- ÁLLAPOT & VÁLTOZÓK ---
+    let currentMode = 1; // 1: vx adott, 2: vy adott, 3: mindkettő szabad
+    let g = 10.0;
+    let matchMode = 'single'; // 'single' vagy 'pvp'
+    let currentPlayer = 1; // 1 vagy 2
+    let scores = { 1: 0, 2: 0 };
+    let shotCountThisRound = 0;
+    let totalShots = 0;
+    let totalHits = 0;
+
+    // Terep adatok (méterben)
+    // Canvas logikai mérete: 240 m széles, 100 m magas
+    const WORLD_W = 240;
+    const WORLD_H = 100;
+
+    let p1 = { x: 20, y: 15 };
+    let p2 = { x: 210, y: 18 };
+    let mountain = {
+      x: 110,
+      width: 60,
+      height: 52
+    };
+
+    // Megadott rögzített értékek a módokhoz
+    let presetVx = 25;
+    let presetVy = 32;
+
+    // Animáció állapota
+    let projectile = null;
+    let trajectoryHistory = [];
+    let isAnimating = false;
+    let animId = null;
+
+    // Canvas
+    const canvas = document.getElementById('battlefield');
+    const ctx = canvas.getContext('2d');
+
+    // Web Audio hangeffektek
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      try {
+        const actx = getAudioContext();
+        const now = actx.currentTime;
+
+        if (type === 'fire') {
+          // Bumm / Ágyúhang: zaj + mély oszcillátor
+          const osc = actx.createOscillator();
+          const gain = actx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(140, now);
+          osc.frequency.exponentialRampToValueAtTime(30, now + 0.35);
+          gain.gain.setValueAtTime(0.4, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          osc.connect(gain);
+          gain.connect(actx.destination);
+          osc.start(now);
+          osc.stop(now + 0.4);
+        } else if (type === 'hit') {
+          // Vidám csilingelés / találat
+          [440, 554, 659, 880].forEach((freq, idx) => {
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.15, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.25);
+            osc.connect(gain);
+            gain.connect(actx.destination);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.3);
+          });
+        } else if (type === 'crash') {
+          // Hegybe / földbe csapódás: tompa puffanás
+          const osc = actx.createOscillator();
+          const gain = actx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(90, now);
+          osc.frequency.exponentialRampToValueAtTime(20, now + 0.3);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          osc.connect(gain);
+          gain.connect(actx.destination);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        }
+      } catch (e) {
+        // Csendes fallback, ha a böngésző tiltja az autolejátszást
+      }
+    }
+
+    // --- INICIALIZÁLÁS & PÁLYAGENERÁLÁS ---
+    function init() {
+      resizeCanvas();
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        renderScene();
+      });
+
+      ['inputVx', 'inputVy'].forEach(id => {
+        document.getElementById(id).addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') fireCannon();
+        });
+      });
+
+      generateNewRound();
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * window.devicePixelRatio;
+      canvas.height = rect.height * window.devicePixelRatio;
+      renderScene();
+    }
+
+    function toScreenX(x) {
+      return (x / WORLD_W) * canvas.width;
+    }
+
+    function toScreenY(y) {
+      // Fizikai koordináta: y=0 a talaj, y növekszik felfelé
+      const groundLevel = canvas.height * 0.88;
+      const scaleY = (canvas.height * 0.82) / WORLD_H;
+      return groundLevel - (y * scaleY);
+    }
+
+    function onGravityChange() {
+      g = parseFloat(document.getElementById('gravSelect').value);
+      updateUI();
+      calculateExactSolution();
+    }
+
+    function onMatchModeChange() {
+      matchMode = document.getElementById('matchModeSelect').value;
+      currentPlayer = 1;
+      scores = { 1: 0, 2: 0 };
+      updateScoreUI();
+      generateNewRound();
+    }
+
+    function setMode(mode) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-pill').forEach(p => p.classList.remove('active'));
+      document.getElementById('btnMode' + mode).classList.add('active');
+
+      // Megváltoztatjuk az inputok állapotát és segédszövegeit
+      const vxInput = document.getElementById('inputVx');
+      const vyInput = document.getElementById('inputVy');
+      const vxHint = document.getElementById('vxHint');
+      const vyHint = document.getElementById('vyHint');
+      const fTitle = document.getElementById('formulaTitle');
+      const fText = document.getElementById('formulaText');
+
+      if (mode === 1) {
+        vxInput.disabled = true;
+        vyInput.disabled = false;
+        vxHint.innerText = "(Fix érték a feladatban)";
+        vyHint.innerText = "(Ezt kell kiszámolnod!)";
+        fTitle.innerText = "1. Eset módszertan: vx adott";
+        fText.innerHTML = `
+          1. <strong>Repülési idő kiszámítása:</strong> <code>t = &Delta;x / v<sub>x</sub></code><br>
+          2. <strong>Szükséges v<sub>y</sub> kifejezése:</strong> <code>&Delta;y = v<sub>y</sub> &middot; t - &frac12; g t²</code> &rarr; <code>v<sub>y</sub> = (&Delta;y + &frac12; g t²) / t</code><br>
+          3. <strong>Hegy ellenőrzése:</strong> <code>t<sub>h</sub> = (x<sub>h</sub> - x<sub>0</sub>) / v<sub>x</sub></code> alatt <code>y(t<sub>h</sub>) > y<sub>h</sub></code>!
+        `;
+      } else if (mode === 2) {
+        vxInput.disabled = false;
+        vyInput.disabled = true;
+        vxHint.innerText = "(Ezt kell kiszámolnod!)";
+        vyHint.innerText = "(Fix érték a feladatban)";
+        fTitle.innerText = "2. Eset módszertan: vy adott";
+        fText.innerHTML = `
+          1. <strong>Repülési idő a függőleges mozgásból:</strong> <code>&frac12; g t² - v<sub>y</sub> t + &Delta;y = 0</code> másodfokú egyenletből!<br>
+          2. A célt a lefelé szálló ágban érjük el (a nagyobbik gyök: <code>t<sub>2</sub></code>).<br>
+          3. <strong>Szükséges v<sub>x</sub> kiszámítása:</strong> <code>v<sub>x</sub> = &Delta;x / t</code>.
+        `;
+      } else {
+        vxInput.disabled = false;
+        vyInput.disabled = false;
+        vxHint.innerText = "(Szabadon választható)";
+        vyHint.innerText = "(Szabadon választható)";
+        fTitle.innerText = "3. Eset módszertan: Szabad választás";
+        fText.innerHTML = `
+          Végtelen sok (v<sub>x</sub>, v<sub>y</sub>) páros találja el a célt, <strong>DE a hegy korlátot szab</strong>!<br>
+          <em>Stratégia:</em> Válassz ki egy tetszőleges v<sub>x</sub> értéket (vagy repülési időt t), majd számold ki a hozzá tartozó v<sub>y</sub>-t: <code>v<sub>y</sub> = (&Delta;y + &frac12; g t²) / t</code>.<br>
+          Ellenőrizd, hogy a hegycsúcs felett száll-e el! Ha túl lapos a pálya, növeld a v<sub>y</sub>-t és csökkentsd a v<sub>x</sub>-et!
+        `;
+      }
+
+      generateNewRound();
+    }
+
+    // Új feladat generálása
+    function generateNewRound() {
+      if (isAnimating) {
+        cancelAnimationFrame(animId);
+        isAnimating = false;
+      }
+
+      shotCountThisRound = 0;
+      trajectoryHistory = [];
+      projectile = null;
+      document.getElementById('solutionBox').classList.remove('visible');
+
+      // Véletlen terep generálása
+      // P1: bal oldal (x: 15-35 m, y: 5-25 m dombon)
+      p1.x = Math.round(15 + Math.random() * 20);
+      p1.y = Math.round(5 + Math.random() * 20);
+
+      // P2: jobb oldal (x: 180-220 m, y: 5-25 m dombon)
+      p2.x = Math.round(180 + Math.random() * 35);
+      p2.y = Math.round(5 + Math.random() * 20);
+
+      // Hegy a kettő között
+      const midX = (p1.x + p2.x) / 2;
+      mountain.x = Math.round(midX - 15 + Math.random() * 30);
+      mountain.width = Math.round(45 + Math.random() * 25);
+      // Hegy magassága a két pont felett legyen min 15-30 m-rel
+      const maxY = Math.max(p1.y, p2.y);
+      mountain.height = Math.round(maxY + 20 + Math.random() * 25);
+
+      // Adott paraméterek beállítása úgy, hogy biztosan létezzen érvényes átdobható megoldás
+      const shooter = (currentPlayer === 1) ? p1 : p2;
+      const target = (currentPlayer === 1) ? p2 : p1;
+      const dx = Math.abs(target.x - shooter.x);
+      const dy = target.y - shooter.y;
+
+      // Számolunk egy biztonságos tesztidőt, ahol a csúcs magasan a hegy felett van
+      // Pl. csúcsmagasság = mountain.height + 15 m
+      const targetApexY = mountain.height + 15;
+      const vyTest = Math.sqrt(Math.max(10, 2 * g * (targetApexY - shooter.y)));
+      // Repülési idő a célmagasságig
+      // dy = vy*t - 0.5*g*t^2 => 0.5*g*t^2 - vy*t + dy = 0
+      const disc = vyTest * vyTest - 2 * g * dy;
+      let tFlight = 5.0;
+      if (disc > 0) {
+        tFlight = (vyTest + Math.sqrt(disc)) / g;
+      }
+      const vxTest = dx / tFlight;
+
+      presetVx = Math.round(vxTest * 10) / 10;
+      presetVy = Math.round(vyTest * 10) / 10;
+
+      // Input mezők kitöltése
+      const inputVx = document.getElementById('inputVx');
+      const inputVy = document.getElementById('inputVy');
+
+      if (currentMode === 1) {
+        inputVx.value = presetVx.toFixed(1);
+        inputVy.value = '';
+      } else if (currentMode === 2) {
+        inputVy.value = presetVy.toFixed(1);
+        inputVx.value = '';
+      } else {
+        inputVx.value = '';
+        inputVy.value = '';
+      }
+
+      updateUI();
+      calculateExactSolution();
+      renderScene();
+    }
+
+    function updateUI() {
+      const shooter = (currentPlayer === 1) ? p1 : p2;
+      const target = (currentPlayer === 1) ? p2 : p1;
+      const dx = Math.abs(target.x - shooter.x);
+      const dy = target.y - shooter.y;
+
+      document.getElementById('dispShooterPos').innerText = `x = ${shooter.x} m, y = ${shooter.y} m`;
+      document.getElementById('dispTargetPos').innerText = `x = ${target.x} m, y = ${target.y} m`;
+      document.getElementById('dispMountainPos').innerText = `x = ${mountain.x} m, csúcs = ${mountain.height} m`;
+      document.getElementById('dispDeltaX').innerText = `Δx = ${dx.toFixed(1)} m (Δy = ${dy >= 0 ? '+' : ''}${dy.toFixed(1)} m)`;
+
+      // Turn banner
+      const banner = document.getElementById('turnBanner');
+      const turnLabel = document.getElementById('turnLabel');
+      banner.className = 'turn-banner ' + (currentPlayer === 1 ? 'p1' : 'p2');
+      if (matchMode === 'pvp') {
+        turnLabel.innerText = `${currentPlayer}. JÁTÉKOS LŐ (${currentPlayer === 1 ? 'Bal ágyú' : 'Jobb ágyú'})`;
+      } else {
+        turnLabel.innerText = `GYAKORLÁS – LŐD KI A CÉLTÁBLÁT!`;
+      }
+      document.getElementById('shotCountLabel').innerText = `${shotCountThisRound + 1}. lövés kísérlet`;
+    }
+
+    function updateScoreUI() {
+      document.getElementById('scoreP1').innerText = scores[1];
+      document.getElementById('scoreP2').innerText = scores[2];
+      const rate = totalShots > 0 ? Math.round((totalHits / totalShots) * 100) : 0;
+      document.getElementById('accuracyRate').innerText = totalShots > 0 ? `${rate}%` : '-%';
+
+      const p2Badge = document.getElementById('p2ScoreBadge');
+      p2Badge.style.display = matchMode === 'pvp' ? 'flex' : 'none';
+    }
+
+    // --- PONTOS MATEMATIKAI LEVEZETÉS ÉS ELLENŐRZÉS ---
+    let currentSolution = null;
+
+    function calculateExactSolution() {
+      const shooter = (currentPlayer === 1) ? p1 : p2;
+      const target = (currentPlayer === 1) ? p2 : p1;
+      const dir = (target.x > shooter.x) ? 1 : -1;
+      const dx = Math.abs(target.x - shooter.x);
+      const dy = target.y - shooter.y;
+
+      const distToMountain = Math.abs(mountain.x - shooter.x);
+
+      let textHtml = '';
+
+      if (currentMode === 1) {
+        // vx adott, vy-t keresünk
+        const vx = presetVx;
+        const tFlight = dx / vx;
+        // dy = vy * t - 0.5 * g * t^2 => vy = (dy + 0.5 * g * t^2) / t
+        const vyReq = (dy + 0.5 * g * tFlight * tFlight) / tFlight;
+
+        // Magasság a hegynél
+        const tMountain = distToMountain / vx;
+        const yAtMountain = shooter.y + vyReq * tMountain - 0.5 * g * tMountain * tMountain;
+        const clearsMountain = yAtMountain > mountain.height;
+
+        currentSolution = {
+          mode: 1,
+          tFlight,
+          vyReq,
+          tMountain,
+          yAtMountain,
+          clearsMountain
+        };
+
+        textHtml = `
+          <ul class="step-list">
+            <li><strong>1. lépés: Repülési idő (t) a horizontális sebességből:</strong><br>
+                <code>t = &Delta;x / v<sub>x</sub> = ${dx.toFixed(1)} / ${vx.toFixed(1)} = ${tFlight.toFixed(2)} s</code></li>
+            <li><strong>2. lépés: Szükséges függőleges kezdősebesség (v<sub>y</sub>):</strong><br>
+                <code>v<sub>y</sub> = (&Delta;y + &frac12; g t²) / t = (${dy.toFixed(1)} + 0.5 &middot; ${g.toFixed(1)} &middot; ${tFlight.toFixed(2)}²) / ${tFlight.toFixed(2)} = <strong>${vyReq.toFixed(2)} m/s</strong></code></li>
+            <li><strong>3. lépés: Hegy feletti áthaladás ellenőrzése (x = ${mountain.x} m, &Delta;x<sub>h</sub> = ${distToMountain.toFixed(1)} m):</strong><br>
+                <code>t<sub>hegy</sub> = ${distToMountain.toFixed(1)} / ${vx.toFixed(1)} = ${tMountain.toFixed(2)} s</code><br>
+                <code>y(t<sub>hegy</sub>) = ${shooter.y} + (${vyReq.toFixed(2)} &middot; ${tMountain.toFixed(2)}) - (0.5 &middot; ${g.toFixed(1)} &middot; ${tMountain.toFixed(2)}²) = <strong>${yAtMountain.toFixed(1)} m</strong></code><br>
+                ${clearsMountain ? `<span style="color:var(--accent-green); font-weight:700;">✓ Átrepül a hegycsúcs felett (${(yAtMountain - mountain.height).toFixed(1)} m szabad hellyel)!</span>` : `<span style="color:var(--error-color); font-weight:700;">✗ A lövedék a hegy alatt menne el! Nagyobb repülési időre / magasabb kezdőívre van szükség!</span>`}
+            </li>
+          </ul>
+        `;
+      } else if (currentMode === 2) {
+        // vy adott, vx-et keresünk
+        const vy = presetVy;
+        // 0.5 * g * t^2 - vy * t + dy = 0
+        const a = 0.5 * g;
+        const b = -vy;
+        const c = dy;
+        const disc = b * b - 4 * a * c;
+
+        if (disc < 0) {
+          textHtml = `Az adott v<sub>y</sub> = ${vy} m/s sebességgel a golyó el sem éri a cél magasságát!`;
+        } else {
+          const t1 = (-b - Math.sqrt(disc)) / (2 * a);
+          const t2 = (-b + Math.sqrt(disc)) / (2 * a);
+          // Hegy túloldalán való becsapódáshoz a lefelé jövő ág, t2 szükséges!
+          const tFlight = t2;
+          const vxReq = dx / tFlight;
+
+          const tMountain = distToMountain / vxReq;
+          const yAtMountain = shooter.y + vy * tMountain - 0.5 * g * tMountain * tMountain;
+          const clearsMountain = yAtMountain > mountain.height;
+
+          currentSolution = {
+            mode: 2,
+            tFlight,
+            vxReq,
+            tMountain,
+            yAtMountain,
+            clearsMountain
+          };
+
+          textHtml = `
+            <ul class="step-list">
+              <li><strong>1. lépés: Függőleges mozgás egyenlete a repülési időre:</strong><br>
+                  <code>&frac12; g t² - v<sub>y</sub> t + &Delta;y = 0 &rarr; ${a.toFixed(1)} t² - ${vy.toFixed(1)} t + (${dy.toFixed(1)}) = 0</code></li>
+              <li>A másodfokú egyenlet lefelé szálló ága adja a becsapódási időt a célpontba:<br>
+                  <code>t = ${tFlight.toFixed(2)} s</code> (felszálló ág: ${t1.toFixed(2)} s)</li>
+              <li><strong>2. lépés: Szükséges vízszintes kezdősebesség (v<sub>x</sub>):</strong><br>
+                  <code>v<sub>x</sub> = &Delta;x / t = ${dx.toFixed(1)} / ${tFlight.toFixed(2)} = <strong>${vxReq.toFixed(2)} m/s</strong></code></li>
+              <li><strong>3. lépés: Hegy ellenőrzése:</strong><br>
+                  A hegy elérésének ideje: <code>t<sub>hegy</sub> = ${distToMountain.toFixed(1)} / ${vxReq.toFixed(2)} = ${tMountain.toFixed(2)} s</code><br>
+                  Magasság a hegynél: <code>y = <strong>${yAtMountain.toFixed(1)} m</strong></code> (hegy: ${mountain.height} m) &rarr; ${clearsMountain ? '<strong style="color:var(--accent-green)">Átrepül felette!</strong>' : '<strong style="color:var(--error-color)">Becsapódna a hegybe!</strong>'}</li>
+            </ul>
+          `;
+        }
+      } else {
+        // Szabad választás
+        currentSolution = { mode: 3 };
+        textHtml = `
+          <ul class="step-list">
+            <li>Ebben a módban bármilyen (v<sub>x</sub>, v<sub>y</sub>) párost választhatsz, amire teljesül:
+                <code>v<sub>y</sub> = (&Delta;y + &frac12; g (&Delta;x / v<sub>x</sub>)²) / (&Delta;x / v<sub>x</sub>)</code></li>
+            <li><strong>Példa egy lehetséges megoldásra:</strong> Ha választasz egy <code>v<sub>x</sub> = ${(dx / 5).toFixed(1)} m/s</code> sebességet (t = 5,0 s repülési időhöz), akkor:<br>
+                <code>v<sub>y</sub> = (${dy.toFixed(1)} + 0.5 &middot; ${g.toFixed(1)} &middot; 25) / 5.0 = <strong>${((dy + 0.5 * g * 25) / 5).toFixed(2)} m/s</strong></code>.</li>
+            <li>Figyelj arra, hogy a pálya csúcsmagassága <code>y<sub>max</sub> = y<sub>0</sub> + v<sub>y</sub>² / (2g)</code> nagyobb legyen, mint a hegy magassága (${mountain.height} m)!</li>
+          </ul>
+        `;
+      }
+
+      document.getElementById('solutionContent').innerHTML = textHtml;
+    }
+
+    function toggleSolution() {
+      const box = document.getElementById('solutionBox');
+      box.classList.toggle('visible');
+    }
+
+    // --- LÖVÉS & ANIMÁCIÓ ---
+    function fireCannon() {
+      if (isAnimating) return;
+
+      const vxInput = parseFloat(document.getElementById('inputVx').value);
+      const vyInput = parseFloat(document.getElementById('inputVy').value);
+
+      if (isNaN(vxInput) || isNaN(vyInput) || vxInput <= 0 || vyInput <= 0) {
+        alert("Kérlek, adj meg érvényes pozitív számot mindkét sebességre!");
+        return;
+      }
+
+      const shooter = (currentPlayer === 1) ? p1 : p2;
+      const target = (currentPlayer === 1) ? p2 : p1;
+      const dir = (target.x > shooter.x) ? 1 : -1;
+
+      // Lövedék indítása
+      projectile = {
+        x: shooter.x,
+        y: shooter.y + 2, // kissé az ágyúcső felett
+        vx: vxInput * dir,
+        vy: vyInput,
+        path: [{ x: shooter.x, y: shooter.y + 2 }],
+        time: 0
+      };
+
+      shotCountThisRound++;
+      totalShots++;
+      isAnimating = true;
+      document.getElementById('btnFire').disabled = true;
+
+      playSound('fire');
+      logMessage(`[${currentPlayer}. Játékos] Lövés indítva: vx = ${vxInput.toFixed(1)} m/s, vy = ${vyInput.toFixed(1)} m/s...`);
+
+      lastFrameTime = performance.now();
+      animId = requestAnimationFrame(animationLoop);
+    }
+
+    let lastFrameTime = performance.now();
+
+    function animationLoop(timestamp) {
+      const dtReal = (timestamp - lastFrameTime) / 1000;
+      lastFrameTime = timestamp;
+
+      // Időgyorsítás a látványos és pörgős játékélményért (1.5x valós idő)
+      const simDt = Math.min(dtReal * 1.5, 0.05);
+
+      if (projectile) {
+        // Fizikai léptetés
+        projectile.x += projectile.vx * simDt;
+        projectile.y += projectile.vy * simDt;
+        projectile.vy -= g * simDt;
+        projectile.time += simDt;
+        projectile.path.push({ x: projectile.x, y: projectile.y });
+
+        // Ütközésvizsgálatok
+        const hitResult = checkCollisions(projectile.x, projectile.y);
+
+        if (hitResult) {
+          isAnimating = false;
+          document.getElementById('btnFire').disabled = false;
+          handleHitResult(hitResult);
+          renderScene();
+          return;
+        }
+      }
+
+      renderScene();
+
+      if (isAnimating) {
+        animId = requestAnimationFrame(animationLoop);
+      }
+    }
+
+    // Ütközések ellenőrzése: célpont, hegy, talaj, világ széle
+    function checkCollisions(px, py) {
+      const target = (currentPlayer === 1) ? p2 : p1;
+
+      // 1. Célpont találat (Hitbox: 4 méteres környezet)
+      const distToTarget = Math.hypot(px - target.x, py - target.y);
+      if (distToTarget < 4.0) {
+        return { type: 'target_hit', x: px, y: py, dist: distToTarget };
+      }
+
+      // 2. Hegy ütközés: hegy mint háromszög
+      const mLeft = mountain.x - mountain.width / 2;
+      const mRight = mountain.x + mountain.width / 2;
+      if (px >= mLeft && px <= mRight) {
+        // A hegy profilja (háromszög)
+        let mountainY = 0;
+        if (px <= mountain.x) {
+          mountainY = ((px - mLeft) / (mountain.width / 2)) * mountain.height;
+        } else {
+          mountainY = ((mRight - px) / (mountain.width / 2)) * mountain.height;
+        }
+
+        if (py <= mountainY) {
+          return { type: 'mountain_crash', x: px, y: py, mountainY, topY: mountain.height };
+        }
+      }
+
+      // 3. Földfelszín becsapódás
+      if (py <= 0) {
+        return { type: 'ground_crash', x: px, y: 0 };
+      }
+
+      // 4. Képernyő elhagyása
+      if (px < -10 || px > WORLD_W + 10 || py < -10) {
+        return { type: 'out_of_bounds', x: px, y: py };
+      }
+
+      return null;
+    }
+
+    function handleHitResult(result) {
+      const target = (currentPlayer === 1) ? p2 : p1;
+      trajectoryHistory.push({
+        path: [...projectile.path],
+        type: result.type,
+        color: currentPlayer === 1 ? 'rgba(26, 82, 118, 0.6)' : 'rgba(217, 119, 37, 0.6)'
+      });
+
+      if (result.type === 'target_hit') {
+        playSound('hit');
+        totalHits++;
+
+        // Pontozás: 1. lövésből 100 pont, 2. lövésből 50 pont, egyébként 25 pont
+        let roundScore = 25;
+        if (shotCountThisRound === 1) roundScore = 100;
+        else if (shotCountThisRound === 2) roundScore = 50;
+
+        scores[currentPlayer] += roundScore;
+        updateScoreUI();
+
+        logMessage(`🎯 TELITALÁLAT! ${roundScore} pont! (Kísérletek száma: ${shotCountThisRound})`, 'hit');
+
+        setTimeout(() => {
+          alert(`🎯 TELITALÁLAT! Gratulálunk!\n${roundScore} pont jóváírva az ${currentPlayer}. játékosnak.`);
+          if (matchMode === 'pvp') {
+            currentPlayer = (currentPlayer === 1) ? 2 : 1;
+          }
+          generateNewRound();
+        }, 350);
+
+      } else if (result.type === 'mountain_crash') {
+        playSound('crash');
+        const diff = mountain.height - result.y;
+        logMessage(`💥 HEGYNEK ÜTKÖZÖTT! A hegycsúcs alatt ${diff.toFixed(1)} méterrel csapódott be. Próbáld magasabb íven lőni!`, 'mountain-crash');
+        advanceTurnOnMiss();
+
+      } else if (result.type === 'ground_crash') {
+        playSound('crash');
+        const missDist = Math.abs(result.x - target.x);
+        const overUnder = (result.x > target.x && currentPlayer === 1) || (result.x < target.x && currentPlayer === 2) ? "túlrepült" : "rövid lett";
+        logMessage(`🌾 FÖLDBE CSAPÓDOTT! A célponttól ${missDist.toFixed(1)} méterre (${overUnder}).`, 'miss');
+        advanceTurnOnMiss();
+
+      } else if (result.type === 'out_of_bounds') {
+        playSound('crash');
+        logMessage(`💨 ELSZÁLLT! A lövedék kirepült a pályáról.`, 'miss');
+        advanceTurnOnMiss();
+      }
+    }
+
+    function advanceTurnOnMiss() {
+      if (matchMode === 'pvp') {
+        currentPlayer = (currentPlayer === 1) ? 2 : 1;
+        updateUI();
+        calculateExactSolution();
+        // Átváltáskor töröljük a nem fix inputot
+        if (currentMode === 1) document.getElementById('inputVy').value = '';
+        if (currentMode === 2) document.getElementById('inputVx').value = '';
+      }
+    }
+
+    function logMessage(msg, className = '') {
+      const logBox = document.getElementById('logBox');
+      const entry = document.createElement('div');
+      entry.className = 'log-entry ' + className;
+      entry.innerText = msg;
+      logBox.prepend(entry);
+    }
+
+    function clearLog() {
+      document.getElementById('logBox').innerHTML = '<div class="log-entry">Napló kiürítve.</div>';
+    }
+
+    // --- CANVAS RAJZOLÁS ---
+    function renderScene() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 1. Háttér & Rácsháló (Grid & Skála)
+      drawGrid();
+
+      // 2. Terep domborzata (Talaj + Hegy)
+      drawTerrain();
+
+      // 3. Játékosok és Ágyúk
+      drawPlayer(p1, 1);
+      drawPlayer(p2, 2);
+
+      // 4. Korábbi röppályák halvány nyomvonala
+      drawTrajectories();
+
+      // 5. Aktuális lövedék rajzolása
+      if (projectile) {
+        drawProjectile();
+      }
+    }
+
+    function drawGrid() {
+      ctx.save();
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(45, 42, 38, 0.08)';
+      ctx.fillStyle = '#635E59';
+      ctx.font = '10px JetBrains Mono';
+
+      // 20 méterenként vertikális vonal
+      for (let x = 0; x <= WORLD_W; x += 20) {
+        const sx = toScreenX(x);
+        ctx.beginPath();
+        ctx.moveTo(sx, 0);
+        ctx.lineTo(sx, toScreenY(0));
+        ctx.stroke();
+        ctx.fillText(x + 'm', sx + 2, toScreenY(0) + 14);
+      }
+
+      // 20 méterenként horizontális vonal
+      for (let y = 0; y <= WORLD_H; y += 20) {
+        const sy = toScreenY(y);
+        ctx.beginPath();
+        ctx.moveTo(0, sy);
+        ctx.lineTo(canvas.width, sy);
+        ctx.stroke();
+        if (y > 0) ctx.fillText(y + 'm', 5, sy - 2);
+      }
+
+      ctx.restore();
+    }
+
+    function drawTerrain() {
+      ctx.save();
+
+      // Hegycsúcs rajzolása (háromszög letisztult földszínekkel)
+      const mLeft = mountain.x - mountain.width / 2;
+      const mRight = mountain.x + mountain.width / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(toScreenX(mLeft), toScreenY(0));
+      ctx.lineTo(toScreenX(mountain.x), toScreenY(mountain.height));
+      ctx.lineTo(toScreenX(mRight), toScreenY(0));
+      ctx.closePath();
+
+      // Hegy kitöltése
+      const gradM = ctx.createLinearGradient(0, toScreenY(mountain.height), 0, toScreenY(0));
+      gradM.addColorStop(0, '#5C5449');
+      gradM.addColorStop(0.3, '#736B5E');
+      gradM.addColorStop(1, '#8C8373');
+      ctx.fillStyle = gradM;
+      ctx.fill();
+
+      // Hegy kerete (Rozsomák sötét kontúr)
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#2D2A26';
+      ctx.stroke();
+
+      // Hegycsúcs havas sipka
+      ctx.beginPath();
+      ctx.moveTo(toScreenX(mountain.x), toScreenY(mountain.height));
+      ctx.lineTo(toScreenX(mountain.x - mountain.width * 0.12), toScreenY(mountain.height * 0.82));
+      ctx.lineTo(toScreenX(mountain.x), toScreenY(mountain.height * 0.85));
+      ctx.lineTo(toScreenX(mountain.x + mountain.width * 0.12), toScreenY(mountain.height * 0.82));
+      ctx.closePath();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fill();
+
+      // Hegycsúcs magasságjelző és koordináta tábla
+      const peakSx = toScreenX(mountain.x);
+      const peakSy = toScreenY(mountain.height);
+
+      ctx.beginPath();
+      ctx.setLineDash([3, 3]);
+      ctx.strokeStyle = '#D97725';
+      ctx.lineWidth = 1.5;
+      ctx.moveTo(peakSx, peakSy);
+      ctx.lineTo(peakSx, toScreenY(0));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Zászló / Címke a csúcson
+      ctx.fillStyle = '#2D2A26';
+      ctx.fillRect(peakSx - 26, peakSy - 22, 52, 18);
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 10px JetBrains Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${mountain.height}m`, peakSx, peakSy - 10);
+
+      // Föld / Alap talaj
+      const groundSy = toScreenY(0);
+      ctx.fillStyle = '#4D6B53'; // Fenyőzöld tajga talaj
+      ctx.fillRect(0, groundSy, canvas.width, canvas.height - groundSy);
+
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#2D2A26';
+      ctx.beginPath();
+      ctx.moveTo(0, groundSy);
+      ctx.lineTo(canvas.width, groundSy);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawPlayer(player, id) {
+      const sx = toScreenX(player.x);
+      const sy = toScreenY(player.y);
+      const isCurrent = (currentPlayer === id);
+
+      ctx.save();
+
+      // Talapzat / Domb
+      ctx.fillStyle = '#B5A895';
+      ctx.beginPath();
+      ctx.arc(sx, toScreenY(0), Math.max(15, player.y * 1.5), Math.PI, 0, false);
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#2D2A26';
+      ctx.stroke();
+
+      // Ágyú kerekek & test
+      ctx.fillStyle = id === 1 ? '#1A5276' : '#D97725';
+      ctx.beginPath();
+      ctx.arc(sx, sy, 7, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#2D2A26';
+      ctx.stroke();
+
+      // Ágyúcső iránya (a hegy felé mutat)
+      const barrelAngle = id === 1 ? -Math.PI / 4 : -3 * Math.PI / 4;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);
+      ctx.lineTo(sx + Math.cos(barrelAngle) * 14, sy + Math.sin(barrelAngle) * 14);
+      ctx.stroke();
+
+      // Kijelölő nyíl a soron lévő játékos felett
+      if (isCurrent) {
+        ctx.fillStyle = '#D97725';
+        ctx.beginPath();
+        ctx.moveTo(sx, sy - 28);
+        ctx.lineTo(sx - 7, sy - 38);
+        ctx.lineTo(sx + 7, sy - 38);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      // Név és koordináta címke
+      ctx.font = 'bold 11px JetBrains Mono';
+      ctx.fillStyle = '#2D2A26';
+      ctx.textAlign = 'center';
+      const name = id === 1 ? '1. Játékos' : (matchMode === 'single' ? 'Céltábla' : '2. Játékos');
+      ctx.fillText(name, sx, sy + 22);
+      ctx.font = '10px JetBrains Mono';
+      ctx.fillStyle = '#635E59';
+      ctx.fillText(`(${player.x}m, ${player.y}m)`, sx, sy + 34);
+
+      ctx.restore();
+    }
+
+    function drawTrajectories() {
+      ctx.save();
+      trajectoryHistory.forEach(t => {
+        ctx.beginPath();
+        ctx.strokeStyle = t.color;
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);
+
+        t.path.forEach((pt, i) => {
+          const sx = toScreenX(pt.x);
+          const sy = toScreenY(pt.y);
+          if (i === 0) ctx.moveTo(sx, sy);
+          else ctx.lineTo(sx, sy);
+        });
+        ctx.stroke();
+
+        // Becsapódási kereszt
+        if (t.path.length > 0) {
+          const last = t.path[t.path.length - 1];
+          const lx = toScreenX(last.x);
+          const ly = toScreenY(last.y);
+          ctx.setLineDash([]);
+          ctx.strokeStyle = t.type === 'target_hit' ? '#2C5E4B' : '#B83227';
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.moveTo(lx - 5, ly - 5);
+          ctx.lineTo(lx + 5, ly + 5);
+          ctx.moveTo(lx + 5, ly - 5);
+          ctx.lineTo(lx - 5, ly + 5);
+          ctx.stroke();
+        }
+      });
+      ctx.restore();
+    }
+
+    function drawProjectile() {
+      ctx.save();
+      // Pályanyomvonal
+      ctx.beginPath();
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = currentPlayer === 1 ? '#1A5276' : '#D97725';
+      projectile.path.forEach((pt, i) => {
+        const sx = toScreenX(pt.x);
+        const sy = toScreenY(pt.y);
+        if (i === 0) ctx.moveTo(sx, sy);
+        else ctx.lineTo(sx, sy);
+      });
+      ctx.stroke();
+
+      // Maga a golyó
+      const px = toScreenX(projectile.x);
+      const py = toScreenY(projectile.y);
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fillStyle = '#2D2A26';
+      ctx.fill();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    // Indítás az oldal betöltésekor
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
