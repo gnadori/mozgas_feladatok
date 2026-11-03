@@ -392,6 +392,129 @@
       gap: 0.5rem;
     }
 
+    /* Lebegő élő erőmérő HUD a Canvas jobb felső sarkában */
+    .canvas-forces-hud {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      padding: 0.5rem 0.75rem;
+      font-size: 0.8rem;
+      z-index: 5;
+      min-width: 175px;
+      pointer-events: none;
+    }
+
+    .forces-hud-title {
+      font-weight: 800;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #635E59;
+      border-bottom: 1px solid #D5DBDB;
+      padding-bottom: 0.25rem;
+      margin-bottom: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .force-hud-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+    }
+
+    .force-hud-name {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.78rem;
+    }
+
+    .force-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      display: inline-block;
+      border: 1px solid #2D2A26;
+      flex-shrink: 0;
+    }
+
+    /* Erőábra nézetváltó és állatválasztó sáv */
+    .view-mode-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.6rem;
+      margin-bottom: 0.85rem;
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      padding: 0.65rem 0.9rem;
+    }
+
+    .view-mode-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .view-mode-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-right: 0.2rem;
+    }
+
+    .view-mode-btn {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      padding: 0.35rem 0.65rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--hard-shadow-sm);
+      transition: background 0.1s, transform 0.08s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .view-mode-btn:hover {
+      background: var(--surface-sand);
+      transform: translate(-1px, -1px);
+    }
+
+    .view-mode-btn.active {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
+    .animal-chip {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--hard-shadow-sm);
+      transition: background 0.1s, transform 0.08s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .animal-chip:hover {
+      background: var(--surface-sand);
+      transform: translate(-1px, -1px);
+    }
+
+    .animal-chip.active {
+      background: var(--accent-green);
+      color: #FFFFFF;
+    }
+
     .canvas-options {
       display: flex;
       flex-wrap: wrap;
@@ -762,39 +885,106 @@
 
     <!-- Szimulációs vászon -->
     <section class="card" style="padding-bottom: 1rem;">
+      <!-- Nézetválasztó és Kisállat választó sáv -->
+      <div class="view-mode-bar">
+        <div class="view-mode-group">
+          <span class="view-mode-label">Erőábra nézet:</span>
+          <button class="view-mode-btn active" id="btn-mode-real" title="Csak a 3 valódi külső erő (Súlyerő, Tartóerő, Súrlódás)">
+            🎯 Valódi erők (G, F<sub>ny</sub>, F<sub>s</sub>)
+          </button>
+          <button class="view-mode-btn" id="btn-mode-components" title="Súlyerő felbontva lejtővel párhuzamos és merőleges összetevőkre">
+            📐 Felbontott erők (F<sub>||</sub>, F<sub>&perp;</sub>)
+          </button>
+          <button class="view-mode-btn" id="btn-mode-resultant" title="Csak a gyorsulást okozó eredő erő">
+            ⚡ Eredő erő (F<sub>eredő</sub>)
+          </button>
+          <button class="view-mode-btn" id="btn-mode-all" title="Minden erő és segédvonal egyszerre">
+            🔬 Összes erő
+          </button>
+        </div>
+
+        <div class="view-mode-group">
+          <span class="view-mode-label">Utas a ládában:</span>
+          <button class="animal-chip active" data-animal="wolverine" title="Rozsomák kölyök sapkában és sállal">
+            🐾 Rozsomák kölyök
+          </button>
+          <button class="animal-chip" data-animal="fox" title="Kíváncsi kisróka">
+            🦊 Kisróka
+          </button>
+          <button class="animal-chip" data-animal="bunny" title="Bátor hónyuszi">
+            🐰 Hónyuszi
+          </button>
+        </div>
+      </div>
+
       <div class="canvas-container">
         <canvas id="sim-canvas" width="900" height="440"></canvas>
         <div class="canvas-overlay-hud">
           <div class="hud-badge" id="hud-angle-badge">Szög: <strong>25&deg;</strong></div>
           <div class="hud-badge" id="hud-state-badge">Állapot: <strong>Nyugalom (Tapad)</strong></div>
         </div>
+
+        <!-- Lebegő élő erőmérő HUD a Canvas jobb felső sarkában -->
+        <div class="canvas-forces-hud" id="forces-hud">
+          <div class="forces-hud-title">
+            <span>Aktuális erők</span>
+            <span style="font-weight:normal; font-size:0.7rem;">(Newton)</span>
+          </div>
+          <div class="force-hud-row" id="hud-row-g">
+            <span class="force-hud-name"><span class="force-dot" style="background:#B83227;"></span> Súlyerő (G):</span>
+            <span id="hud-val-g">49.1 N</span>
+          </div>
+          <div class="force-hud-row" id="hud-row-fn">
+            <span class="force-hud-name"><span class="force-dot" style="background:#1A5276;"></span> Tartóerő (F<sub>ny</sub>):</span>
+            <span id="hud-val-fn">44.5 N</span>
+          </div>
+          <div class="force-hud-row" id="hud-row-fs">
+            <span class="force-hud-name"><span class="force-dot" style="background:#2C5E4B;"></span> Súrlódás (F<sub>s</sub>):</span>
+            <span id="hud-val-fs">20.7 N</span>
+          </div>
+          <div class="force-hud-row" id="hud-row-fpar" style="display:none;">
+            <span class="force-hud-name"><span class="force-dot" style="background:#D97725;"></span> Lejtőirányú (F<sub>||</sub>):</span>
+            <span id="hud-val-fpar">20.7 N</span>
+          </div>
+          <div class="force-hud-row" id="hud-row-fperp" style="display:none;">
+            <span class="force-hud-name"><span class="force-dot" style="background:#2471A3;"></span> Nyomóerő (F<sub>&perp;</sub>):</span>
+            <span id="hud-val-fperp">44.5 N</span>
+          </div>
+          <div class="force-hud-row" id="hud-row-fnet" style="display:none;">
+            <span class="force-hud-name"><span class="force-dot" style="background:#6C3483;"></span> Eredő (F<sub>eredő</sub>):</span>
+            <span id="hud-val-fnet">0.0 N</span>
+          </div>
+        </div>
       </div>
 
       <!-- Vektor megjelenítési opciók -->
       <div class="canvas-options">
         <label>
-          <input type="checkbox" id="chk-components" checked> Erőkomponensek (F<sub>||</sub>, F<sub>&perp;</sub>)
+          <input type="checkbox" id="chk-gravity" checked> Súlyerő (G)
         </label>
         <label>
-          <input type="checkbox" id="chk-normal" checked> Tartóerő / Normálerő (F<sub>ny</sub>)
+          <input type="checkbox" id="chk-normal" checked> Tartóerő (F<sub>ny</sub>)
         </label>
         <label>
           <input type="checkbox" id="chk-friction" checked> Súrlódási erő (F<sub>s</sub>)
         </label>
         <label>
-          <input type="checkbox" id="chk-resultant" checked> Eredő gyorsító erő (F<sub>eredő</sub>)
+          <input type="checkbox" id="chk-components"> Összetevők (F<sub>||</sub>, F<sub>&perp;</sub>)
         </label>
         <label>
-          <input type="checkbox" id="chk-values" checked> Értékek kiírása a vektorok mellett
+          <input type="checkbox" id="chk-resultant"> Eredő gyorsító erő (F<sub>eredő</sub>)
+        </label>
+        <label style="margin-left:auto;">
+          <input type="checkbox" id="chk-values"> Számértékek a nyilak mellett
         </label>
       </div>
 
       <!-- Vektor jelmagyarázat -->
       <div class="vector-legend">
-        <div class="legend-item"><span class="color-pill" style="background:#B83227;"></span><strong>G</strong>: Súlyerő (m&middot;g)</div>
-        <div class="legend-item"><span class="color-pill" style="background:#2471A3;"></span><strong>F<sub>&perp;</sub> / F<sub>ny</sub></strong>: Nyomó- és tartóerő</div>
-        <div class="legend-item"><span class="color-pill" style="background:#D97725;"></span><strong>F<sub>||</sub></strong>: Lejtőirányú komponens</div>
-        <div class="legend-item"><span class="color-pill" style="background:#2C5E4B;"></span><strong>F<sub>s</sub></strong>: Súrlódási erő</div>
+        <div class="legend-item"><span class="color-pill" style="background:#B83227;"></span><strong>G</strong>: Súlyerő (m&middot;g lefelé)</div>
+        <div class="legend-item"><span class="color-pill" style="background:#1A5276;"></span><strong>F<sub>ny</sub></strong>: Felület által kifejtett tartóerő</div>
+        <div class="legend-item"><span class="color-pill" style="background:#2C5E4B;"></span><strong>F<sub>s</sub></strong>: Súrlódási erő (lejtő mentén fékez)</div>
+        <div class="legend-item"><span class="color-pill" style="background:#D97725;"></span><strong>F<sub>||</sub></strong>: Lejtővel párhuzamos lefelé húzó erő</div>
         <div class="legend-item"><span class="color-pill" style="background:#6C3483;"></span><strong>F<sub>eredő</sub></strong>: Eredő gyorsító erő</div>
       </div>
     </section>
@@ -947,7 +1137,10 @@
       accel: 0.0,     // m/s²
       rampLengthM: 10.0, // lejtő tényleges hossza méterben a fizikához
       isSliding: false,
-      tiltExperimentActive: false
+      tiltExperimentActive: false,
+      // Állat és nézet mód
+      selectedAnimal: 'wolverine',
+      viewMode: 'real'
     };
 
     // DOM Elemek
@@ -981,11 +1174,35 @@
 
     const presetChips = document.querySelectorAll('.preset-chip');
 
-    const chkComponents = document.getElementById('chk-components');
+    // Nézetváltó és állatválasztó elemek
+    const btnModeReal = document.getElementById('btn-mode-real');
+    const btnModeComponents = document.getElementById('btn-mode-components');
+    const btnModeResultant = document.getElementById('btn-mode-resultant');
+    const btnModeAll = document.getElementById('btn-mode-all');
+    const animalChips = document.querySelectorAll('.animal-chip');
+
+    // Vektor kapcsolók
+    const chkGravity = document.getElementById('chk-gravity');
     const chkNormal = document.getElementById('chk-normal');
     const chkFriction = document.getElementById('chk-friction');
+    const chkComponents = document.getElementById('chk-components');
     const chkResultant = document.getElementById('chk-resultant');
     const chkValues = document.getElementById('chk-values');
+
+    // HUD elemek
+    const hudValG = document.getElementById('hud-val-g');
+    const hudValFn = document.getElementById('hud-val-fn');
+    const hudValFs = document.getElementById('hud-val-fs');
+    const hudValFpar = document.getElementById('hud-val-fpar');
+    const hudValFperp = document.getElementById('hud-val-fperp');
+    const hudValFnet = document.getElementById('hud-val-fnet');
+
+    const hudRowG = document.getElementById('hud-row-g');
+    const hudRowFn = document.getElementById('hud-row-fn');
+    const hudRowFs = document.getElementById('hud-row-fs');
+    const hudRowFpar = document.getElementById('hud-row-fpar');
+    const hudRowFperp = document.getElementById('hud-row-fperp');
+    const hudRowFnet = document.getElementById('hud-row-fnet');
 
     const statusPanel = document.getElementById('status-panel');
     const statusIcon = document.getElementById('status-icon');
@@ -1044,7 +1261,7 @@
       const criticalAngleRad = Math.atan(state.mu0);
       const criticalAngleDeg = (criticalAngleRad * 180) / Math.PI;
 
-      // Megindulási feltétel: Fpar > Fsmax (vagy alpha > criticalAngleDeg)
+      // Megindulási feltétel: Fpar > Fsmax
       const willSlide = (Fpar > Fsmax + 1e-5);
 
       let Fs = 0;
@@ -1052,17 +1269,14 @@
       let accel = 0;
 
       if (!willSlide && state.velocity === 0) {
-        // Nyugalom: tapadási súrlódás kiegyenlíti a lejtőirányú komponenst
         Fs = Fpar;
         Fnet = 0;
         accel = 0;
       } else {
-        // Csúszik lefelé: kinetikus súrlódási erő lép fel
         const Fkin = state.mu * Fperp;
         Fs = Fkin;
         Fnet = Fpar - Fkin;
         if (Fnet < 0 && state.velocity <= 0) {
-          // Ha felfelé vagy megállás történne és nincs sebesség
           Fnet = 0;
           Fs = Fpar;
           accel = 0;
@@ -1107,6 +1321,21 @@
       calcAcc.textContent = `${p.accel.toFixed(2)} m/s²`;
       calcVel.textContent = `${state.velocity.toFixed(2)} m/s`;
 
+      // Jobb felső HUD értékek és láthatóság
+      hudValG.textContent = `${p.G.toFixed(1)} N`;
+      hudValFn.textContent = `${p.Fperp.toFixed(1)} N`;
+      hudValFs.textContent = `${p.Fs.toFixed(1)} N`;
+      hudValFpar.textContent = `${p.Fpar.toFixed(1)} N`;
+      hudValFperp.textContent = `${p.Fperp.toFixed(1)} N`;
+      hudValFnet.textContent = `${p.Fnet.toFixed(1)} N`;
+
+      hudRowG.style.display = chkGravity && chkGravity.checked ? 'flex' : 'none';
+      hudRowFn.style.display = chkNormal && chkNormal.checked ? 'flex' : 'none';
+      hudRowFs.style.display = chkFriction && chkFriction.checked ? 'flex' : 'none';
+      hudRowFpar.style.display = chkComponents && chkComponents.checked ? 'flex' : 'none';
+      hudRowFperp.style.display = chkComponents && chkComponents.checked ? 'flex' : 'none';
+      hudRowFnet.style.display = chkResultant && chkResultant.checked ? 'flex' : 'none';
+
       criticalAngleInfo.innerHTML = `Kritikus szög: &alpha;<sub>krit</sub> = arctan(${state.mu0.toFixed(2)}) = <strong>${p.criticalAngleDeg.toFixed(1)}&deg;</strong>`;
 
       // Gauge arány (Fpar / Fsmax)
@@ -1142,6 +1371,45 @@
         calcFsFormula.textContent = `Nyugalomban: F_{s} = F_{||}`;
         calcFnetFormula.textContent = `Egyensúlyban: F_{eredő} = 0 N`;
       }
+    }
+
+    // Nézet mód beállítása
+    function setViewMode(mode) {
+      state.viewMode = mode;
+      [btnModeReal, btnModeComponents, btnModeResultant, btnModeAll].forEach(b => b.classList.remove('active'));
+
+      if (mode === 'real') {
+        btnModeReal.classList.add('active');
+        chkGravity.checked = true;
+        chkNormal.checked = true;
+        chkFriction.checked = true;
+        chkComponents.checked = false;
+        chkResultant.checked = false;
+      } else if (mode === 'components') {
+        btnModeComponents.classList.add('active');
+        chkGravity.checked = false;
+        chkNormal.checked = true;
+        chkFriction.checked = true;
+        chkComponents.checked = true;
+        chkResultant.checked = false;
+      } else if (mode === 'resultant') {
+        btnModeResultant.classList.add('active');
+        chkGravity.checked = false;
+        chkNormal.checked = false;
+        chkFriction.checked = false;
+        chkComponents.checked = false;
+        chkResultant.checked = true;
+      } else if (mode === 'all') {
+        btnModeAll.classList.add('active');
+        chkGravity.checked = true;
+        chkNormal.checked = true;
+        chkFriction.checked = true;
+        chkComponents.checked = true;
+        chkResultant.checked = true;
+      }
+
+      updatePhysicsCalculations();
+      draw();
     }
 
     // Eseménykezelők
@@ -1245,6 +1513,22 @@
         });
       });
 
+      // Nézetváltó gombok
+      btnModeReal.addEventListener('click', () => setViewMode('real'));
+      btnModeComponents.addEventListener('click', () => setViewMode('components'));
+      btnModeResultant.addEventListener('click', () => setViewMode('resultant'));
+      btnModeAll.addEventListener('click', () => setViewMode('all'));
+
+      // Állatválasztó gombok
+      animalChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          animalChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          state.selectedAnimal = chip.dataset.animal;
+          draw();
+        });
+      });
+
       // Lejátszás / Szünet
       btnPlayPause.addEventListener('click', () => {
         state.isRunning = !state.isRunning;
@@ -1286,8 +1570,13 @@
       });
 
       // Jelölőnégyzetek újrarajzolása
-      [chkComponents, chkNormal, chkFriction, chkResultant, chkValues].forEach(chk => {
-        chk.addEventListener('change', () => draw());
+      [chkGravity, chkComponents, chkNormal, chkFriction, chkResultant, chkValues].forEach(chk => {
+        if (chk) {
+          chk.addEventListener('change', () => {
+            updatePhysicsCalculations();
+            draw();
+          });
+        }
       });
     }
 
@@ -1327,7 +1616,6 @@
 
         const pCurrent = getPhysics();
         if (pCurrent.willSlide || state.angleDeg >= 80) {
-          // Megindult!
           clearInterval(interval);
           state.tiltExperimentActive = false;
           btnTiltExp.disabled = false;
@@ -1361,7 +1649,6 @@
           state.velocity += state.accel * dt;
           if (state.velocity < 0) state.velocity = 0;
 
-          // Eltolás relatív skálán
           const dPos = (state.velocity * dt) / state.rampLengthM;
           state.pos += dPos;
 
@@ -1382,6 +1669,297 @@
       requestAnimationFrame(simLoop);
     }
 
+    // Cuki kisállat és faláda rajzolása lokális koordinátákban
+    function drawCrateAndAnimal(ctx, blockW, blockH, vel) {
+      // 1. Háttér / láda belseje
+      ctx.fillStyle = '#6E3C1B';
+      ctx.fillRect(-blockW / 2, -blockH, blockW, blockH);
+
+      // 2. Kisállat rajzolása a ládában
+      const animalType = state.selectedAnimal || 'wolverine';
+      const headRadius = Math.max(14, blockW * 0.28);
+      const headX = 0;
+      const headY = -blockH - headRadius * 0.45;
+
+      ctx.save();
+
+      if (animalType === 'wolverine') {
+        // Rozsomák kölyök
+        const earR = headRadius * 0.42;
+        // Bal fül
+        ctx.fillStyle = '#382212';
+        ctx.beginPath();
+        ctx.arc(headX - headRadius * 0.75, headY - headRadius * 0.65, earR, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#2D2A26';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.fillStyle = '#F5CBA7';
+        ctx.beginPath();
+        ctx.arc(headX - headRadius * 0.75, headY - headRadius * 0.65, earR * 0.55, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Jobb fül
+        ctx.fillStyle = '#382212';
+        ctx.beginPath();
+        ctx.arc(headX + headRadius * 0.75, headY - headRadius * 0.65, earR, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#F5CBA7';
+        ctx.beginPath();
+        ctx.arc(headX + headRadius * 0.75, headY - headRadius * 0.65, earR * 0.55, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Fej alak (sötétbarna szőr)
+        ctx.fillStyle = '#3D2314';
+        ctx.beginPath();
+        ctx.arc(headX, headY, headRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Világos rozsomák homloksáv és orca maszk
+        ctx.fillStyle = '#E59866';
+        ctx.beginPath();
+        ctx.ellipse(headX, headY + headRadius * 0.25, headRadius * 0.68, headRadius * 0.5, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Szemek (kawaii csillogó szemek)
+        const eyeOffsetX = headRadius * 0.38;
+        const eyeOffsetY = headY - headRadius * 0.05;
+        const eyeR = headRadius * 0.22;
+        const isFast = vel > 0.8;
+
+        ctx.fillStyle = '#111111';
+        ctx.beginPath();
+        ctx.arc(headX - eyeOffsetX, eyeOffsetY, eyeR, 0, Math.PI * 2);
+        ctx.arc(headX + eyeOffsetX, eyeOffsetY, eyeR, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Szemcsillogás (fehér pöttyök)
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(headX - eyeOffsetX - eyeR * 0.3, eyeOffsetY - eyeR * 0.3, eyeR * 0.45, 0, Math.PI * 2);
+        ctx.arc(headX + eyeOffsetX - eyeR * 0.3, eyeOffsetY - eyeR * 0.3, eyeR * 0.45, 0, Math.PI * 2);
+        ctx.arc(headX - eyeOffsetX + eyeR * 0.35, eyeOffsetY + eyeR * 0.35, eyeR * 0.2, 0, Math.PI * 2);
+        ctx.arc(headX + eyeOffsetX + eyeR * 0.35, eyeOffsetY + eyeR * 0.35, eyeR * 0.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Pozsgás aranyos pofik
+        ctx.fillStyle = 'rgba(235, 87, 87, 0.4)';
+        ctx.beginPath();
+        ctx.arc(headX - eyeOffsetX - 3, eyeOffsetY + eyeR * 1.3, eyeR * 0.9, 0, Math.PI * 2);
+        ctx.arc(headX + eyeOffsetX + 3, eyeOffsetY + eyeR * 1.3, eyeR * 0.9, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Kis fekete orr
+        ctx.fillStyle = '#1A1A1A';
+        ctx.beginPath();
+        ctx.ellipse(headX, headY + headRadius * 0.32, headRadius * 0.2, headRadius * 0.14, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Mosoly vagy tátott száj
+        ctx.strokeStyle = '#2D2A26';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        if (isFast) {
+          ctx.fillStyle = '#922B21';
+          ctx.arc(headX, headY + headRadius * 0.52, headRadius * 0.2, 0, Math.PI);
+          ctx.closePath();
+          ctx.fill();
+          ctx.stroke();
+        } else {
+          ctx.moveTo(headX, headY + headRadius * 0.42);
+          ctx.lineTo(headX, headY + headRadius * 0.50);
+          ctx.moveTo(headX - headRadius * 0.18, headY + headRadius * 0.52);
+          ctx.quadraticCurveTo(headX - headRadius * 0.09, headY + headRadius * 0.58, headX, headY + headRadius * 0.50);
+          ctx.quadraticCurveTo(headX + headRadius * 0.09, headY + headRadius * 0.58, headX + headRadius * 0.18, headY + headRadius * 0.52);
+          ctx.stroke();
+        }
+
+        // Téli bojtos sapka a fején
+        const capY = headY - headRadius * 0.85;
+        ctx.fillStyle = '#D97725';
+        ctx.beginPath();
+        ctx.arc(headX, capY + 4, headRadius * 0.65, Math.PI, 0, false);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#2D2A26';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Bojt
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(headX, capY - headRadius * 0.55, headRadius * 0.25, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        // Meleg sál a nyak körül
+        const scarfY = -blockH + 3;
+        const windWiggle = vel > 0.05 ? Math.sin(Date.now() * 0.018) * Math.min(vel * 4, 18) : 0;
+        ctx.fillStyle = '#B83227';
+        ctx.fillRect(headX - headRadius * 0.8, scarfY - 6, headRadius * 1.6, 10);
+        ctx.strokeRect(headX - headRadius * 0.8, scarfY - 6, headRadius * 1.6, 10);
+
+        // Lobogó sálvég
+        ctx.fillStyle = '#B83227';
+        ctx.beginPath();
+        ctx.moveTo(headX + headRadius * 0.5, scarfY);
+        ctx.lineTo(headX + headRadius * 1.2 + windWiggle, scarfY - 6 - windWiggle * 0.3);
+        ctx.lineTo(headX + headRadius * 1.3 + windWiggle, scarfY + 6 - windWiggle * 0.3);
+        ctx.lineTo(headX + headRadius * 0.4, scarfY + 4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+      } else if (animalType === 'fox') {
+        // Kisróka
+        ctx.fillStyle = '#D35400';
+        ctx.beginPath();
+        ctx.moveTo(headX - headRadius * 0.8, headY);
+        ctx.lineTo(headX - headRadius * 0.9, headY - headRadius * 1.2);
+        ctx.lineTo(headX - headRadius * 0.2, headY - headRadius * 0.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = '#2D2A26';
+        ctx.stroke();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.moveTo(headX - headRadius * 0.75, headY - headRadius * 0.1);
+        ctx.lineTo(headX - headRadius * 0.85, headY - headRadius * 0.95);
+        ctx.lineTo(headX - headRadius * 0.3, headY - headRadius * 0.5);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#D35400';
+        ctx.beginPath();
+        ctx.moveTo(headX + headRadius * 0.8, headY);
+        ctx.lineTo(headX + headRadius * 0.9, headY - headRadius * 1.2);
+        ctx.lineTo(headX + headRadius * 0.2, headY - headRadius * 0.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.moveTo(headX + headRadius * 0.75, headY - headRadius * 0.1);
+        ctx.lineTo(headX + headRadius * 0.85, headY - headRadius * 0.95);
+        ctx.lineTo(headX + headRadius * 0.3, headY - headRadius * 0.5);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#E67E22';
+        ctx.beginPath();
+        ctx.arc(headX, headY, headRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.ellipse(headX - headRadius * 0.45, headY + headRadius * 0.35, headRadius * 0.45, headRadius * 0.38, 0.2, 0, Math.PI * 2);
+        ctx.ellipse(headX + headRadius * 0.45, headY + headRadius * 0.35, headRadius * 0.45, headRadius * 0.38, -0.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#2C3E50';
+        ctx.beginPath();
+        ctx.arc(headX - headRadius * 0.38, headY - headRadius * 0.05, headRadius * 0.2, 0, Math.PI * 2);
+        ctx.arc(headX + headRadius * 0.38, headY - headRadius * 0.05, headRadius * 0.2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#111';
+        ctx.beginPath();
+        ctx.arc(headX, headY + headRadius * 0.38, headRadius * 0.16, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // Hónyuszi
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.ellipse(headX - headRadius * 0.45, headY - headRadius * 1.1, headRadius * 0.25, headRadius * 0.75, -0.15, 0, Math.PI * 2);
+        ctx.ellipse(headX + headRadius * 0.45, headY - headRadius * 1.1, headRadius * 0.25, headRadius * 0.75, 0.15, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#2D2A26';
+        ctx.stroke();
+
+        ctx.fillStyle = '#FADBD8';
+        ctx.beginPath();
+        ctx.ellipse(headX - headRadius * 0.45, headY - headRadius * 1.1, headRadius * 0.12, headRadius * 0.55, -0.15, 0, Math.PI * 2);
+        ctx.ellipse(headX + headRadius * 0.45, headY - headRadius * 1.1, headRadius * 0.12, headRadius * 0.55, 0.15, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(headX, headY, headRadius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = '#2C3E50';
+        ctx.beginPath();
+        ctx.arc(headX - headRadius * 0.35, headY - headRadius * 0.05, headRadius * 0.18, 0, Math.PI * 2);
+        ctx.arc(headX + headRadius * 0.35, headY - headRadius * 0.05, headRadius * 0.18, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#F1948A';
+        ctx.beginPath();
+        ctx.ellipse(headX, headY + headRadius * 0.28, headRadius * 0.14, headRadius * 0.1, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 3. Fa láda eleje
+      ctx.fillStyle = '#C07D4C';
+      ctx.fillRect(-blockW / 2, -blockH * 0.72, blockW, blockH * 0.72);
+      ctx.strokeStyle = '#2D2A26';
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(-blockW / 2, -blockH * 0.72, blockW, blockH * 0.72);
+
+      // Deszkavágások
+      ctx.strokeStyle = 'rgba(45, 42, 38, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(-blockW / 2, -blockH * 0.36);
+      ctx.lineTo(blockW / 2, -blockH * 0.36);
+      ctx.stroke();
+
+      // Fém sarokpántok
+      ctx.fillStyle = '#2D2A26';
+      const bracketW = Math.max(5, blockW * 0.14);
+      const bracketH = Math.max(5, blockH * 0.14);
+      ctx.fillRect(-blockW / 2, -blockH * 0.72, bracketW, bracketH);
+      ctx.fillRect(blockW / 2 - bracketW, -blockH * 0.72, bracketW, bracketH);
+      ctx.fillRect(-blockW / 2, -bracketH, bracketW, bracketH);
+      ctx.fillRect(blockW / 2 - bracketW, -bracketH, bracketW, bracketH);
+
+      // 4. Kis mancsok a láda peremén
+      const pawR = Math.max(5, headRadius * 0.3);
+      const pawY = -blockH * 0.72;
+      const pawDist = Math.max(12, blockW * 0.28);
+
+      ctx.fillStyle = (animalType === 'wolverine') ? '#3D2314' : (animalType === 'fox') ? '#D35400' : '#FFFFFF';
+      ctx.beginPath();
+      ctx.arc(-pawDist, pawY, pawR, 0, Math.PI * 2);
+      ctx.arc(pawDist, pawY, pawR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#2D2A26';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      // Párnácska
+      ctx.fillStyle = '#E59866';
+      ctx.beginPath();
+      ctx.arc(-pawDist, pawY + pawR * 0.2, pawR * 0.45, 0, Math.PI * 2);
+      ctx.arc(pawDist, pawY + pawR * 0.2, pawR * 0.45, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Tömeg címke
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 11px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${state.mass.toFixed(1)}kg`, 0, -blockH * 0.2);
+
+      ctx.restore();
+    }
+
     // Kirajzolás Canvasre
     function draw() {
       const w = canvas.getBoundingClientRect().width;
@@ -1389,7 +1967,7 @@
 
       ctx.clearRect(0, 0, w, h);
 
-      // 1. Háttér (enyhe égbolt és talaj vonal)
+      // 1. Háttér
       const grad = ctx.createLinearGradient(0, 0, 0, h);
       grad.addColorStop(0, '#EAF3F8');
       grad.addColorStop(0.85, '#F4F9FC');
@@ -1418,21 +1996,13 @@
 
       // 2. Lejtő geometriája
       const alphaRad = (state.angleDeg * Math.PI) / 180;
-      const pivotX = w * 0.12; // Lejtő bal alsó sarka
+      const pivotX = w * 0.12;
       const pivotY = groundY;
-      const rampLengthPx = Math.min(w * 0.72, 600); // Lejtő felületének hossza px-ben
+      const rampLengthPx = Math.min(w * 0.72, 600);
 
-      // Lejtő jobb csúcsa (vagy lejtő ék formája: balra lent sarok, jobbra fent a csúcs)
-      // Standard ábrázolás: Lejtő lejt balról jobbra vagy jobbról balra.
-      // Rajzoljuk úgy, hogy a csúcs balra fent van, a lejtő lefelé lejt jobbra a talajig!
-      // Vagy a csúcs jobbra fent, és balra lent van a szög.
-      // Legtermészetesebb a magyar fizikatankönyvekben:
-      // Balra lent van a forgáspont (szög), és jobbra fent van a lejtő emelt csúcsa.
-      // A hasáb fent ül, és lefelé csúszik a forgáspont felé!
       const topX = pivotX + rampLengthPx * Math.cos(alphaRad);
       const topY = pivotY - rampLengthPx * Math.sin(alphaRad);
 
-      // Lejtő háromszög kitöltése
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(pivotX, pivotY);
@@ -1440,14 +2010,13 @@
       ctx.lineTo(topX, pivotY);
       ctx.closePath();
 
-      // Fa erezet / lejtő minta
       ctx.fillStyle = '#EAE1D0';
       ctx.fill();
       ctx.lineWidth = 3;
       ctx.strokeStyle = '#2D2A26';
       ctx.stroke();
 
-      // Lejtő belső textúra vonalak
+      // Textúra
       ctx.clip();
       ctx.strokeStyle = 'rgba(180, 160, 130, 0.35)';
       ctx.lineWidth = 2;
@@ -1459,7 +2028,7 @@
       }
       ctx.restore();
 
-      // Szögmérő ív a saroknál
+      // Szögmérő ív
       if (state.angleDeg > 2) {
         const arcRadius = 55;
         ctx.beginPath();
@@ -1475,7 +2044,6 @@
         ctx.closePath();
         ctx.fill();
 
-        // Szög szövege
         ctx.fillStyle = '#2D2A26';
         ctx.font = 'bold 13px "JetBrains Mono", monospace';
         const textDist = arcRadius + 18;
@@ -1483,147 +2051,123 @@
         ctx.fillText(`${state.angleDeg}°`, pivotX + textDist * Math.cos(textAngle), pivotY + textDist * Math.sin(textAngle) + 4);
       }
 
-      // 3. Tárgy (kocka/hasáb) pozicionálása a lejtőn
-      // pos: 0 = fent a top-nál, 1 = lent a pivot-nál
-      const blockRelPos = 1 - state.pos; // 1-től (fent) 0-ig (lent)
+      // 3. Tárgy pozicionálása a lejtőn
+      const blockRelPos = 1 - state.pos;
       const blockCenterX = pivotX + blockRelPos * rampLengthPx * Math.cos(alphaRad);
       const blockCenterY = pivotY - blockRelPos * rampLengthPx * Math.sin(alphaRad);
 
-      // Hasáb mérete arányos a tömeggel
-      const baseSize = 40;
-      const massScale = 0.8 + 0.6 * (state.mass / 25);
+      const baseSize = 44;
+      const massScale = 0.85 + 0.5 * (state.mass / 25);
       const blockW = baseSize * massScale;
       const blockH = baseSize * massScale;
 
-      // Rajzoljuk ki a hasábot elforgatva a lejtő szögével
+      // Doboz és cuki kisállat rajzolása
       ctx.save();
       ctx.translate(blockCenterX, blockCenterY);
       ctx.rotate(-alphaRad);
-
-      // A hasáb talpa pontosan a lejtő érintési vonalán fekszik:
-      // A hasáb lokális koordinátarendszerben [-blockW/2, -blockH] és [blockW/2, 0] között van
-      ctx.fillStyle = '#C87D55';
-      ctx.fillRect(-blockW / 2, -blockH, blockW, blockH);
-      ctx.lineWidth = 2.5;
-      ctx.strokeStyle = '#2D2A26';
-      ctx.strokeRect(-blockW / 2, -blockH, blockW, blockH);
-
-      // Kocka belső részlet (pl. fém/fa sarokpántok)
-      ctx.fillStyle = '#A0522D';
-      ctx.fillRect(-blockW / 2 + 3, -blockH + 3, blockW - 6, blockH - 6);
-      ctx.strokeStyle = 'rgba(0,0,0,0.15)';
-      ctx.beginPath();
-      ctx.moveTo(-blockW / 2 + 3, -blockH + 3);
-      ctx.lineTo(blockW / 2 - 3, -3);
-      ctx.moveTo(blockW / 2 - 3, -blockH + 3);
-      ctx.lineTo(-blockW / 2 + 3, -3);
-      ctx.stroke();
-
-      // Tömeg címke a hasáb közepén
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 11px "Inter", sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(`${state.mass.toFixed(1)}kg`, 0, -blockH / 2);
-
+      drawCrateAndAnimal(ctx, blockW, blockH, state.velocity);
       ctx.restore();
 
-      // 4. Erővektorok kirajzolása
-      // A hasáb tömegközéppontja globális koordinátákban:
+      // 4. Erővektorok letisztult kirajzolása
       const cmOffset = blockH / 2;
       const cmX = blockCenterX - cmOffset * Math.sin(alphaRad);
       const cmY = blockCenterY - cmOffset * Math.cos(alphaRad);
 
-      // A hasáb talpának közepe (ahol a súrlódás és a normálerő hat):
       const contactX = blockCenterX;
       const contactY = blockCenterY;
 
       const p = getPhysics();
-
-      // Skálázási tényező: 1 Newton = hány pixel
-      // A rajz ne lógjon ki: max G ~ 25 * 9.81 = 245 N.
-      // Legyen 1 N = 1.0 - 1.2 px
       const scaleN = Math.max(0.6, Math.min(1.4, 260 / (state.mass * g)));
+      const showValues = chkValues && chkValues.checked;
 
-      const showValues = chkValues.checked;
+      // G: Súlyerő (függőlegesen lefelé)
+      if (chkGravity && chkGravity.checked) {
+        const lenG = p.G * scaleN;
+        drawCleanVector(ctx, cmX, cmY, cmX, cmY + lenG, '#B83227', 'G', `${p.G.toFixed(1)} N`, 3);
+      }
 
-      // G: Súlyerő (függőlegesen lefelé a CM-ből)
-      const lenG = p.G * scaleN;
-      drawVector(ctx, cmX, cmY, cmX, cmY + lenG, '#B83227', 'G', showValues ? `${p.G.toFixed(1)} N` : null, 3);
-
-      // Felbontott összetevők (ha be van pipálva)
-      if (chkComponents.checked) {
-        // F_perp: felületre merőleges nyomó komponens (CM-ből felület felé befelé)
+      // Összetevők (F||, F⊥)
+      if (chkComponents && chkComponents.checked) {
         const lenFperp = p.Fperp * scaleN;
         const perpEndX = cmX + lenFperp * Math.sin(alphaRad);
         const perpEndY = cmY + lenFperp * Math.cos(alphaRad);
-        drawDashedVector(ctx, cmX, cmY, perpEndX, perpEndY, '#2471A3', 'F⊥', showValues ? `${p.Fperp.toFixed(1)} N` : null, 2);
+        drawDashedVector(ctx, cmX, cmY, perpEndX, perpEndY, '#2471A3', 'F⊥', `${p.Fperp.toFixed(1)} N`, 2);
 
-        // F_par: lejtővel párhuzamos húzó komponens (CM-ből a lejtő mentén lefelé, azaz a pivot felé)
         const lenFpar = p.Fpar * scaleN;
         const parEndX = cmX - lenFpar * Math.cos(alphaRad);
         const parEndY = cmY + lenFpar * Math.sin(alphaRad);
-        drawVector(ctx, cmX, cmY, parEndX, parEndY, '#D97725', 'F||', showValues ? `${p.Fpar.toFixed(1)} N` : null, 2.5);
+        drawCleanVector(ctx, cmX, cmY, parEndX, parEndY, '#D97725', 'F||', `${p.Fpar.toFixed(1)} N`, 2.5);
 
-        // Parallelogramma segédvonalak
-        ctx.save();
-        ctx.setLineDash([3, 3]);
-        ctx.strokeStyle = '#85929E';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.moveTo(perpEndX, perpEndY);
-        ctx.lineTo(cmX, cmY + lenG);
-        ctx.lineTo(parEndX, parEndY);
-        ctx.stroke();
-        ctx.restore();
+        // Parallelogramma segédvonalak csak ha a G is be van kapcsolva
+        if (chkGravity && chkGravity.checked) {
+          ctx.save();
+          ctx.setLineDash([3, 3]);
+          ctx.strokeStyle = '#85929E';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(perpEndX, perpEndY);
+          ctx.lineTo(cmX, cmY + p.G * scaleN);
+          ctx.lineTo(parEndX, parEndY);
+          ctx.stroke();
+          ctx.restore();
+        }
       }
 
-      // F_ny / Tartóerő (a lejtő felületétől merőlegesen felfelé)
-      if (chkNormal.checked) {
+      // Fny / Tartóerő (felületből merőlegesen kifelé)
+      if (chkNormal && chkNormal.checked) {
         const lenFn = p.Fperp * scaleN;
         const fnEndX = contactX - lenFn * Math.sin(alphaRad);
         const fnEndY = contactY - lenFn * Math.cos(alphaRad);
-        drawVector(ctx, contactX, contactY, fnEndX, fnEndY, '#1A5276', 'Fny', showValues ? `${p.Fperp.toFixed(1)} N` : null, 2.5);
+        drawCleanVector(ctx, contactX, contactY, fnEndX, fnEndY, '#1A5276', 'Fny', `${p.Fperp.toFixed(1)} N`, 2.5);
       }
 
-      // Súrlódási erő (F_s): a felület mentén felfelé mutat, hogy meggátolja / fékezze a lecsúszást!
-      if (chkFriction.checked && p.Fs > 0.05) {
+      // Fs / Súrlódási erő (lejtő mentén felfelé gátolja a lecsúszást)
+      if (chkFriction && chkFriction.checked && p.Fs > 0.05) {
         const lenFs = p.Fs * scaleN;
-        // Felfelé a lejtő mentén: a top felé mutat (+cos alpha, -sin alpha)
         const fsEndX = contactX + lenFs * Math.cos(alphaRad);
         const fsEndY = contactY - lenFs * Math.sin(alphaRad);
         const labelFs = p.willSlide ? 'Fcs' : 'Fs';
-        drawVector(ctx, contactX, contactY, fsEndX, fsEndY, '#2C5E4B', labelFs, showValues ? `${p.Fs.toFixed(1)} N` : null, 3);
+        drawCleanVector(ctx, contactX, contactY, fsEndX, fsEndY, '#2C5E4B', labelFs, `${p.Fs.toFixed(1)} N`, 3);
       }
 
-      // Eredő gyorsító erő (F_eredő): csak ha megindult és van eredő erő
-      if (chkResultant.checked && p.Fnet > 0.1 && (p.willSlide || state.velocity > 0.01)) {
-        const lenFnet = p.Fnet * scaleN;
-        // A lejtő mentén lefelé mutat a CM-ből kicsit eltolva
-        const netStartX = cmX - 10 * Math.sin(alphaRad);
-        const netStartY = cmY - 10 * Math.cos(alphaRad);
-        const netEndX = netStartX - lenFnet * Math.cos(alphaRad);
-        const netEndY = netStartY + lenFnet * Math.sin(alphaRad);
-        drawVector(ctx, netStartX, netStartY, netEndX, netEndY, '#6C3483', 'Feredő', showValues ? `${p.Fnet.toFixed(1)} N (a=${p.accel.toFixed(1)}m/s²)` : 'Feredő', 3);
+      // Feredő / Eredő gyorsító erő
+      if (chkResultant && chkResultant.checked) {
+        if (p.Fnet > 0.1 && (p.willSlide || state.velocity > 0.01)) {
+          const lenFnet = p.Fnet * scaleN;
+          // Kicsit a doboz orrától indul lefelé a lejtő mentén
+          const netStartX = cmX - 10 * Math.sin(alphaRad);
+          const netStartY = cmY - 10 * Math.cos(alphaRad);
+          const netEndX = netStartX - lenFnet * Math.cos(alphaRad);
+          const netEndY = netStartY + lenFnet * Math.sin(alphaRad);
+          drawCleanVector(ctx, netStartX, netStartY, netEndX, netEndY, '#6C3483', 'Feredő', `${p.Fnet.toFixed(1)} N`, 3.5);
+        } else {
+          // Ha nyugalomban van és az eredő erőt kérte a diák, jelezzük finoman
+          ctx.save();
+          ctx.font = 'bold 12px "JetBrains Mono", monospace';
+          ctx.fillStyle = '#6C3483';
+          ctx.textAlign = 'center';
+          ctx.fillText('Feredő = 0 N (Nyugalom)', cmX - 45 * Math.cos(alphaRad), cmY + 45 * Math.sin(alphaRad));
+          ctx.restore();
+        }
       }
 
-      // 5. Mozgási sebesség vektor ha mozog
+      // 5. Sebesség vektor
       if (state.velocity > 0.05) {
-        const velLen = Math.min(state.velocity * 12, 100);
+        const velLen = Math.min(state.velocity * 12, 90);
         const vEndX = cmX - velLen * Math.cos(alphaRad);
         const vEndY = cmY + velLen * Math.sin(alphaRad);
-        drawVector(ctx, cmX, cmY, vEndX, vEndY, '#0E6655', 'v', `${state.velocity.toFixed(2)} m/s`, 2.5);
+        drawCleanVector(ctx, cmX, cmY, vEndX, vEndY, '#0E6655', 'v', `${state.velocity.toFixed(2)} m/s`, 2.5);
       }
     }
 
-    // Segédfüggvény: vektor nyíl rajzolása
-    function drawVector(ctx, fromX, fromY, toX, toY, color, label, valText, lineWidth = 2.5) {
+    // Segédfüggvény: Tiszta vektor nyíl rajzolása
+    function drawCleanVector(ctx, fromX, fromY, toX, toY, color, symbol, valText, lineWidth = 2.5) {
       const dx = toX - fromX;
       const dy = toY - fromY;
       const len = Math.hypot(dx, dy);
       if (len < 2) return;
 
-      const headLen = Math.min(12, len * 0.4);
+      const headLen = Math.min(12, len * 0.35 + 4);
       const angle = Math.atan2(dy, dx);
 
       ctx.save();
@@ -1646,39 +2190,38 @@
       ctx.closePath();
       ctx.fill();
 
-      // Címke
-      if (label) {
-        ctx.font = 'bold 12px "JetBrains Mono", monospace';
-        const labelDist = 16;
-        const normAngle = angle + Math.PI / 2;
-        let lx = toX + labelDist * Math.cos(normAngle);
-        let ly = toY + labelDist * Math.sin(normAngle);
+      // Tiszta szimbólum
+      if (symbol) {
+        const showValues = chkValues && chkValues.checked;
+        const textToDraw = (showValues && valText) ? `${symbol} (${valText})` : symbol;
 
-        ctx.fillStyle = '#2D2A26';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        let fullText = label;
-        if (valText) fullText += ` (${valText})`;
+        ctx.font = 'bold 12px "Roboto Slab", serif';
+        const labelDist = 14;
+        const normAngle = angle + (Math.sin(angle) >= 0 ? -Math.PI / 2 : Math.PI / 2);
+        const lx = toX + labelDist * Math.cos(angle) * 0.4 + 10 * Math.cos(normAngle);
+        const ly = toY + labelDist * Math.sin(angle) * 0.4 + 10 * Math.sin(normAngle);
 
-        // Háttér a címke mögé a jobb olvashatóságért
-        const tm = ctx.measureText(fullText);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
-        ctx.fillRect(lx - tm.width / 2 - 3, ly - 7, tm.width + 6, 15);
+        const tm = ctx.measureText(textToDraw);
+        const pad = 3;
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.92)';
+        ctx.fillRect(lx - tm.width / 2 - pad, ly - 7, tm.width + pad * 2, 15);
         ctx.strokeStyle = color;
-        ctx.lineWidth = 1;
-        ctx.strokeRect(lx - tm.width / 2 - 3, ly - 7, tm.width + 6, 15);
+        ctx.lineWidth = 1.2;
+        ctx.strokeRect(lx - tm.width / 2 - pad, ly - 7, tm.width + pad * 2, 15);
 
         ctx.fillStyle = color;
-        ctx.fillText(fullText, lx, ly);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(textToDraw, lx, ly);
       }
       ctx.restore();
     }
 
     // Segédfüggvény: szaggatott vektor
-    function drawDashedVector(ctx, fromX, fromY, toX, toY, color, label, valText, lineWidth = 2) {
+    function drawDashedVector(ctx, fromX, fromY, toX, toY, color, symbol, valText, lineWidth = 2) {
       ctx.save();
       ctx.setLineDash([4, 3]);
-      drawVector(ctx, fromX, fromY, toX, toY, color, label, valText, lineWidth);
+      drawCleanVector(ctx, fromX, fromY, toX, toY, color, symbol, valText, lineWidth);
       ctx.restore();
     }
 
