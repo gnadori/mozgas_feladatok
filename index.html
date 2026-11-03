@@ -1876,7 +1876,7 @@
         question = `Mekkora sebességgel (v₂) csúszik el az ellenkező irányba a másik állat (${animal2.name}) m/s-ban?`;
         steps = [
           `1. Adatok: <span class="math-block">m_1 = ${m1} kg</span>, <span class="math-block">m_2 = ${m2} kg</span>, <span class="math-block">v_1 = ${formatNumber(v1, 2)} m/s</span>.`,
-          `2. Kezdetben mindkét állat állt, így a rendszer összlendülete nulla: <span class="math-block">p_{össz} = 0</span>.`,
+          `2. Kezdetben mindkét állat állt, így a rendszer összlendülete nulla: <span class="math-block">I_{össz} = 0</span>.`,
           `3. A lendületmegmaradás és a hatás-ellenhatás törvénye szerint a szétlökődés után a két lendület nagysága megegyezik: <span class="math-block">m_1 · v_1 = m_2 · v_2</span>.`,
           `4. A második test sebessége: <span class="math-block">v_2 = (m_1 · v_1) / m_2 = (${m1} · ${formatNumber(v1, 2)}) / ${m2} = ${formatNumber(expectedValue, 2)} m/s</span>.`
         ];
@@ -1945,8 +1945,8 @@
         const v1 = getRandomFloat(4.0, 10.0, 1);
         const v2 = getRandomFloat(1.0, 3.5, 1);
         const u1 = getRandomFloat(0.5, v1 - 1.0, 1);
-        const p_init = m1 * v1 + m2 * v2;
-        expectedValue = (p_init - m1 * u1) / m2;
+        const I_init = m1 * v1 + m2 * v2;
+        expectedValue = (I_init - m1 * u1) / m2;
         expectedUnit = "m/s";
 
         story = `${animal1.subject} ${vehicle1.instr} (${m1} kg) ${formatNumber(v1, 1)} m/s sebességgel halad egyenes pályán. Utoléri és centrálisan, rugalmasan meglöki a ${vehicle2.instr} előtte ${formatNumber(v2, 1)} m/s-mal haladó ${animal2.name}-t (${m2} kg). Az ütközés után ${animal1.name} sebessége ${formatNumber(u1, 1)} m/s-ra csökken. (A súrlódás elhanyagolható.)`;
@@ -1956,9 +1956,9 @@
           `2. A lendületmegmaradás törvénye: az ütközés előtti összes lendület megegyezik az ütközés utáni összes lendülettel:`,
           `&nbsp;&nbsp;<span class="math-block">m_1 · v_1 + m_2 · v_2 = m_1 · u_1 + m_2 · u_2</span>.`,
           `3. Az ütközés előtti összes lendület kiszámítása:`,
-          `&nbsp;&nbsp;<span class="math-block">p_{össz} = (${m1} · ${formatNumber(v1, 1)}) + (${m2} · ${formatNumber(v2, 1)}) = ${formatNumber(m1 * v1, 1)} + ${formatNumber(m2 * v2, 1)} = ${formatNumber(p_init, 2)} kg·m/s</span>.`,
-          `4. A 2. test sebességének kifejezése: <span class="math-block">u_2 = (p_{össz} - m_1 · u_1) / m_2</span>.`,
-          `5. Behelyettesítés és számítás: <span class="math-block">u_2 = (${formatNumber(p_init, 2)} - ${m1} · ${formatNumber(u1, 1)}) / ${m2} = ${formatNumber(p_init - m1 * u1, 2)} / ${m2} = ${formatNumber(expectedValue, 2)} m/s</span>.`
+          `&nbsp;&nbsp;<span class="math-block">I_{össz} = (${m1} · ${formatNumber(v1, 1)}) + (${m2} · ${formatNumber(v2, 1)}) = ${formatNumber(m1 * v1, 1)} + ${formatNumber(m2 * v2, 1)} = ${formatNumber(I_init, 2)} kg·m/s</span>.`,
+          `4. A 2. test sebességének kifejezése: <span class="math-block">u_2 = (I_{össz} - m_1 · u_1) / m_2</span>.`,
+          `5. Behelyettesítés és számítás: <span class="math-block">u_2 = (${formatNumber(I_init, 2)} - ${m1} · ${formatNumber(u1, 1)}) / ${m2} = ${formatNumber(I_init - m1 * u1, 2)} / ${m2} = ${formatNumber(expectedValue, 2)} m/s</span>.`
         ];
 
       } else if (variant === 'elastic_equal_mass') {
@@ -2014,13 +2014,13 @@
         expectedValue = 2 * m1 * v;
         expectedUnit = "kg·m/s";
         story = `${animal1.subject} ${vehicle1.instr} (${m1} kg össztömeg) ${formatNumber(v, 1)} m/s sebességgel haladva rugalmasan ütközik egy masszív, rögzített ütközőfallal, majd sebességveszteség nélkül, pontosan azonos ${formatNumber(v, 1)} m/s sebességgel pattan vissza az ellentétes irányban.`;
-        question = `Mekkora a jármű lendületváltozásának nagysága (|Δp|) kg·m/s-ban?`;
+        question = `Mekkora a jármű lendületváltozásának nagysága (|ΔI|) kg·m/s-ban?`;
         steps = [
           `1. Adatok: tömeg: <span class="math-block">m = ${m1} kg</span>, sebesség: <span class="math-block">v = ${formatNumber(v, 1)} m/s</span>.`,
-          `2. Kezdeti lendület a fal felé mutatva: <span class="math-block">p_1 = m · v = ${m1} · ${formatNumber(v, 1)} = ${formatNumber(m1 * v, 2)} kg·m/s</span>.`,
-          `3. Visszapattanás utáni lendület (ellentétes irányú vektor): <span class="math-block">p_2 = -m · v = -${formatNumber(m1 * v, 2)} kg·m/s</span>.`,
-          `4. A lendületváltozás vektoriálisan: <span class="math-block">Δp = p_2 - p_1 = (-m · v) - (m · v) = -2 · m · v</span>.`,
-          `5. A lendületváltozás nagysága: <span class="math-block">|Δp| = 2 · m · v = 2 · ${m1} · ${formatNumber(v, 1)} = ${formatNumber(expectedValue, 2)} kg·m/s</span>.`
+          `2. Kezdeti lendület a fal felé mutatva: <span class="math-block">I_1 = m · v = ${m1} · ${formatNumber(v, 1)} = ${formatNumber(m1 * v, 2)} kg·m/s</span>.`,
+          `3. Visszapattanás utáni lendület (ellentétes irányú vektor): <span class="math-block">I_2 = -m · v = -${formatNumber(m1 * v, 2)} kg·m/s</span>.`,
+          `4. A lendületváltozás vektoriálisan: <span class="math-block">ΔI = I_2 - I_1 = (-m · v) - (m · v) = -2 · m · v</span>.`,
+          `5. A lendületváltozás nagysága: <span class="math-block">|ΔI| = 2 · m · v = 2 · ${m1} · ${formatNumber(v, 1)} = ${formatNumber(expectedValue, 2)} kg·m/s</span>.`
         ];
 
       } else if (variant === 'wall_rebound_average_force') {
@@ -2032,8 +2032,8 @@
         question = `Mekkora átlagos erő (F) hatott a járműre az ütközés során Newtonban (N)?`;
         steps = [
           `1. Adatok: tömeg: <span class="math-block">m = ${m1} kg</span>, sebesség: <span class="math-block">v = ${formatNumber(v, 1)} m/s</span>, érintkezési idő: <span class="math-block">Δt = ${formatNumber(dt, 2)} s</span>.`,
-          `2. A lendületváltozás nagysága az ellentétes irányú visszapattanás miatt: <span class="math-block">|Δp| = 2 · m · v = 2 · ${m1} kg · ${formatNumber(v, 1)} m/s = ${formatNumber(2 * m1 * v, 2)} kg·m/s</span>.`,
-          `3. Newton II. törvényének impulzus alakja szerint az átlagos erő: <span class="math-block">F = |Δp| / Δt</span>.`,
+          `2. A lendületváltozás nagysága az ellentétes irányú visszapattanás miatt: <span class="math-block">|ΔI| = 2 · m · v = 2 · ${m1} kg · ${formatNumber(v, 1)} m/s = ${formatNumber(2 * m1 * v, 2)} kg·m/s</span>.`,
+          `3. Newton II. törvényének impulzus alakja szerint az átlagos erő: <span class="math-block">F = |ΔI| / Δt</span>.`,
           `4. Behelyettesítés és számítás: <span class="math-block">F = ${formatNumber(2 * m1 * v, 2)} kg·m/s / ${formatNumber(dt, 2)} s = ${formatNumber(expectedValue, 2)} N</span>.`
         ];
 

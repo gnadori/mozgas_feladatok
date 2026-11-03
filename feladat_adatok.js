@@ -186,7 +186,7 @@ const FELADAT_ADATOK = {
     {
       "id": 10,
       "title": "10. Lendületmegmaradás és rugalmas ütközések",
-      "description": "Lendület (p = m · v), lendületmegmaradás centrális rugalmas ütközéseknél, sebességcsere, visszapattanás és ütközési erők."
+      "description": "Lendület (I = m · v), lendületmegmaradás centrális rugalmas ütközéseknél, sebességcsere, visszapattanás és ütközési erők."
     }
   ]
 };
