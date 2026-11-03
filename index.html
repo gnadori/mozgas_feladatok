@@ -732,7 +732,7 @@
     let state = {
       solvedCount: 0,
       currentExerciseNum: 0,
-      activeTypes: [1, 2, 3, 4, 5, 6, 7],
+      activeTypes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       currentTask: null,
       countdownTimer: null,
       countdownLeft: 15,
@@ -1684,6 +1684,388 @@
       };
     }
 
+    // 8. Típus: Newton II. törvénye (F = m · a)
+    function generateType8() {
+      const animal = getRandomItem(appConfig.animals);
+      const vehicle = getRandomItem(appConfig.vehicles);
+      const m_animal = animal.mass || 15;
+      const m_vehicle = vehicle.mass || 20;
+      const m_total = m_animal + m_vehicle;
+
+      const minA = vehicle.accelRange ? vehicle.accelRange.min : 0.5;
+      const maxA = vehicle.accelRange ? vehicle.accelRange.max : 2.5;
+      const a = getRandomFloat(minA, maxA, 2);
+
+      const variants = [
+        'calc_F',
+        'calc_a',
+        'calc_m',
+        'calc_F_braking',
+        'calc_delta_v',
+        'calc_t_accel'
+      ];
+      const variant = getRandomItem(variants);
+
+      let story = "";
+      let question = "";
+      let expectedUnit = "";
+      let expectedValue = 0;
+      let steps = [];
+
+      if (variant === 'calc_F') {
+        expectedValue = Math.round(m_total * a * 100) / 100;
+        expectedUnit = "N";
+        story = `${animal.subject} (${m_animal} kg) ${vehicle.instr} (${m_vehicle} kg) halad, így együttes tömegük ${m_total} kg. A hajtás ${formatNumber(a, 2)} m/s² állandó gyorsulással gyorsítja a járművet. (A közegellenállás és a súrlódás elhanyagolható.)`;
+        question = `Mekkora gyorsítóerőt (F) fejt ki a hajtás a járműre Newtonban (N)?`;
+        steps = [
+          `1. Adatok: össztömeg: <span class="math-block">m = ${m_total} kg</span>, gyorsulás: <span class="math-block">a = ${formatNumber(a, 2)} m/s²</span>.`,
+          `2. Newton II. törvénye (a dinamika alaptörvénye): <span class="math-block">F = m · a</span>.`,
+          `3. Behelyettesítés és számítás: <span class="math-block">F = ${m_total} kg · ${formatNumber(a, 2)} m/s² = ${formatNumber(expectedValue, 2)} N</span>.`
+        ];
+
+      } else if (variant === 'calc_a') {
+        const F = Math.round(m_total * a * 10) / 10;
+        expectedValue = F / m_total;
+        expectedUnit = "m/s²";
+        story = `${animal.subject} (${m_animal} kg) ${vehicle.instr} ül, a jármű és utasa együttes tömege ${m_total} kg. A motor ${formatNumber(F, 1)} N állandó gyorsítóerőt fejt ki a járműre.`;
+        question = `Mekkora gyorsulással (a) gyorsul a jármű m/s²-ben kifejezve?`;
+        steps = [
+          `1. Adatok: össztömeg: <span class="math-block">m = ${m_total} kg</span>, gyorsítóerő: <span class="math-block">F = ${formatNumber(F, 1)} N</span>.`,
+          `2. Newton II. törvénye: <span class="math-block">F = m · a</span>, ebből a gyorsulást kifejezve: <span class="math-block">a = F / m</span>.`,
+          `3. Behelyettesítés és számolás: <span class="math-block">a = ${formatNumber(F, 1)} N / ${m_total} kg = ${formatNumber(expectedValue, 2)} m/s²</span>.`
+        ];
+
+      } else if (variant === 'calc_m') {
+        const F = Math.round(m_total * a * 10) / 10;
+        expectedValue = F / a;
+        expectedUnit = "kg";
+        story = `${animal.subject} egy teherrel megrakott járművel halad. A jármű hajtása ${formatNumber(F, 1)} N állandó erőt fejt ki, melynek hatására a gyorsulása pontosan ${formatNumber(a, 2)} m/s² lesz.`;
+        question = `Mekkora a jármű és utasa együttes tömege (m) kilogrammban (kg)?`;
+        steps = [
+          `1. Adatok: gyorsítóerő: <span class="math-block">F = ${formatNumber(F, 1)} N</span>, gyorsulás: <span class="math-block">a = ${formatNumber(a, 2)} m/s²</span>.`,
+          `2. Newton II. törvényéből a tömeget kifejezve: <span class="math-block">m = F / a</span>.`,
+          `3. Behelyettesítés és számítás: <span class="math-block">m = ${formatNumber(F, 1)} N / ${formatNumber(a, 2)} m/s² = ${formatNumber(expectedValue, 2)} kg</span>.`
+        ];
+
+      } else if (variant === 'calc_F_braking') {
+        const t = getRandomInt(3, 15);
+        const v0 = Math.round(a * t * 10) / 10;
+        expectedValue = (m_total * v0) / t;
+        expectedUnit = "N";
+        story = `${animal.subject} ${vehicle.instr} halad (${m_total} kg össztömeg). A kezdeti sebessége ${formatNumber(v0, 1)} m/s, majd a fékekre lépve ${t} másodperc alatt egyenletesen lefékezve megáll.`;
+        question = `Mekkora átlagos fékezőerő (F) lassította a járművet a megállásig Newtonban (N)?`;
+        steps = [
+          `1. Adatok: tömeg: <span class="math-block">m = ${m_total} kg</span>, kezdősebesség: <span class="math-block">v_0 = ${formatNumber(v0, 1)} m/s</span>, megállási idő: <span class="math-block">t = ${t} s</span>.`,
+          `2. A lassulás nagysága: <span class="math-block">a = v_0 / t = ${formatNumber(v0, 1)} m/s / ${t} s = ${formatNumber(v0 / t, 2)} m/s²</span>.`,
+          `3. A fékezőerő nagysága Newton II. törvénye alapján: <span class="math-block">F = m · a = ${m_total} kg · ${formatNumber(v0 / t, 2)} m/s² = ${formatNumber(expectedValue, 2)} N</span>.`
+        ];
+
+      } else if (variant === 'calc_delta_v') {
+        const t = getRandomInt(3, 12);
+        const F = Math.round(m_total * a * 10) / 10;
+        expectedValue = (F / m_total) * t;
+        expectedUnit = "m/s";
+        story = `Egy ${m_total} kg össztömegű járműben ülő ${animal.name} járművére ${formatNumber(F, 1)} N állandó gyorsítóerő hat ${t} másodpercen keresztül.`;
+        question = `Hány m/s-mal növekszik meg a jármű sebessége ez alatt az idő alatt?`;
+        steps = [
+          `1. Adatok: tömeg: <span class="math-block">m = ${m_total} kg</span>, erő: <span class="math-block">F = ${formatNumber(F, 1)} N</span>, idő: <span class="math-block">t = ${t} s</span>.`,
+          `2. A gyorsulás kiszámítása Newton II. törvényéből: <span class="math-block">a = F / m = ${formatNumber(F, 1)} N / ${m_total} kg = ${formatNumber(F / m_total, 2)} m/s²</span>.`,
+          `3. A sebességváltozás: <span class="math-block">Δv = a · t = ${formatNumber(F / m_total, 2)} m/s² · ${t} s = ${formatNumber(expectedValue, 2)} m/s</span>.`
+        ];
+
+      } else { // calc_t_accel
+        const delta_v = Math.round(a * getRandomInt(4, 15) * 10) / 10;
+        const F = Math.round(m_total * a * 10) / 10;
+        expectedValue = (m_total * delta_v) / F;
+        expectedUnit = "s";
+        story = `${animal.subject} ${vehicle.instr} halad (${m_total} kg össztömeg). A motor ${formatNumber(F, 1)} N állandó erőt fejt ki a járműre, hogy sebességét ${formatNumber(delta_v, 1)} m/s-mal megnövelje.`;
+        question = `Hány másodpercig (t) tart ez a gyorsítás?`;
+        steps = [
+          `1. Adatok: <span class="math-block">m = ${m_total} kg</span>, <span class="math-block">F = ${formatNumber(F, 1)} N</span>, <span class="math-block">Δv = ${formatNumber(delta_v, 1)} m/s</span>.`,
+          `2. A gyorsulás: <span class="math-block">a = F / m = ${formatNumber(F, 1)} N / ${m_total} kg = ${formatNumber(F / m_total, 2)} m/s²</span>.`,
+          `3. A szükséges idő: <span class="math-block">t = Δv / a = ${formatNumber(delta_v, 1)} / ${formatNumber(F / m_total, 2)} = ${formatNumber(expectedValue, 2)} s</span>.`
+        ];
+      }
+
+      return {
+        typeId: 8,
+        typeTitle: "8. Newton II. törvénye (F = m · a)",
+        story,
+        tableHtml: null,
+        question,
+        expectedUnit,
+        expectedValue,
+        steps
+      };
+    }
+
+    // 9. Típus: Newton III. törvénye (kölcsönhatás és erő-ellenerő)
+    function generateType9() {
+      const animals = appConfig.animals && appConfig.animals.length >= 2 ? appConfig.animals : [
+        { id: "rozsomak", name: "rozsomák", subject: "A rozsomák", mass: 15 },
+        { id: "kecske", name: "kecske", subject: "A kecske", mass: 45 }
+      ];
+      let animal1 = getRandomItem(animals);
+      let animal2 = getRandomItem(animals);
+      while (animal2.id === animal1.id) {
+        animal2 = getRandomItem(animals);
+      }
+      const m1 = animal1.mass || 15;
+      const m2 = animal2.mass || 45;
+
+      const variants = [
+        'reaction_force_magnitude',
+        'calc_a2_from_m1_a1_m2',
+        'calc_m2_from_m1_a1_a2',
+        'calc_v2_separation',
+        'calc_m1_separation'
+      ];
+      const variant = getRandomItem(variants);
+
+      let story = "";
+      let question = "";
+      let expectedUnit = "";
+      let expectedValue = 0;
+      let steps = [];
+
+      if (variant === 'reaction_force_magnitude') {
+        const F = getRandomInt(40, 250);
+        expectedValue = F;
+        expectedUnit = "N";
+        story = `${animal1.subject} (${m1} kg) és ${animal2.name} (${m2} kg) súrlódásmentes vízszintes jégpályán állnak egymással szemben. ${animal1.subject} hirtelen meglöki társát ${formatNumber(F, 1)} N nagyságú vízszintes erővel.`;
+        question = `Mekkora ellenerő (F₂) hat az első állatra (${animal1.name}) ebben a pillanatban Newtonban (N)?`;
+        steps = [
+          `1. Newton III. törvénye (a hatás-ellenhatás elve) kimondja: két test kölcsönhatásakor az erő és az ellenerő mindig azonos nagyságú, közös hatásvonalú és ellentétes irányú (<span class="math-block">F_1 = F_2</span>).`,
+          `2. A fellépő erő nagysága független a két test tömegétől: a nagyobb és a kisebb tömegű testre is pontosan ugyanakkora erő hat.`,
+          `3. Így az ellenerő nagysága: <span class="math-block">F_2 = F_1 = ${formatNumber(expectedValue, 2)} N</span>.`
+        ];
+
+      } else if (variant === 'calc_a2_from_m1_a1_m2') {
+        const a1 = getRandomFloat(0.5, 3.5, 2);
+        expectedValue = (m1 * a1) / m2;
+        expectedUnit = "m/s²";
+        story = `${animal1.subject} (${m1} kg) és ${animal2.name} (${m2} kg) kiskocsikon ülve eltolják egymást a sík talajon. A szétlökődés pillanatában ${animal1.name} gyorsulása ${formatNumber(a1, 2)} m/s². (A súrlódás elhanyagolható.)`;
+        question = `Mekkora gyorsulással (a₂) mozdul el a másik állat (${animal2.name}) m/s²-ben?`;
+        steps = [
+          `1. Adatok: <span class="math-block">m_1 = ${m1} kg</span>, <span class="math-block">a_1 = ${formatNumber(a1, 2)} m/s²</span>, <span class="math-block">m_2 = ${m2} kg</span>.`,
+          `2. Newton III. törvénye szerint a kölcsönhatásban fellépő erők nagysága megegyezik: <span class="math-block">F_1 = F_2</span>.`,
+          `3. Newton II. törvényével kifejezve: <span class="math-block">m_1 · a_1 = m_2 · a_2</span>.`,
+          `4. A keresett gyorsulás kifejezése: <span class="math-block">a_2 = (m_1 · a_1) / m_2</span>.`,
+          `5. Behelyettesítés és számolás: <span class="math-block">a_2 = (${m1} kg · ${formatNumber(a1, 2)} m/s²) / ${m2} kg = ${formatNumber(m1 * a1, 2)} / ${m2} = ${formatNumber(expectedValue, 2)} m/s²</span>.`,
+          `<em>(Figyeld meg: a kisebb tömegű test mindig nagyobb gyorsulást szenved el!)</em>`
+        ];
+
+      } else if (variant === 'calc_m2_from_m1_a1_a2') {
+        const a1 = getRandomFloat(0.8, 3.0, 2);
+        const a2 = getRandomFloat(0.5, 3.0, 2);
+        expectedValue = (m1 * a1) / a2;
+        expectedUnit = "kg";
+        story = `Egy ${m1} kg tömegű ${animal1.name} és egy ismeretlen tömegű állat jégpályán eltolják egymást. A kölcsönhatás ideje alatt ${animal1.name} gyorsulása ${formatNumber(a1, 2)} m/s², míg a társa gyorsulása ${formatNumber(a2, 2)} m/s².`;
+        question = `Mekkora a másik állat tömege (m₂) kilogrammban (kg)?`;
+        steps = [
+          `1. Newton III. törvénye (hatás-ellenhatás) alapján a két testre azonos nagyságú erő hat: <span class="math-block">m_1 · a_1 = m_2 · a_2</span>.`,
+          `2. A keresett tömeg kifejezve: <span class="math-block">m_2 = (m_1 · a_1) / a_2</span>.`,
+          `3. Behelyettesítés: <span class="math-block">m_2 = (${m1} · ${formatNumber(a1, 2)}) / ${formatNumber(a2, 2)} = ${formatNumber(m1 * a1, 2)} / ${formatNumber(a2, 2)} = ${formatNumber(expectedValue, 2)} kg</span>.`
+        ];
+
+      } else if (variant === 'calc_v2_separation') {
+        const v1 = getRandomFloat(1.0, 4.0, 2);
+        expectedValue = (m1 * v1) / m2;
+        expectedUnit = "m/s";
+        story = `${animal1.subject} (${m1} kg) és ${animal2.name} (${m2} kg) álló helyzetből elrugaszkodnak egymástól a vízszintes jégfelületen. A szétlökődés után ${animal1.name} ${formatNumber(v1, 2)} m/s sebességgel siklik hátrafelé.`;
+        question = `Mekkora sebességgel (v₂) csúszik el az ellenkező irányba a másik állat (${animal2.name}) m/s-ban?`;
+        steps = [
+          `1. Adatok: <span class="math-block">m_1 = ${m1} kg</span>, <span class="math-block">m_2 = ${m2} kg</span>, <span class="math-block">v_1 = ${formatNumber(v1, 2)} m/s</span>.`,
+          `2. Kezdetben mindkét állat állt, így a rendszer összlendülete nulla: <span class="math-block">p_{össz} = 0</span>.`,
+          `3. A lendületmegmaradás és a hatás-ellenhatás törvénye szerint a szétlökődés után a két lendület nagysága megegyezik: <span class="math-block">m_1 · v_1 = m_2 · v_2</span>.`,
+          `4. A második test sebessége: <span class="math-block">v_2 = (m_1 · v_1) / m_2 = (${m1} · ${formatNumber(v1, 2)}) / ${m2} = ${formatNumber(expectedValue, 2)} m/s</span>.`
+        ];
+
+      } else { // calc_m1_separation
+        const v1 = getRandomFloat(1.0, 3.5, 2);
+        const v2 = getRandomFloat(1.0, 3.5, 2);
+        expectedValue = (m2 * v2) / v1;
+        expectedUnit = "kg";
+        story = `Egy ismeretlen tömegű ${animal1.name} és egy ${m2} kg tömegű ${animal2.name} nyugalomból ellökik egymást a jégen. A szétválás után ${animal1.name} ${formatNumber(v1, 2)} m/s, míg ${animal2.name} ${formatNumber(v2, 2)} m/s sebességgel mozog az ellentétes irányban.`;
+        question = `Hány kilogramm ${animal1.name} tömege (m₁)?`;
+        steps = [
+          `1. A zárt rendszer kezdetben nyugalomban volt, ezért a két test lendülete a szétlökődés után azonos nagyságú: <span class="math-block">m_1 · v_1 = m_2 · v_2</span>.`,
+          `2. Az első test tömegének kifejezése: <span class="math-block">m_1 = (m_2 · v_2) / v_1</span>.`,
+          `3. Behelyettesítés: <span class="math-block">m_1 = (${m2} kg · ${formatNumber(v2, 2)} m/s) / ${formatNumber(v1, 2)} m/s = ${formatNumber(expectedValue, 2)} kg</span>.`
+        ];
+      }
+
+      return {
+        typeId: 9,
+        typeTitle: "9. Newton III. törvénye (kölcsönhatás)",
+        story,
+        tableHtml: null,
+        question,
+        expectedUnit,
+        expectedValue,
+        steps
+      };
+    }
+
+    // 10. Típus: Lendületmegmaradás és rugalmas ütközések
+    function generateType10() {
+      const animals = appConfig.animals && appConfig.animals.length >= 2 ? appConfig.animals : [
+        { id: "rozsomak", name: "rozsomák", subject: "A rozsomák", mass: 15 },
+        { id: "kecske", name: "kecske", subject: "A kecske", mass: 45 }
+      ];
+      let animal1 = getRandomItem(animals);
+      let animal2 = getRandomItem(animals);
+      while (animal2.id === animal1.id) {
+        animal2 = getRandomItem(animals);
+      }
+      const vehicle1 = getRandomItem(appConfig.vehicles);
+      const vehicle2 = getRandomItem(appConfig.vehicles);
+
+      const m1 = (animal1.mass || 15) + (vehicle1.mass || 20);
+      const m2 = (animal2.mass || 45) + (vehicle2.mass || 20);
+
+      const variants = [
+        'elastic_calc_u2',
+        'elastic_equal_mass',
+        'elastic_target_at_rest_calc_u2',
+        'elastic_target_at_rest_calc_u1',
+        'wall_rebound_momentum_change',
+        'wall_rebound_average_force',
+        'calc_m1_from_momentum_conservation'
+      ];
+      const variant = getRandomItem(variants);
+
+      let story = "";
+      let question = "";
+      let expectedUnit = "";
+      let expectedValue = 0;
+      let steps = [];
+
+      if (variant === 'elastic_calc_u2') {
+        const v1 = getRandomFloat(4.0, 10.0, 1);
+        const v2 = getRandomFloat(1.0, 3.5, 1);
+        const u1 = getRandomFloat(0.5, v1 - 1.0, 1);
+        const p_init = m1 * v1 + m2 * v2;
+        expectedValue = (p_init - m1 * u1) / m2;
+        expectedUnit = "m/s";
+
+        story = `${animal1.subject} ${vehicle1.instr} (${m1} kg) ${formatNumber(v1, 1)} m/s sebességgel halad egyenes pályán. Utoléri és centrálisan, rugalmasan meglöki a ${vehicle2.instr} előtte ${formatNumber(v2, 1)} m/s-mal haladó ${animal2.name}-t (${m2} kg). Az ütközés után ${animal1.name} sebessége ${formatNumber(u1, 1)} m/s-ra csökken. (A súrlódás elhanyagolható.)`;
+        question = `Mekkora sebességgel (u₂) lökődik előre az ütközés után ${animal2.name} m/s-ban kifejezve?`;
+        steps = [
+          `1. Adatok: <span class="math-block">m_1 = ${m1} kg</span>, <span class="math-block">v_1 = ${formatNumber(v1, 1)} m/s</span>, <span class="math-block">m_2 = ${m2} kg</span>, <span class="math-block">v_2 = ${formatNumber(v2, 1)} m/s</span>, <span class="math-block">u_1 = ${formatNumber(u1, 1)} m/s</span>.`,
+          `2. A lendületmegmaradás törvénye: az ütközés előtti összes lendület megegyezik az ütközés utáni összes lendülettel:`,
+          `&nbsp;&nbsp;<span class="math-block">m_1 · v_1 + m_2 · v_2 = m_1 · u_1 + m_2 · u_2</span>.`,
+          `3. Az ütközés előtti összes lendület kiszámítása:`,
+          `&nbsp;&nbsp;<span class="math-block">p_{össz} = (${m1} · ${formatNumber(v1, 1)}) + (${m2} · ${formatNumber(v2, 1)}) = ${formatNumber(m1 * v1, 1)} + ${formatNumber(m2 * v2, 1)} = ${formatNumber(p_init, 2)} kg·m/s</span>.`,
+          `4. A 2. test sebességének kifejezése: <span class="math-block">u_2 = (p_{össz} - m_1 · u_1) / m_2</span>.`,
+          `5. Behelyettesítés és számítás: <span class="math-block">u_2 = (${formatNumber(p_init, 2)} - ${m1} · ${formatNumber(u1, 1)}) / ${m2} = ${formatNumber(p_init - m1 * u1, 2)} / ${m2} = ${formatNumber(expectedValue, 2)} m/s</span>.`
+        ];
+
+      } else if (variant === 'elastic_equal_mass') {
+        const m = getRandomItem([25, 40, 50, 60, 80]);
+        const v1 = getRandomFloat(3.0, 9.0, 1);
+        const atRest = Math.random() < 0.5;
+        const v2 = atRest ? 0 : getRandomFloat(1.0, 3.0, 1);
+        expectedValue = v1;
+        expectedUnit = "m/s";
+
+        story = `Két pontosan azonos össztömegű (${m} kg) kiskocsi halad egymással szemben egyenes pályán. Az 1. kocsi sebessége ${formatNumber(v1, 1)} m/s, míg a 2. kocsi ${atRest ? 'áll (sebessége 0 m/s)' : `${formatNumber(v2, 1)} m/s sebességgel gurul az 1. kocsival egyező irányban`}. A két kocsi tökéletesen rugalmasan, centrálisan ütközik.`;
+        question = `Mekkora sebességgel (u₂) mozog a 2. kocsi az ütközés után m/s-ban?`;
+        steps = [
+          `1. Adatok: <span class="math-block">m_1 = m_2 = ${m} kg</span>, <span class="math-block">v_1 = ${formatNumber(v1, 1)} m/s</span>, <span class="math-block">v_2 = ${formatNumber(v2, 1)} m/s</span>.`,
+          `2. Fizikai törvényszerűség: Két egyenlő tömegű test centrális, tökéletesen rugalmas ütközésekor a testek sebességet cserélnek:`,
+          `&nbsp;&nbsp;<span class="math-block">u_1 = v_2</span> és <span class="math-block">u_2 = v_1</span>.`,
+          `3. Így a 2. test az ütközés után pontosan az 1. test eredeti sebességével halad tovább:`,
+          `&nbsp;&nbsp;<span class="math-block">u_2 = v_1 = ${formatNumber(expectedValue, 2)} m/s</span>.`
+        ];
+
+      } else if (variant === 'elastic_target_at_rest_calc_u2') {
+        const v1 = getRandomFloat(3.0, 12.0, 1);
+        expectedValue = ((2 * m1) / (m1 + m2)) * v1;
+        expectedUnit = "m/s";
+        story = `${animal1.subject} ${vehicle1.instr} (${m1} kg össztömeg) ${formatNumber(v1, 1)} m/s sebességgel centrálisan és tökéletesen rugalmasan nekiütközik a békésen várakozó ${animal2.name} járművének (${vehicle2.name}, ${m2} kg össztömeg, v₂ = 0 m/s).`;
+        question = `Mekkora sebességgel (u₂) lökődik el az eltalált jármű az ütközés után m/s-ban kifejezve?`;
+        steps = [
+          `1. Adatok: <span class="math-block">m_1 = ${m1} kg</span>, <span class="math-block">v_1 = ${formatNumber(v1, 1)} m/s</span>, <span class="math-block">m_2 = ${m2} kg</span>, <span class="math-block">v_2 = 0 m/s</span>.`,
+          `2. Álló céltesttel történő centrális rugalmas ütközésnél az eltalált test ütközés utáni sebességének képlete (a lendület- és energiamegmaradásból):`,
+          `&nbsp;&nbsp;<span class="math-block">u_2 = (2 · m_1 / (m_1 + m_2)) · v_1</span>.`,
+          `3. Behelyettesítés és számítás:`,
+          `&nbsp;&nbsp;<span class="math-block">u_2 = (2 · ${m1} / (${m1} + ${m2})) · ${formatNumber(v1, 1)} = (${2 * m1} / ${m1 + m2}) · ${formatNumber(v1, 1)} = ${formatNumber(expectedValue, 2)} m/s</span>.`
+        ];
+
+      } else if (variant === 'elastic_target_at_rest_calc_u1') {
+        const v1 = getRandomFloat(4.0, 12.0, 1);
+        const u1_raw = ((m1 - m2) / (m1 + m2)) * v1;
+        expectedValue = Math.abs(u1_raw);
+        expectedUnit = "m/s";
+        story = `${animal1.subject} (${m1} kg) ${formatNumber(v1, 1)} m/s sebességgel rugalmasan ütközik egy álló, ${m2} kg tömegű kocsival (${animal2.name} járműve).`;
+        question = `Mekkora az 1. jármű sebességének nagysága az ütközés után (${u1_raw < 0 ? 'visszapattan' : 'továbbhalad'}) m/s-ban?`;
+        steps = [
+          `1. Adatok: <span class="math-block">m_1 = ${m1} kg</span>, <span class="math-block">v_1 = ${formatNumber(v1, 1)} m/s</span>, <span class="math-block">m_2 = ${m2} kg</span>, <span class="math-block">v_2 = 0 m/s</span>.`,
+          `2. Álló céltesttel való centrális rugalmas ütközéskor a becsapódó test sebessége:`,
+          `&nbsp;&nbsp;<span class="math-block">u_1 = ((m_1 - m_2) / (m_1 + m_2)) · v_1</span>.`,
+          `3. Behelyettesítés:`,
+          `&nbsp;&nbsp;<span class="math-block">u_1 = (${m1} - ${m2}) / (${m1} + ${m2}) · ${formatNumber(v1, 1)} = (${m1 - m2} / ${m1 + m2}) · ${formatNumber(v1, 1)} = ${formatNumber(u1_raw, 2)} m/s</span>.`,
+          `4. A sebesség nagysága (abszolút értéke): <span class="math-block">|u_1| = ${formatNumber(expectedValue, 2)} m/s</span>. ${u1_raw < 0 ? '(A negatív előjel azt jelenti, hogy az 1. jármű visszapattant, mivel a céltest tömege nagyobb volt).' : '(A pozitív előjel azt jelenti, hogy az 1. jármű előrefelé halad tovább).'}`
+        ];
+
+      } else if (variant === 'wall_rebound_momentum_change') {
+        const v = getRandomFloat(2.0, 8.0, 1);
+        expectedValue = 2 * m1 * v;
+        expectedUnit = "kg·m/s";
+        story = `${animal1.subject} ${vehicle1.instr} (${m1} kg össztömeg) ${formatNumber(v, 1)} m/s sebességgel haladva rugalmasan ütközik egy masszív, rögzített ütközőfallal, majd sebességveszteség nélkül, pontosan azonos ${formatNumber(v, 1)} m/s sebességgel pattan vissza az ellentétes irányban.`;
+        question = `Mekkora a jármű lendületváltozásának nagysága (|Δp|) kg·m/s-ban?`;
+        steps = [
+          `1. Adatok: tömeg: <span class="math-block">m = ${m1} kg</span>, sebesség: <span class="math-block">v = ${formatNumber(v, 1)} m/s</span>.`,
+          `2. Kezdeti lendület a fal felé mutatva: <span class="math-block">p_1 = m · v = ${m1} · ${formatNumber(v, 1)} = ${formatNumber(m1 * v, 2)} kg·m/s</span>.`,
+          `3. Visszapattanás utáni lendület (ellentétes irányú vektor): <span class="math-block">p_2 = -m · v = -${formatNumber(m1 * v, 2)} kg·m/s</span>.`,
+          `4. A lendületváltozás vektoriálisan: <span class="math-block">Δp = p_2 - p_1 = (-m · v) - (m · v) = -2 · m · v</span>.`,
+          `5. A lendületváltozás nagysága: <span class="math-block">|Δp| = 2 · m · v = 2 · ${m1} · ${formatNumber(v, 1)} = ${formatNumber(expectedValue, 2)} kg·m/s</span>.`
+        ];
+
+      } else if (variant === 'wall_rebound_average_force') {
+        const v = getRandomFloat(2.0, 8.0, 1);
+        const dt = getRandomFloat(0.08, 0.25, 2);
+        expectedValue = (2 * m1 * v) / dt;
+        expectedUnit = "N";
+        story = `${animal1.subject} ${vehicle1.instr} (${m1} kg össztömeg) ${formatNumber(v, 1)} m/s sebességgel haladva egy vastag gumifallal ütközik. Az ütközés tökéletesen rugalmas (azonos ${formatNumber(v, 1)} m/s sebességgel pattan vissza), és a fallal való érintkezés időtartama pontosan ${formatNumber(dt, 2)} másodpercig tart.`;
+        question = `Mekkora átlagos erő (F) hatott a járműre az ütközés során Newtonban (N)?`;
+        steps = [
+          `1. Adatok: tömeg: <span class="math-block">m = ${m1} kg</span>, sebesség: <span class="math-block">v = ${formatNumber(v, 1)} m/s</span>, érintkezési idő: <span class="math-block">Δt = ${formatNumber(dt, 2)} s</span>.`,
+          `2. A lendületváltozás nagysága az ellentétes irányú visszapattanás miatt: <span class="math-block">|Δp| = 2 · m · v = 2 · ${m1} kg · ${formatNumber(v, 1)} m/s = ${formatNumber(2 * m1 * v, 2)} kg·m/s</span>.`,
+          `3. Newton II. törvényének impulzus alakja szerint az átlagos erő: <span class="math-block">F = |Δp| / Δt</span>.`,
+          `4. Behelyettesítés és számítás: <span class="math-block">F = ${formatNumber(2 * m1 * v, 2)} kg·m/s / ${formatNumber(dt, 2)} s = ${formatNumber(expectedValue, 2)} N</span>.`
+        ];
+
+      } else { // calc_m1_from_momentum_conservation
+        const v1 = getRandomFloat(6.0, 10.0, 1);
+        const v2 = getRandomFloat(1.0, 3.0, 1);
+        const u1 = getRandomFloat(1.0, 4.0, 1);
+        const u2 = getRandomFloat(4.5, 7.5, 1);
+        expectedValue = m2 * ((u2 - v2) / (v1 - u1));
+        expectedUnit = "kg";
+        story = `Egy ismeretlen m₁ tömegű kocsival ${animal1.name} ${formatNumber(v1, 1)} m/s sebességgel utoléri a ${formatNumber(v2, 1)} m/s sebességgel előtte haladó ${m2} kg tömegű járművet (${animal2.name}). A rugalmas ütközés után az 1. jármű sebessége ${formatNumber(u1, 1)} m/s, a 2. járműé pedig ${formatNumber(u2, 1)} m/s lesz.`;
+        question = `Hány kilogramm az 1. jármű tömege (m₁)?`;
+        steps = [
+          `1. A lendületmegmaradás egyenlete: <span class="math-block">m_1 · v_1 + m_2 · v_2 = m_1 · u_1 + m_2 · u_2</span>.`,
+          `2. Az m_1-et tartalmazó tagok átrendezése a bal oldalra: <span class="math-block">m_1 · (v_1 - u_1) = m_2 · (u_2 - v_2)</span>.`,
+          `3. Az m_1 kifejezése: <span class="math-block">m_1 = m_2 · ((u_2 - v_2) / (v_1 - u_1))</span>.`,
+          `4. Behelyettesítés és számítás: <span class="math-block">m_1 = ${m2} · ((${formatNumber(u2, 1)} - ${formatNumber(v2, 1)}) / (${formatNumber(v1, 1)} - ${formatNumber(u1, 1)})) = ${m2} · (${formatNumber(u2 - v2, 2)} / ${formatNumber(v1 - u1, 2)}) = ${formatNumber(expectedValue, 2)} kg</span>.`
+        ];
+      }
+
+      return {
+        typeId: 10,
+        typeTitle: "10. Lendületmegmaradás és ütközések",
+        story,
+        tableHtml: null,
+        question,
+        expectedUnit,
+        expectedValue,
+        steps
+      };
+    }
+
     // --- ALKALMAZÁS VEZÉRLÉS ---
 
     const setupScreen = document.getElementById('setup-screen');
@@ -1808,8 +2190,14 @@
         state.currentTask = generateType5();
       } else if (chosenType === 6) {
         state.currentTask = generateType6();
-      } else {
+      } else if (chosenType === 7) {
         state.currentTask = generateType7();
+      } else if (chosenType === 8) {
+        state.currentTask = generateType8();
+      } else if (chosenType === 9) {
+        state.currentTask = generateType9();
+      } else {
+        state.currentTask = generateType10();
       }
 
       // Feladat adatok megjelenítése

@@ -8,16 +8,16 @@
     }
   },
   "animals": [
-    { "id": "rozsomak", "name": "rozsomák", "subject": "A rozsomák" },
-    { "id": "kecske", "name": "kecske", "subject": "A kecske" },
-    { "id": "tengerimalac", "name": "tengerimalac", "subject": "A tengerimalac" },
-    { "id": "tatarantilop", "name": "tatárantilop", "subject": "A tatárantilop" },
-    { "id": "vizidiszno", "name": "vízidisznó", "subject": "A vízidisznó" },
-    { "id": "sarki_roka", "name": "sarki róka", "subject": "A sarki róka" },
-    { "id": "mosomedve", "name": "mosómedve", "subject": "A mosómedve" },
-    { "id": "lama", "name": "láma", "subject": "A láma" },
-    { "id": "vombat", "name": "vombat", "subject": "A vombat" },
-    { "id": "gepard", "name": "gepárd", "subject": "A gepárd" }
+    { "id": "rozsomak", "name": "rozsomák", "subject": "A rozsomák", "mass": 15 },
+    { "id": "kecske", "name": "kecske", "subject": "A kecske", "mass": 45 },
+    { "id": "tengerimalac", "name": "tengerimalac", "subject": "A tengerimalac", "mass": 1 },
+    { "id": "tatarantilop", "name": "tatárantilop", "subject": "A tatárantilop", "mass": 35 },
+    { "id": "vizidiszno", "name": "vízidisznó", "subject": "A vízidisznó", "mass": 50 },
+    { "id": "sarki_roka", "name": "sarki róka", "subject": "A sarki róka", "mass": 4 },
+    { "id": "mosomedve", "name": "mosómedve", "subject": "A mosómedve", "mass": 8 },
+    { "id": "lama", "name": "láma", "subject": "A láma", "mass": 130 },
+    { "id": "vombat", "name": "vombat", "subject": "A vombat", "mass": 25 },
+    { "id": "gepard", "name": "gepárd", "subject": "A gepárd", "mass": 50 }
   ],
   "throwableObjects": [
     { "id": "frizbi", "name": "frizbi", "acc": "egy frizbit", "def": "A frizbi" },
@@ -39,7 +39,8 @@
       "minV": 1.2,
       "maxV": 2.8,
       "timeRange": { "min": 10, "max": 90 },
-      "accelRange": { "min": 0.2, "max": 0.5 }
+      "accelRange": { "min": 0.2, "max": 0.5 },
+      "mass": 10
     },
     {
       "id": "roller",
@@ -48,7 +49,8 @@
       "minV": 3.0,
       "maxV": 5.5,
       "timeRange": { "min": 10, "max": 90 },
-      "accelRange": { "min": 0.4, "max": 0.9 }
+      "accelRange": { "min": 0.4, "max": 0.9 },
+      "mass": 12
     },
     {
       "id": "varosi_bicikli",
@@ -57,7 +59,8 @@
       "minV": 4.0,
       "maxV": 7.0,
       "timeRange": { "min": 15, "max": 120 },
-      "accelRange": { "min": 0.5, "max": 1.2 }
+      "accelRange": { "min": 0.5, "max": 1.2 },
+      "mass": 18
     },
     {
       "id": "versenykerekpar",
@@ -66,7 +69,8 @@
       "minV": 8.0,
       "maxV": 13.5,
       "timeRange": { "min": 15, "max": 120 },
-      "accelRange": { "min": 0.8, "max": 1.8 }
+      "accelRange": { "min": 0.8, "max": 1.8 },
+      "mass": 8
     },
     {
       "id": "elektromos_moped",
@@ -75,7 +79,8 @@
       "minV": 7.0,
       "maxV": 12.0,
       "timeRange": { "min": 15, "max": 120 },
-      "accelRange": { "min": 1.0, "max": 2.2 }
+      "accelRange": { "min": 1.0, "max": 2.2 },
+      "mass": 80
     },
     {
       "id": "kis_traktor",
@@ -84,7 +89,8 @@
       "minV": 4.0,
       "maxV": 8.0,
       "timeRange": { "min": 15, "max": 120 },
-      "accelRange": { "min": 0.5, "max": 1.4 }
+      "accelRange": { "min": 0.5, "max": 1.4 },
+      "mass": 1200
     },
     {
       "id": "szemelyauto",
@@ -93,7 +99,8 @@
       "minV": 14.0,
       "maxV": 33.0,
       "timeRange": { "min": 20, "max": 120 },
-      "accelRange": { "min": 1.5, "max": 3.5 }
+      "accelRange": { "min": 1.5, "max": 3.5 },
+      "mass": 1400
     },
     {
       "id": "bugatti_chiron",
@@ -102,7 +109,8 @@
       "minV": 50.0,
       "maxV": 100.0,
       "timeRange": { "min": 15, "max": 60 },
-      "accelRange": { "min": 5.0, "max": 9.5 }
+      "accelRange": { "min": 5.0, "max": 9.5 },
+      "mass": 1995
     },
     {
       "id": "magnesvasut",
@@ -111,7 +119,8 @@
       "minV": 80.0,
       "maxV": 125.0,
       "timeRange": { "min": 15, "max": 60 },
-      "accelRange": { "min": 0.8, "max": 1.6 }
+      "accelRange": { "min": 0.8, "max": 1.6 },
+      "mass": 45000
     },
     {
       "id": "spacex_raketa",
@@ -120,7 +129,8 @@
       "minV": 1500.0,
       "maxV": 3200.0,
       "timeRange": { "min": 10, "max": 45 },
-      "accelRange": { "min": 15.0, "max": 35.0 }
+      "accelRange": { "min": 15.0, "max": 35.0 },
+      "mass": 25000
     }
   ],
   "taskTypes": [
@@ -160,6 +170,21 @@
       "id": 7,
       "title": "7. Hajítás sebességkomponensekkel (v_x és v_y)",
       "description": "Ferde hajítás szögfüggvények nélkül: repülési idő, maximális emelkedési magasság és távolság kiszámítása a vízszintes és függőleges sebességből (g = 10 m/s²)."
+    },
+    {
+      "id": 8,
+      "title": "8. Newton II. törvénye (F = m · a)",
+      "description": "Erő (F), tömeg (m) és gyorsulás (a) kiszámítása a dinamika alaptörvénye alapján, valamint az erő és sebességváltozás kapcsolata."
+    },
+    {
+      "id": 9,
+      "title": "9. Newton III. törvénye (kölcsönhatás és erő-ellenerő)",
+      "description": "Erő-ellenerő egyenlősége, két test kölcsönhatásakor fellépő erők és gyorsulások aránya (m₁ · a₁ = m₂ · a₂), elrugaszkodás."
+    },
+    {
+      "id": 10,
+      "title": "10. Lendületmegmaradás és rugalmas ütközések",
+      "description": "Lendület (p = m · v), lendületmegmaradás centrális rugalmas ütközéseknél, sebességcsere, visszapattanás és ütközési erők."
     }
   ]
 }
