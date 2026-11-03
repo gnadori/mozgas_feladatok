@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rozsomák tanár úr lejtője – Erők és csúszási feltétel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Slab:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #F8F9FA;
+      --text-color: #2D2A26;
+      --accent-amber: #D97725;
+      --accent-amber-hover: #b8621b;
+      --accent-green: #2C5E4B;
+      --accent-green-hover: #224b3b;
+      --accent-blue: #1A5276;
+      --accent-blue-hover: #143e5a;
+      --accent-purple: #6C3483;
+      --error-color: #B83227;
+      --surface-white: #FFFFFF;
+      --surface-sand: #EAE6DF;
+      --border-dark: #2D2A26;
+      --hard-shadow: 4px 4px 0px #2D2A26;
+      --hard-shadow-sm: 2px 2px 0px #2D2A26;
+      --hard-shadow-lg: 6px 6px 0px #2D2A26;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Roboto Slab', serif;
+      color: var(--text-color);
+      font-weight: 700;
+    }
+
+    /* Fejléc */
+    header {
+      background-color: var(--surface-white);
+      border-bottom: 3px solid var(--border-dark);
+      padding: 1rem 1.5rem;
+    }
+
+    .header-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-color);
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-amber);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #FFFFFF;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-family: 'Roboto Slab', serif;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #635E59;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 2px solid var(--border-dark);
+      text-decoration: none;
+      color: var(--text-color);
+      background: var(--surface-sand);
+      box-shadow: var(--hard-shadow-sm);
+      transition: transform 0.08s ease, background-color 0.1s ease;
+    }
+
+    .nav-link:hover {
+      background: #FFFFFF;
+      transform: translate(-1px, -1px);
+    }
+
+    .nav-link.active {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
+    /* Fő tartalom */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: var(--surface-white);
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 1rem;
+    }
+
+    /* Gombok és vezérlők */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.55rem 1rem;
+      border: 2px solid var(--border-dark);
+      border-radius: 0;
+      cursor: pointer;
+      box-shadow: var(--hard-shadow-sm);
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      text-decoration: none;
+      color: var(--text-color);
+      background: var(--surface-sand);
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--hard-shadow);
+      background: #FFF;
+    }
+
+    .btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--border-dark);
+    }
+
+    .btn-primary {
+      background-color: var(--accent-amber);
+      color: #FFFFFF;
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-amber-hover);
+      color: #FFFFFF;
+    }
+
+    .btn-green {
+      background-color: var(--accent-green);
+      color: #FFFFFF;
+    }
+    .btn-green:hover {
+      background-color: var(--accent-green-hover);
+      color: #FFFFFF;
+    }
+
+    .btn-blue {
+      background-color: var(--accent-blue);
+      color: #FFFFFF;
+    }
+    .btn-blue:hover {
+      background-color: var(--accent-blue-hover);
+      color: #FFFFFF;
+    }
+
+    .btn-danger {
+      background-color: var(--error-color);
+      color: #FFFFFF;
+    }
+
+    .btn-sm {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    /* Rács a beállításokhoz */
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .control-group {
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .control-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .control-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: var(--accent-amber);
+      font-size: 0.95rem;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      height: 8px;
+      accent-color: var(--accent-amber);
+      cursor: pointer;
+    }
+
+    .stepper-btn {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--border-dark);
+      background: #FFFFFF;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 1px 1px 0 var(--border-dark);
+    }
+    .stepper-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: none;
+    }
+
+    /* Preset sáv */
+    .presets-bar {
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .presets-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-right: 0.3rem;
+    }
+
+    .preset-chip {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      padding: 0.25rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.1s, transform 0.08s;
+      box-shadow: var(--hard-shadow-sm);
+    }
+    .preset-chip:hover {
+      background: var(--surface-sand);
+      transform: translate(-1px, -1px);
+    }
+    .preset-chip.active {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
+    /* Kísérlet és Akció sáv */
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      padding: 0.75rem 1rem;
+    }
+
+    .action-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Canvas konténer */
+    .canvas-container {
+      position: relative;
+      background: #E8F4F8;
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+    }
+
+    #sim-canvas {
+      display: block;
+      width: 100%;
+      height: 440px;
+      background: #E8F4F8;
+      user-select: none;
+    }
+
+    .canvas-overlay-hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .hud-badge {
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      padding: 0.35rem 0.75rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .canvas-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      background: var(--surface-white);
+      border: 2px solid var(--border-dark);
+      padding: 0.6rem 1rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .canvas-options label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+
+    /* Állapot és Csúszás jelző doboz */
+    .status-panel {
+      border: 3px solid var(--border-dark);
+      padding: 1.2rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--hard-shadow);
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .status-panel.static {
+      background-color: #EBF7EE;
+      border-color: var(--accent-green);
+    }
+
+    .status-panel.sliding {
+      background-color: #FDF2E9;
+      border-color: var(--accent-amber);
+    }
+
+    .status-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.75rem;
+    }
+
+    .status-tag {
+      font-family: 'Roboto Slab', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-panel.static .status-tag {
+      color: var(--accent-green);
+    }
+    .status-panel.sliding .status-tag {
+      color: var(--accent-amber);
+    }
+
+    .critical-angle-info {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      padding: 0.3rem 0.6rem;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    .status-explanation {
+      font-size: 0.92rem;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    /* Erő-egyensúly mérce */
+    .gauge-wrapper {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      padding: 0.8rem 1rem;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    .gauge-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .gauge-bar-bg {
+      position: relative;
+      height: 22px;
+      background: #D5DBDB;
+      border: 2px solid var(--border-dark);
+      overflow: hidden;
+    }
+
+    .gauge-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent-green);
+      transition: width 0.15s ease, background-color 0.15s ease;
+    }
+
+    .gauge-marker {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #B83227;
+      z-index: 2;
+    }
+
+    .gauge-legend {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: #555;
+      margin-top: 0.4rem;
+    }
+
+    /* Fizikai adatok és táblázatok */
+    .data-table-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .data-card {
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      padding: 0.8rem 1rem;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    .data-card-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #635E59;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .data-card-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+
+    .data-card-formula {
+      font-size: 0.78rem;
+      color: #777;
+      margin-top: 0.2rem;
+    }
+
+    /* Vektor színkódok */
+    .vector-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.6rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 2px dashed #CBD5E1;
+      font-size: 0.82rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .color-pill {
+      width: 14px;
+      height: 14px;
+      border: 1.5px solid var(--border-dark);
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    /* Oktató / magyarázó kártya */
+    .theory-section {
+      line-height: 1.6;
+    }
+
+    .theory-section p {
+      margin-bottom: 0.75rem;
+    }
+
+    .theory-formula-box {
+      background: var(--surface-sand);
+      border-left: 4px solid var(--accent-amber);
+      padding: 0.75rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      margin: 0.75rem 0;
+      border: 2px solid var(--border-dark);
+      border-left-width: 6px;
+      border-left-color: var(--accent-amber);
+    }
+
+    /* Lábléc */
+    footer {
+      background-color: var(--border-dark);
+      color: #F8F9FA;
+      padding: 1.5rem;
+      border-top: 3px solid var(--border-dark);
+      margin-top: auto;
+    }
+
+    .footer-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .footer-content a {
+      color: #F8F9FA;
+    }
+
+    @media (max-width: 700px) {
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .controls-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fejléc -->
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="brand">
+        <div class="brand-icon" title="Rozsomák mancsnyom">
+          <svg viewBox="0 0 24 24">
+            <ellipse cx="6" cy="8" rx="2" ry="3"/>
+            <ellipse cx="11" cy="5.5" rx="2" ry="3.2"/>
+            <ellipse cx="16" cy="6" rx="2" ry="3.2"/>
+            <ellipse cx="20.5" cy="9.5" rx="1.8" ry="2.7"/>
+            <path d="M14.5 10.5 C12 9.5, 9.5 9.8, 7.5 11 C5 12.5, 4 15, 6 18 C7.5 20, 10.5 21, 14 20 C18 19, 19.5 15.5, 18.5 13 C17.8 11.5, 16.5 10.9, 14.5 10.5 Z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">Rozsomák tanár úr lejtője</div>
+          <div class="brand-subtitle">Dinamika, erők felbontása és csúszási feltétel</div>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Gyakorló feladatok</a>
+        <a href="vonatkoztatasi_rendszerek.html" class="nav-link">Vonatkoztatási rendszerek</a>
+        <a href="hajitas_parbaj.html" class="nav-link">Hajításpárbaj</a>
+        <a href="lejto.html" class="nav-link active">Lejtő</a>
+        <a href="utkozesek.html" class="nav-link">Ütközések</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Fő tartalom -->
+  <main>
+
+    <!-- Beállítások és vezérlők -->
+    <section class="card">
+      <h2 class="card-title">Paraméterek beállítása</h2>
+      <p class="card-subtitle">Változtasd a lejtő szögét, a test tömegét és a súrlódási együtthatókat, vagy válassz egy valós anyagpárt!</p>
+
+      <!-- Anyagpár gombok -->
+      <div class="presets-bar">
+        <span class="presets-label">Valós anyagpárok:</span>
+        <button class="preset-chip active" data-mu0="0.45" data-mu="0.35">Fa a fán (&mu;<sub>0</sub> = 0.45, &mu; = 0.35)</button>
+        <button class="preset-chip" data-mu0="0.65" data-mu="0.50">Acél acélon (&mu;<sub>0</sub> = 0.65, &mu; = 0.50)</button>
+        <button class="preset-chip" data-mu0="0.90" data-mu="0.70">Gumi betonon (&mu;<sub>0</sub> = 0.90, &mu; = 0.70)</button>
+        <button class="preset-chip" data-mu0="0.10" data-mu="0.05">Jég a fán (&mu;<sub>0</sub> = 0.10, &mu; = 0.05)</button>
+        <button class="preset-chip" data-mu0="0.04" data-mu="0.04">Teflon teflonon (&mu;<sub>0</sub> = 0.04, &mu; = 0.04)</button>
+        <button class="preset-chip" data-mu0="0.00" data-mu="0.00">Ideális (súrlódásmentes)</button>
+      </div>
+
+      <!-- Csúszkák -->
+      <div class="controls-grid">
+        <!-- 1. Szög -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Lejtő szöge (&alpha;)</span>
+            <span class="control-val" id="val-angle">25&deg;</span>
+          </div>
+          <div class="slider-row">
+            <button class="stepper-btn" id="btn-angle-dec">&minus;</button>
+            <input type="range" id="slider-angle" min="0" max="80" step="1" value="25">
+            <button class="stepper-btn" id="btn-angle-inc">&plus;</button>
+          </div>
+        </div>
+
+        <!-- 2. Tömeg -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Tárgy tömege (m)</span>
+            <span class="control-val" id="val-mass">5.0 kg</span>
+          </div>
+          <div class="slider-row">
+            <button class="stepper-btn" id="btn-mass-dec">&minus;</button>
+            <input type="range" id="slider-mass" min="0.5" max="25" step="0.5" value="5.0">
+            <button class="stepper-btn" id="btn-mass-inc">&plus;</button>
+          </div>
+        </div>
+
+        <!-- 3. Tapadási súrlódási tényező -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Tapadási együttható (&mu;<sub>0</sub>)</span>
+            <span class="control-val" id="val-mu0">0.45</span>
+          </div>
+          <div class="slider-row">
+            <button class="stepper-btn" id="btn-mu0-dec">&minus;</button>
+            <input type="range" id="slider-mu0" min="0" max="1.20" step="0.01" value="0.45">
+            <button class="stepper-btn" id="btn-mu0-inc">&plus;</button>
+          </div>
+        </div>
+
+        <!-- 4. Csúszási súrlódási tényező -->
+        <div class="control-group">
+          <div class="control-label">
+            <span>Csúszási együttható (&mu;)</span>
+            <span class="control-val" id="val-mu">0.35</span>
+          </div>
+          <div class="slider-row">
+            <button class="stepper-btn" id="btn-mu-dec">&minus;</button>
+            <input type="range" id="slider-mu" min="0" max="1.20" step="0.01" value="0.35">
+            <button class="stepper-btn" id="btn-mu-inc">&plus;</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Akció és kísérleti gombok -->
+      <div class="action-bar">
+        <div class="action-group">
+          <button class="btn btn-primary" id="btn-play-pause">
+            <span id="play-icon">&#9654;</span> <span id="play-text">Indítás</span>
+          </button>
+          <button class="btn" id="btn-reset">&#8635; Újra a csúcsra</button>
+          <button class="btn" id="btn-slow">Lassítás: <span id="slow-val">1x</span></button>
+        </div>
+        <div class="action-group">
+          <button class="btn btn-green" id="btn-tilt-experiment" title="Lassan emeli a lejtőt $0^\circ$-ról a megindulásig">
+            &#128300; Lassan emeld a lejtőt! (Kritikus szög kísérlet)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Szimulációs vászon -->
+    <section class="card" style="padding-bottom: 1rem;">
+      <div class="canvas-container">
+        <canvas id="sim-canvas" width="900" height="440"></canvas>
+        <div class="canvas-overlay-hud">
+          <div class="hud-badge" id="hud-angle-badge">Szög: <strong>25&deg;</strong></div>
+          <div class="hud-badge" id="hud-state-badge">Állapot: <strong>Nyugalom (Tapad)</strong></div>
+        </div>
+      </div>
+
+      <!-- Vektor megjelenítési opciók -->
+      <div class="canvas-options">
+        <label>
+          <input type="checkbox" id="chk-components" checked> Erőkomponensek (F<sub>||</sub>, F<sub>&perp;</sub>)
+        </label>
+        <label>
+          <input type="checkbox" id="chk-normal" checked> Tartóerő / Normálerő (F<sub>ny</sub>)
+        </label>
+        <label>
+          <input type="checkbox" id="chk-friction" checked> Súrlódási erő (F<sub>s</sub>)
+        </label>
+        <label>
+          <input type="checkbox" id="chk-resultant" checked> Eredő gyorsító erő (F<sub>eredő</sub>)
+        </label>
+        <label>
+          <input type="checkbox" id="chk-values" checked> Értékek kiírása a vektorok mellett
+        </label>
+      </div>
+
+      <!-- Vektor jelmagyarázat -->
+      <div class="vector-legend">
+        <div class="legend-item"><span class="color-pill" style="background:#B83227;"></span><strong>G</strong>: Súlyerő (m&middot;g)</div>
+        <div class="legend-item"><span class="color-pill" style="background:#2471A3;"></span><strong>F<sub>&perp;</sub> / F<sub>ny</sub></strong>: Nyomó- és tartóerő</div>
+        <div class="legend-item"><span class="color-pill" style="background:#D97725;"></span><strong>F<sub>||</sub></strong>: Lejtőirányú komponens</div>
+        <div class="legend-item"><span class="color-pill" style="background:#2C5E4B;"></span><strong>F<sub>s</sub></strong>: Súrlódási erő</div>
+        <div class="legend-item"><span class="color-pill" style="background:#6C3483;"></span><strong>F<sub>eredő</sub></strong>: Eredő gyorsító erő</div>
+      </div>
+    </section>
+
+    <!-- Csúszási feltétel és állapot -->
+    <section class="status-panel static" id="status-panel">
+      <div class="status-header">
+        <div class="status-tag" id="status-tag">
+          <span id="status-icon">&#10004;</span> <span id="status-text">A TEST NYUGALOMBAN VAN (Tapad)</span>
+        </div>
+        <div class="critical-angle-info" id="critical-angle-info">
+          Kritikus szög: &alpha;<sub>krit</sub> = arctan(&mu;<sub>0</sub>) = <strong>24.2&deg;</strong>
+        </div>
+      </div>
+
+      <div class="status-explanation" id="status-explanation">
+        A lejtőirányú húzóerő nem éri el a maximális tapadási súrlódást. A felület meg tudja tartani a hasábot.
+      </div>
+
+      <!-- Erő-egyensúly összehasonlító mérce -->
+      <div class="gauge-wrapper">
+        <div class="gauge-labels">
+          <span>Lejtőirányú erő (F<sub>||</sub>) vs. Maximális tapadási erő (F<sub>s,max</sub>)</span>
+          <span id="gauge-ratio-text">F<sub>||</sub> / F<sub>s,max</sub> = 85%</span>
+        </div>
+        <div class="gauge-bar-bg">
+          <div class="gauge-bar-fill" id="gauge-fill" style="width: 85%;"></div>
+          <div class="gauge-marker" style="left: 100%;" title="Megindulási küszöb (100%)"></div>
+        </div>
+        <div class="gauge-legend">
+          <span id="gauge-left-val">F<sub>||</sub> = 20.7 N</span>
+          <span>&#9650; Megindulási határ (F<sub>s,max</sub>)</span>
+          <span id="gauge-right-val">F<sub>s,max</sub> = 24.3 N</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Számítási adatok kártyák -->
+    <section class="card">
+      <h2 class="card-title">Kiszámított fizikai értékek</h2>
+      <div class="data-table-grid">
+        <div class="data-card">
+          <div class="data-card-title">Súlyerő (G)</div>
+          <div class="data-card-value" id="calc-G">49.05 N</div>
+          <div class="data-card-formula">G = m &middot; g</div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-title">Nyomóerő (F<sub>&perp;</sub> = F<sub>ny</sub>)</div>
+          <div class="data-card-value" id="calc-Fperp">44.45 N</div>
+          <div class="data-card-formula">F<sub>&perp;</sub> = m &middot; g &middot; cos(&alpha;)</div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-title">Lejtőirányú erő (F<sub>||</sub>)</div>
+          <div class="data-card-value" id="calc-Fpar">20.73 N</div>
+          <div class="data-card-formula">F<sub>||</sub> = m &middot; g &middot; sin(&alpha;)</div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-title">Max. tapadási erő (F<sub>s,max</sub>)</div>
+          <div class="data-card-value" id="calc-Fsmax">20.00 N</div>
+          <div class="data-card-formula">F<sub>s,max</sub> = &mu;<sub>0</sub> &middot; F<sub>ny</sub></div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-title">Tényleges súrlódási erő (F<sub>s</sub>)</div>
+          <div class="data-card-value" id="calc-Fs">20.73 N</div>
+          <div class="data-card-formula" id="calc-Fs-formula">Nyugalomban: F<sub>s</sub> = F<sub>||</sub></div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-title">Eredő gyorsító erő (F<sub>eredő</sub>)</div>
+          <div class="data-card-value" id="calc-Fnet">0.00 N</div>
+          <div class="data-card-formula" id="calc-Fnet-formula">F<sub>||</sub> &minus; F<sub>cs</sub></div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-title">Gyorsulás a lejtőn (a)</div>
+          <div class="data-card-value" id="calc-acc">0.00 m/s&sup2;</div>
+          <div class="data-card-formula">a = F<sub>eredő</sub> / m</div>
+        </div>
+        <div class="data-card">
+          <div class="data-card-title">Pillanatnyi sebesség (v)</div>
+          <div class="data-card-value" id="calc-vel">0.00 m/s</div>
+          <div class="data-card-formula">v(t) = a &middot; t</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Oktatási levezetés és magyarázat -->
+    <section class="card theory-section">
+      <h2 class="card-title">Hogyan működik a lejtő és mikor indul meg a csúszás?</h2>
+      <p>
+        A lejtőn lévő testre két alapvető erő hat: a Föld vonzása miatti <strong>G súlyerő</strong> (függőlegesen lefelé),
+        valamint a lejtő felülete által kifejtett <strong>érintkezési kényszererő</strong> (tartóerő és súrlódás).
+      </p>
+
+      <div class="theory-formula-box">
+        <strong>1. A súlyerő felbontása:</strong><br>
+        &bull; Lejtőre merőleges nyomó komponens: F<sub>&perp;</sub> = m &middot; g &middot; cos(&alpha;)<br>
+        &bull; Lejtővel párhuzamos lefelé gyorsító komponens: F<sub>||</sub> = m &middot; g &middot; sin(&alpha;)
+      </div>
+
+      <p>
+        A felületre merőleges irányban nem történik elmozdulás, ezért a lejtő által kifejtett <strong>F<sub>ny</sub> tartóerő</strong>
+        pontosan egyenlő és ellentétes irányú az F<sub>&perp;</sub> komponenssel: <code>F<sub>ny</sub> = m &middot; g &middot; cos(&alpha;)</code>.
+      </p>
+
+      <div class="theory-formula-box">
+        <strong>2. A megindulás (csúszás) feltétele:</strong><br>
+        A tapadási súrlódási erőnek van egy maximális határa: F<sub>s,max</sub> = &mu;<sub>0</sub> &middot; F<sub>ny</sub> = &mu;<sub>0</sub> &middot; m &middot; g &middot; cos(&alpha;).<br><br>
+        A test akkor és csak akkor indul meg lefelé, ha a lefelé húzó erő legyőzi ezt a határt:<br>
+        F<sub>||</sub> &gt; F<sub>s,max</sub> &hArr; m &middot; g &middot; sin(&alpha;) &gt; &mu;<sub>0</sub> &middot; m &middot; g &middot; cos(&alpha;)<br><br>
+        Mindkét oldalt leosztva (m &middot; g &middot; cos(&alpha;))-val kapjuk az alapvető összefüggést:<br>
+        <strong>tan(&alpha;) &gt; &mu;<sub>0</sub> &nbsp;&rArr;&nbsp; &alpha; &gt; &alpha;<sub>krit</sub> = arctan(&mu;<sub>0</sub>)</strong>
+      </div>
+
+      <p>
+        <strong>Fontos felismerés a diákok számára:</strong> A képletből a test <em>m</em> tömege kiesett! Ez azt jelenti, hogy 
+        egy 10 grammos fakocka és egy 10 tonnás fahordó pontosan ugyanannál a dőlésszögnél fog elkezdeni csúszni a lejtőn!
+      </p>
+
+      <p>
+        <strong>Mi történik a megindulás után?</strong><br>
+        Amint a test megmozdul, a tapadás megszűnik, és helyébe a <em>csúszási súrlódási erő</em> lép: <code>F<sub>cs</sub> = &mu; &middot; F<sub>ny</sub></code>.
+        Mivel szinte minden reális anyagnál <code>&mu; &lt; &mu;<sub>0</sub></code>, a súrlódás a megindulás pillanatában hirtelen lecsökken,
+        így a test még határozottabban gyorsul lefelé: <code>a = g &middot; (sin(&alpha;) &minus; &mu; &middot; cos(&alpha;))</code>.
+      </p>
+    </section>
+
+  </main>
+
+  <!-- Lábléc -->
+  <footer>
+    <div class="footer-content">
+      <div>Készítette: Rozsomák tanár úr | 2026</div>
+      <div>Licenc: CC0 / Public Domain forrásmegjelölés | Természettudományos gyakorlótér</div>
+    </div>
+  </footer>
+
+  <!-- Szimulációs kód -->
+  <script>
+    // Fizikai állandók és állapot
+    const g = 9.81; // m/s²
+    let state = {
+      angleDeg: 25,
+      mass: 5.0,
+      mu0: 0.45,
+      mu: 0.35,
+      // Dinamikus szimuláció
+      isRunning: false,
+      speedMultiplier: 1.0,
+      pos: 0.15,      // Relatív pozíció a lejtőn [0 = csúcs, 1 = alsó vége]
+      velocity: 0.0,  // m/s
+      accel: 0.0,     // m/s²
+      rampLengthM: 10.0, // lejtő tényleges hossza méterben a fizikához
+      isSliding: false,
+      tiltExperimentActive: false
+    };
+
+    // DOM Elemek
+    const sliderAngle = document.getElementById('slider-angle');
+    const valAngle = document.getElementById('val-angle');
+    const btnAngleDec = document.getElementById('btn-angle-dec');
+    const btnAngleInc = document.getElementById('btn-angle-inc');
+
+    const sliderMass = document.getElementById('slider-mass');
+    const valMass = document.getElementById('val-mass');
+    const btnMassDec = document.getElementById('btn-mass-dec');
+    const btnMassInc = document.getElementById('btn-mass-inc');
+
+    const sliderMu0 = document.getElementById('slider-mu0');
+    const valMu0 = document.getElementById('val-mu0');
+    const btnMu0Dec = document.getElementById('btn-mu0-dec');
+    const btnMu0Inc = document.getElementById('btn-mu0-inc');
+
+    const sliderMu = document.getElementById('slider-mu');
+    const valMu = document.getElementById('val-mu');
+    const btnMuDec = document.getElementById('btn-mu-dec');
+    const btnMuInc = document.getElementById('btn-mu-inc');
+
+    const btnPlayPause = document.getElementById('btn-play-pause');
+    const playIcon = document.getElementById('play-icon');
+    const playText = document.getElementById('play-text');
+    const btnReset = document.getElementById('btn-reset');
+    const btnSlow = document.getElementById('btn-slow');
+    const slowVal = document.getElementById('slow-val');
+    const btnTiltExp = document.getElementById('btn-tilt-experiment');
+
+    const presetChips = document.querySelectorAll('.preset-chip');
+
+    const chkComponents = document.getElementById('chk-components');
+    const chkNormal = document.getElementById('chk-normal');
+    const chkFriction = document.getElementById('chk-friction');
+    const chkResultant = document.getElementById('chk-resultant');
+    const chkValues = document.getElementById('chk-values');
+
+    const statusPanel = document.getElementById('status-panel');
+    const statusIcon = document.getElementById('status-icon');
+    const statusText = document.getElementById('status-text');
+    const statusExplanation = document.getElementById('status-explanation');
+    const criticalAngleInfo = document.getElementById('critical-angle-info');
+    const gaugeFill = document.getElementById('gauge-fill');
+    const gaugeRatioText = document.getElementById('gauge-ratio-text');
+    const gaugeLeftVal = document.getElementById('gauge-left-val');
+    const gaugeRightVal = document.getElementById('gauge-right-val');
+
+    const hudAngleBadge = document.getElementById('hud-angle-badge');
+    const hudStateBadge = document.getElementById('hud-state-badge');
+
+    const calcG = document.getElementById('calc-G');
+    const calcFperp = document.getElementById('calc-Fperp');
+    const calcFpar = document.getElementById('calc-Fpar');
+    const calcFsmax = document.getElementById('calc-Fsmax');
+    const calcFs = document.getElementById('calc-Fs');
+    const calcFsFormula = document.getElementById('calc-Fs-formula');
+    const calcFnet = document.getElementById('calc-Fnet');
+    const calcFnetFormula = document.getElementById('calc-Fnet-formula');
+    const calcAcc = document.getElementById('calc-acc');
+    const calcVel = document.getElementById('calc-vel');
+
+    const canvas = document.getElementById('sim-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Inicializálás
+    function init() {
+      setupEventListeners();
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      updatePhysicsCalculations();
+      requestAnimationFrame(simLoop);
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = 440 * dpr;
+      ctx.resetTransform();
+      ctx.scale(dpr, dpr);
+      draw();
+    }
+
+    // Fizikai számítások segédfüggvénye
+    function getPhysics() {
+      const alphaRad = (state.angleDeg * Math.PI) / 180;
+      const m = state.mass;
+      const G = m * g;
+      const Fperp = G * Math.cos(alphaRad);
+      const Fpar = G * Math.sin(alphaRad);
+      const Fsmax = state.mu0 * Fperp;
+      const criticalAngleRad = Math.atan(state.mu0);
+      const criticalAngleDeg = (criticalAngleRad * 180) / Math.PI;
+
+      // Megindulási feltétel: Fpar > Fsmax (vagy alpha > criticalAngleDeg)
+      const willSlide = (Fpar > Fsmax + 1e-5);
+
+      let Fs = 0;
+      let Fnet = 0;
+      let accel = 0;
+
+      if (!willSlide && state.velocity === 0) {
+        // Nyugalom: tapadási súrlódás kiegyenlíti a lejtőirányú komponenst
+        Fs = Fpar;
+        Fnet = 0;
+        accel = 0;
+      } else {
+        // Csúszik lefelé: kinetikus súrlódási erő lép fel
+        const Fkin = state.mu * Fperp;
+        Fs = Fkin;
+        Fnet = Fpar - Fkin;
+        if (Fnet < 0 && state.velocity <= 0) {
+          // Ha felfelé vagy megállás történne és nincs sebesség
+          Fnet = 0;
+          Fs = Fpar;
+          accel = 0;
+        } else {
+          accel = Fnet / m;
+        }
+      }
+
+      return {
+        alphaRad,
+        criticalAngleDeg,
+        willSlide,
+        G,
+        Fperp,
+        Fpar,
+        Fsmax,
+        Fs,
+        Fnet,
+        accel
+      };
+    }
+
+    // UI és állapot frissítése
+    function updatePhysicsCalculations() {
+      const p = getPhysics();
+
+      // Értékek frissítése
+      valAngle.innerHTML = `${state.angleDeg}&deg;`;
+      valMass.textContent = `${state.mass.toFixed(1)} kg`;
+      valMu0.textContent = state.mu0.toFixed(2);
+      valMu.textContent = state.mu.toFixed(2);
+
+      hudAngleBadge.innerHTML = `Szög: <strong>${state.angleDeg}&deg;</strong>`;
+
+      // Kártyák adatai
+      calcG.textContent = `${p.G.toFixed(2)} N`;
+      calcFperp.textContent = `${p.Fperp.toFixed(2)} N`;
+      calcFpar.textContent = `${p.Fpar.toFixed(2)} N`;
+      calcFsmax.textContent = `${p.Fsmax.toFixed(2)} N`;
+      calcFs.textContent = `${p.Fs.toFixed(2)} N`;
+      calcFnet.textContent = `${p.Fnet.toFixed(2)} N`;
+      calcAcc.textContent = `${p.accel.toFixed(2)} m/s²`;
+      calcVel.textContent = `${state.velocity.toFixed(2)} m/s`;
+
+      criticalAngleInfo.innerHTML = `Kritikus szög: &alpha;<sub>krit</sub> = arctan(${state.mu0.toFixed(2)}) = <strong>${p.criticalAngleDeg.toFixed(1)}&deg;</strong>`;
+
+      // Gauge arány (Fpar / Fsmax)
+      let ratio = 0;
+      if (p.Fsmax > 0.001) {
+        ratio = (p.Fpar / p.Fsmax) * 100;
+      } else {
+        ratio = p.Fpar > 0 ? 150 : 0;
+      }
+      const displayRatio = Math.min(Math.round(ratio), 200);
+      gaugeRatioText.textContent = `F_{||} / F_{s,max} = ${Math.round(ratio)}%`;
+      gaugeFill.style.width = `${Math.min(displayRatio, 100)}%`;
+      gaugeLeftVal.textContent = `F_{||} = ${p.Fpar.toFixed(1)} N`;
+      gaugeRightVal.textContent = `F_{s,max} = ${p.Fsmax.toFixed(1)} N`;
+
+      // Állapotjelző badge és panel váltás
+      if (p.willSlide || state.velocity > 0.05) {
+        statusPanel.className = 'status-panel sliding';
+        statusIcon.innerHTML = '&#9889;';
+        statusText.textContent = 'A TEST MEGINDULT ÉS GYORSULVA CSÚSZIK!';
+        hudStateBadge.innerHTML = 'Állapot: <strong style="color:var(--accent-amber);">Csúszás lefelé</strong>';
+        statusExplanation.innerHTML = `A lejtőirányú erő (<strong>${p.Fpar.toFixed(2)} N</strong>) meghaladja a maximális tapadási súrlódást (<strong>${p.Fsmax.toFixed(2)} N</strong>)! A test csúszási súrlódás (${p.Fs.toFixed(2)} N) mellett <strong>a = ${p.accel.toFixed(2)} m/s&sup2;</strong> gyorsulással csúszik lefelé.`;
+        gaugeFill.style.backgroundColor = 'var(--accent-amber)';
+        calcFsFormula.textContent = `Csúszáskor: F_{cs} = μ · F_{ny}`;
+        calcFnetFormula.textContent = `F_{||} − F_{cs} = ${p.Fnet.toFixed(2)} N`;
+      } else {
+        statusPanel.className = 'status-panel static';
+        statusIcon.innerHTML = '&#10004;';
+        statusText.textContent = 'A TEST NYUGALOMBAN VAN (Tapadás)';
+        hudStateBadge.innerHTML = 'Állapot: <strong style="color:var(--accent-green);">Nyugalom (Tapad)</strong>';
+        statusExplanation.innerHTML = `A lejtő dőlésszöge (${state.angleDeg}&deg;) kisebb a kritikus szögnél (${p.criticalAngleDeg.toFixed(1)}&deg;). A lejtőirányú erő (${p.Fpar.toFixed(2)} N) &le; a maximális tapadási erő (${p.Fsmax.toFixed(2)} N), így a test stabilan áll.`;
+        gaugeFill.style.backgroundColor = 'var(--accent-green)';
+        calcFsFormula.textContent = `Nyugalomban: F_{s} = F_{||}`;
+        calcFnetFormula.textContent = `Egyensúlyban: F_{eredő} = 0 N`;
+      }
+    }
+
+    // Eseménykezelők
+    function setupEventListeners() {
+      // Szög
+      sliderAngle.addEventListener('input', (e) => {
+        state.angleDeg = parseFloat(e.target.value);
+        clearActivePresets();
+        updatePhysicsCalculations();
+      });
+      btnAngleDec.addEventListener('click', () => {
+        state.angleDeg = Math.max(0, state.angleDeg - 1);
+        sliderAngle.value = state.angleDeg;
+        clearActivePresets();
+        updatePhysicsCalculations();
+      });
+      btnAngleInc.addEventListener('click', () => {
+        state.angleDeg = Math.min(80, state.angleDeg + 1);
+        sliderAngle.value = state.angleDeg;
+        clearActivePresets();
+        updatePhysicsCalculations();
+      });
+
+      // Tömeg
+      sliderMass.addEventListener('input', (e) => {
+        state.mass = parseFloat(e.target.value);
+        updatePhysicsCalculations();
+      });
+      btnMassDec.addEventListener('click', () => {
+        state.mass = Math.max(0.5, parseFloat((state.mass - 0.5).toFixed(1)));
+        sliderMass.value = state.mass;
+        updatePhysicsCalculations();
+      });
+      btnMassInc.addEventListener('click', () => {
+        state.mass = Math.min(25, parseFloat((state.mass + 0.5).toFixed(1)));
+        sliderMass.value = state.mass;
+        updatePhysicsCalculations();
+      });
+
+      // Mu0
+      sliderMu0.addEventListener('input', (e) => {
+        state.mu0 = parseFloat(e.target.value);
+        if (state.mu > state.mu0) {
+          state.mu = state.mu0;
+          sliderMu.value = state.mu;
+        }
+        clearActivePresets();
+        updatePhysicsCalculations();
+      });
+      btnMu0Dec.addEventListener('click', () => {
+        state.mu0 = Math.max(0, parseFloat((state.mu0 - 0.05).toFixed(2)));
+        if (state.mu > state.mu0) {
+          state.mu = state.mu0;
+          sliderMu.value = state.mu;
+        }
+        sliderMu0.value = state.mu0;
+        clearActivePresets();
+        updatePhysicsCalculations();
+      });
+      btnMu0Inc.addEventListener('click', () => {
+        state.mu0 = Math.min(1.2, parseFloat((state.mu0 + 0.05).toFixed(2)));
+        sliderMu0.value = state.mu0;
+        clearActivePresets();
+        updatePhysicsCalculations();
+      });
+
+      // Mu
+      sliderMu.addEventListener('input', (e) => {
+        let val = parseFloat(e.target.value);
+        if (val > state.mu0) {
+          val = state.mu0;
+          sliderMu.value = val;
+        }
+        state.mu = val;
+        clearActivePresets();
+        updatePhysicsCalculations();
+      });
+      btnMuDec.addEventListener('click', () => {
+        state.mu = Math.max(0, parseFloat((state.mu - 0.05).toFixed(2)));
+        sliderMu.value = state.mu;
+        clearActivePresets();
+        updatePhysicsCalculations();
+      });
+      btnMuInc.addEventListener('click', () => {
+        state.mu = Math.min(state.mu0, parseFloat((state.mu + 0.05).toFixed(2)));
+        sliderMu.value = state.mu;
+        clearActivePresets();
+        updatePhysicsCalculations();
+      });
+
+      // Presetek
+      presetChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          presetChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          state.mu0 = parseFloat(chip.dataset.mu0);
+          state.mu = parseFloat(chip.dataset.mu);
+          sliderMu0.value = state.mu0;
+          sliderMu.value = state.mu;
+          updatePhysicsCalculations();
+        });
+      });
+
+      // Lejátszás / Szünet
+      btnPlayPause.addEventListener('click', () => {
+        state.isRunning = !state.isRunning;
+        if (state.isRunning) {
+          playIcon.innerHTML = '&#10074;&#10074;';
+          playText.textContent = 'Szünet';
+          btnPlayPause.classList.add('btn-green');
+          btnPlayPause.classList.remove('btn-primary');
+        } else {
+          playIcon.innerHTML = '&#9654;';
+          playText.textContent = 'Indítás';
+          btnPlayPause.classList.add('btn-primary');
+          btnPlayPause.classList.remove('btn-green');
+        }
+      });
+
+      // Újra a csúcsra
+      btnReset.addEventListener('click', () => {
+        resetObject();
+      });
+
+      // Lassítás
+      btnSlow.addEventListener('click', () => {
+        if (state.speedMultiplier === 1.0) {
+          state.speedMultiplier = 0.5;
+          slowVal.textContent = '0.5x';
+        } else if (state.speedMultiplier === 0.5) {
+          state.speedMultiplier = 0.25;
+          slowVal.textContent = '0.25x';
+        } else {
+          state.speedMultiplier = 1.0;
+          slowVal.textContent = '1x';
+        }
+      });
+
+      // Kritikus szög kísérlet
+      btnTiltExp.addEventListener('click', () => {
+        startTiltExperiment();
+      });
+
+      // Jelölőnégyzetek újrarajzolása
+      [chkComponents, chkNormal, chkFriction, chkResultant, chkValues].forEach(chk => {
+        chk.addEventListener('change', () => draw());
+      });
+    }
+
+    function clearActivePresets() {
+      presetChips.forEach(c => c.classList.remove('active'));
+    }
+
+    function resetObject() {
+      state.pos = 0.15;
+      state.velocity = 0;
+      state.accel = 0;
+      updatePhysicsCalculations();
+      draw();
+    }
+
+    // Automatikus szög emelés a megindulásig
+    function startTiltExperiment() {
+      state.tiltExperimentActive = true;
+      state.angleDeg = 0;
+      sliderAngle.value = 0;
+      resetObject();
+      updatePhysicsCalculations();
+
+      const pInit = getPhysics();
+      const targetCrit = pInit.criticalAngleDeg;
+
+      btnTiltExp.disabled = true;
+      btnTiltExp.textContent = 'Kísérlet folyamatban: a lejtő lassan emelkedik...';
+
+      const interval = setInterval(() => {
+        if (!state.tiltExperimentActive) {
+          clearInterval(interval);
+          btnTiltExp.disabled = false;
+          btnTiltExp.innerHTML = '&#128300; Lassan emeld a lejtőt! (Kritikus szög kísérlet)';
+          return;
+        }
+
+        const pCurrent = getPhysics();
+        if (pCurrent.willSlide || state.angleDeg >= 80) {
+          // Megindult!
+          clearInterval(interval);
+          state.tiltExperimentActive = false;
+          btnTiltExp.disabled = false;
+          btnTiltExp.innerHTML = '&#128300; Újrapróbálás (Kritikus szög kísérlet)';
+          state.isRunning = true;
+          playIcon.innerHTML = '&#10074;&#10074;';
+          playText.textContent = 'Szünet';
+          btnPlayPause.classList.add('btn-green');
+          btnPlayPause.classList.remove('btn-primary');
+          updatePhysicsCalculations();
+          return;
+        }
+
+        state.angleDeg += 0.5;
+        sliderAngle.value = Math.round(state.angleDeg);
+        updatePhysicsCalculations();
+      }, 50);
+    }
+
+    // Szimulációs hurok
+    let lastTime = performance.now();
+    function simLoop(now) {
+      const dtRaw = (now - lastTime) / 1000;
+      lastTime = now;
+      const dt = Math.min(dtRaw, 0.05) * state.speedMultiplier;
+
+      if (state.isRunning) {
+        const p = getPhysics();
+        if (p.willSlide || state.velocity > 0.001) {
+          state.accel = p.accel;
+          state.velocity += state.accel * dt;
+          if (state.velocity < 0) state.velocity = 0;
+
+          // Eltolás relatív skálán
+          const dPos = (state.velocity * dt) / state.rampLengthM;
+          state.pos += dPos;
+
+          if (state.pos >= 0.90) {
+            state.pos = 0.90;
+            state.velocity = 0;
+            state.isRunning = false;
+            playIcon.innerHTML = '&#9654;';
+            playText.textContent = 'Indítás';
+            btnPlayPause.classList.add('btn-primary');
+            btnPlayPause.classList.remove('btn-green');
+          }
+          updatePhysicsCalculations();
+        }
+      }
+
+      draw();
+      requestAnimationFrame(simLoop);
+    }
+
+    // Kirajzolás Canvasre
+    function draw() {
+      const w = canvas.getBoundingClientRect().width;
+      const h = 440;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // 1. Háttér (enyhe égbolt és talaj vonal)
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#EAF3F8');
+      grad.addColorStop(0.85, '#F4F9FC');
+      grad.addColorStop(1.0, '#E3ECEF');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Talaj
+      const groundY = h - 50;
+      ctx.beginPath();
+      ctx.moveTo(0, groundY);
+      ctx.lineTo(w, groundY);
+      ctx.strokeStyle = '#2D2A26';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Talaj sávozás
+      ctx.strokeStyle = '#BDC3C7';
+      ctx.lineWidth = 1.5;
+      for (let x = 10; x < w; x += 25) {
+        ctx.beginPath();
+        ctx.moveTo(x, groundY);
+        ctx.lineTo(x - 12, groundY + 15);
+        ctx.stroke();
+      }
+
+      // 2. Lejtő geometriája
+      const alphaRad = (state.angleDeg * Math.PI) / 180;
+      const pivotX = w * 0.12; // Lejtő bal alsó sarka
+      const pivotY = groundY;
+      const rampLengthPx = Math.min(w * 0.72, 600); // Lejtő felületének hossza px-ben
+
+      // Lejtő jobb csúcsa (vagy lejtő ék formája: balra lent sarok, jobbra fent a csúcs)
+      // Standard ábrázolás: Lejtő lejt balról jobbra vagy jobbról balra.
+      // Rajzoljuk úgy, hogy a csúcs balra fent van, a lejtő lefelé lejt jobbra a talajig!
+      // Vagy a csúcs jobbra fent, és balra lent van a szög.
+      // Legtermészetesebb a magyar fizikatankönyvekben:
+      // Balra lent van a forgáspont (szög), és jobbra fent van a lejtő emelt csúcsa.
+      // A hasáb fent ül, és lefelé csúszik a forgáspont felé!
+      const topX = pivotX + rampLengthPx * Math.cos(alphaRad);
+      const topY = pivotY - rampLengthPx * Math.sin(alphaRad);
+
+      // Lejtő háromszög kitöltése
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(pivotX, pivotY);
+      ctx.lineTo(topX, topY);
+      ctx.lineTo(topX, pivotY);
+      ctx.closePath();
+
+      // Fa erezet / lejtő minta
+      ctx.fillStyle = '#EAE1D0';
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#2D2A26';
+      ctx.stroke();
+
+      // Lejtő belső textúra vonalak
+      ctx.clip();
+      ctx.strokeStyle = 'rgba(180, 160, 130, 0.35)';
+      ctx.lineWidth = 2;
+      for (let y = topY; y < pivotY; y += 14) {
+        ctx.beginPath();
+        ctx.moveTo(pivotX - 20, y);
+        ctx.lineTo(topX + 20, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // Szögmérő ív a saroknál
+      if (state.angleDeg > 2) {
+        const arcRadius = 55;
+        ctx.beginPath();
+        ctx.arc(pivotX, pivotY, arcRadius, -alphaRad, 0, false);
+        ctx.strokeStyle = '#D97725';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(217, 119, 37, 0.18)';
+        ctx.beginPath();
+        ctx.moveTo(pivotX, pivotY);
+        ctx.arc(pivotX, pivotY, arcRadius, -alphaRad, 0, false);
+        ctx.closePath();
+        ctx.fill();
+
+        // Szög szövege
+        ctx.fillStyle = '#2D2A26';
+        ctx.font = 'bold 13px "JetBrains Mono", monospace';
+        const textDist = arcRadius + 18;
+        const textAngle = -alphaRad / 2;
+        ctx.fillText(`${state.angleDeg}°`, pivotX + textDist * Math.cos(textAngle), pivotY + textDist * Math.sin(textAngle) + 4);
+      }
+
+      // 3. Tárgy (kocka/hasáb) pozicionálása a lejtőn
+      // pos: 0 = fent a top-nál, 1 = lent a pivot-nál
+      const blockRelPos = 1 - state.pos; // 1-től (fent) 0-ig (lent)
+      const blockCenterX = pivotX + blockRelPos * rampLengthPx * Math.cos(alphaRad);
+      const blockCenterY = pivotY - blockRelPos * rampLengthPx * Math.sin(alphaRad);
+
+      // Hasáb mérete arányos a tömeggel
+      const baseSize = 40;
+      const massScale = 0.8 + 0.6 * (state.mass / 25);
+      const blockW = baseSize * massScale;
+      const blockH = baseSize * massScale;
+
+      // Rajzoljuk ki a hasábot elforgatva a lejtő szögével
+      ctx.save();
+      ctx.translate(blockCenterX, blockCenterY);
+      ctx.rotate(-alphaRad);
+
+      // A hasáb talpa pontosan a lejtő érintési vonalán fekszik:
+      // A hasáb lokális koordinátarendszerben [-blockW/2, -blockH] és [blockW/2, 0] között van
+      ctx.fillStyle = '#C87D55';
+      ctx.fillRect(-blockW / 2, -blockH, blockW, blockH);
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#2D2A26';
+      ctx.strokeRect(-blockW / 2, -blockH, blockW, blockH);
+
+      // Kocka belső részlet (pl. fém/fa sarokpántok)
+      ctx.fillStyle = '#A0522D';
+      ctx.fillRect(-blockW / 2 + 3, -blockH + 3, blockW - 6, blockH - 6);
+      ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+      ctx.beginPath();
+      ctx.moveTo(-blockW / 2 + 3, -blockH + 3);
+      ctx.lineTo(blockW / 2 - 3, -3);
+      ctx.moveTo(blockW / 2 - 3, -blockH + 3);
+      ctx.lineTo(-blockW / 2 + 3, -3);
+      ctx.stroke();
+
+      // Tömeg címke a hasáb közepén
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 11px "Inter", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${state.mass.toFixed(1)}kg`, 0, -blockH / 2);
+
+      ctx.restore();
+
+      // 4. Erővektorok kirajzolása
+      // A hasáb tömegközéppontja globális koordinátákban:
+      const cmOffset = blockH / 2;
+      const cmX = blockCenterX - cmOffset * Math.sin(alphaRad);
+      const cmY = blockCenterY - cmOffset * Math.cos(alphaRad);
+
+      // A hasáb talpának közepe (ahol a súrlódás és a normálerő hat):
+      const contactX = blockCenterX;
+      const contactY = blockCenterY;
+
+      const p = getPhysics();
+
+      // Skálázási tényező: 1 Newton = hány pixel
+      // A rajz ne lógjon ki: max G ~ 25 * 9.81 = 245 N.
+      // Legyen 1 N = 1.0 - 1.2 px
+      const scaleN = Math.max(0.6, Math.min(1.4, 260 / (state.mass * g)));
+
+      const showValues = chkValues.checked;
+
+      // G: Súlyerő (függőlegesen lefelé a CM-ből)
+      const lenG = p.G * scaleN;
+      drawVector(ctx, cmX, cmY, cmX, cmY + lenG, '#B83227', 'G', showValues ? `${p.G.toFixed(1)} N` : null, 3);
+
+      // Felbontott összetevők (ha be van pipálva)
+      if (chkComponents.checked) {
+        // F_perp: felületre merőleges nyomó komponens (CM-ből felület felé befelé)
+        const lenFperp = p.Fperp * scaleN;
+        const perpEndX = cmX + lenFperp * Math.sin(alphaRad);
+        const perpEndY = cmY + lenFperp * Math.cos(alphaRad);
+        drawDashedVector(ctx, cmX, cmY, perpEndX, perpEndY, '#2471A3', 'F⊥', showValues ? `${p.Fperp.toFixed(1)} N` : null, 2);
+
+        // F_par: lejtővel párhuzamos húzó komponens (CM-ből a lejtő mentén lefelé, azaz a pivot felé)
+        const lenFpar = p.Fpar * scaleN;
+        const parEndX = cmX - lenFpar * Math.cos(alphaRad);
+        const parEndY = cmY + lenFpar * Math.sin(alphaRad);
+        drawVector(ctx, cmX, cmY, parEndX, parEndY, '#D97725', 'F||', showValues ? `${p.Fpar.toFixed(1)} N` : null, 2.5);
+
+        // Parallelogramma segédvonalak
+        ctx.save();
+        ctx.setLineDash([3, 3]);
+        ctx.strokeStyle = '#85929E';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(perpEndX, perpEndY);
+        ctx.lineTo(cmX, cmY + lenG);
+        ctx.lineTo(parEndX, parEndY);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // F_ny / Tartóerő (a lejtő felületétől merőlegesen felfelé)
+      if (chkNormal.checked) {
+        const lenFn = p.Fperp * scaleN;
+        const fnEndX = contactX - lenFn * Math.sin(alphaRad);
+        const fnEndY = contactY - lenFn * Math.cos(alphaRad);
+        drawVector(ctx, contactX, contactY, fnEndX, fnEndY, '#1A5276', 'Fny', showValues ? `${p.Fperp.toFixed(1)} N` : null, 2.5);
+      }
+
+      // Súrlódási erő (F_s): a felület mentén felfelé mutat, hogy meggátolja / fékezze a lecsúszást!
+      if (chkFriction.checked && p.Fs > 0.05) {
+        const lenFs = p.Fs * scaleN;
+        // Felfelé a lejtő mentén: a top felé mutat (+cos alpha, -sin alpha)
+        const fsEndX = contactX + lenFs * Math.cos(alphaRad);
+        const fsEndY = contactY - lenFs * Math.sin(alphaRad);
+        const labelFs = p.willSlide ? 'Fcs' : 'Fs';
+        drawVector(ctx, contactX, contactY, fsEndX, fsEndY, '#2C5E4B', labelFs, showValues ? `${p.Fs.toFixed(1)} N` : null, 3);
+      }
+
+      // Eredő gyorsító erő (F_eredő): csak ha megindult és van eredő erő
+      if (chkResultant.checked && p.Fnet > 0.1 && (p.willSlide || state.velocity > 0.01)) {
+        const lenFnet = p.Fnet * scaleN;
+        // A lejtő mentén lefelé mutat a CM-ből kicsit eltolva
+        const netStartX = cmX - 10 * Math.sin(alphaRad);
+        const netStartY = cmY - 10 * Math.cos(alphaRad);
+        const netEndX = netStartX - lenFnet * Math.cos(alphaRad);
+        const netEndY = netStartY + lenFnet * Math.sin(alphaRad);
+        drawVector(ctx, netStartX, netStartY, netEndX, netEndY, '#6C3483', 'Feredő', showValues ? `${p.Fnet.toFixed(1)} N (a=${p.accel.toFixed(1)}m/s²)` : 'Feredő', 3);
+      }
+
+      // 5. Mozgási sebesség vektor ha mozog
+      if (state.velocity > 0.05) {
+        const velLen = Math.min(state.velocity * 12, 100);
+        const vEndX = cmX - velLen * Math.cos(alphaRad);
+        const vEndY = cmY + velLen * Math.sin(alphaRad);
+        drawVector(ctx, cmX, cmY, vEndX, vEndY, '#0E6655', 'v', `${state.velocity.toFixed(2)} m/s`, 2.5);
+      }
+    }
+
+    // Segédfüggvény: vektor nyíl rajzolása
+    function drawVector(ctx, fromX, fromY, toX, toY, color, label, valText, lineWidth = 2.5) {
+      const dx = toX - fromX;
+      const dy = toY - fromY;
+      const len = Math.hypot(dx, dy);
+      if (len < 2) return;
+
+      const headLen = Math.min(12, len * 0.4);
+      const angle = Math.atan2(dy, dx);
+
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = lineWidth;
+      ctx.lineCap = 'round';
+
+      // Vonal
+      ctx.beginPath();
+      ctx.moveTo(fromX, fromY);
+      ctx.lineTo(toX, toY);
+      ctx.stroke();
+
+      // Nyílhegy
+      ctx.beginPath();
+      ctx.moveTo(toX, toY);
+      ctx.lineTo(toX - headLen * Math.cos(angle - Math.PI / 6), toY - headLen * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(toX - headLen * Math.cos(angle + Math.PI / 6), toY - headLen * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fill();
+
+      // Címke
+      if (label) {
+        ctx.font = 'bold 12px "JetBrains Mono", monospace';
+        const labelDist = 16;
+        const normAngle = angle + Math.PI / 2;
+        let lx = toX + labelDist * Math.cos(normAngle);
+        let ly = toY + labelDist * Math.sin(normAngle);
+
+        ctx.fillStyle = '#2D2A26';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        let fullText = label;
+        if (valText) fullText += ` (${valText})`;
+
+        // Háttér a címke mögé a jobb olvashatóságért
+        const tm = ctx.measureText(fullText);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+        ctx.fillRect(lx - tm.width / 2 - 3, ly - 7, tm.width + 6, 15);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(lx - tm.width / 2 - 3, ly - 7, tm.width + 6, 15);
+
+        ctx.fillStyle = color;
+        ctx.fillText(fullText, lx, ly);
+      }
+      ctx.restore();
+    }
+
+    // Segédfüggvény: szaggatott vektor
+    function drawDashedVector(ctx, fromX, fromY, toX, toY, color, label, valText, lineWidth = 2) {
+      ctx.save();
+      ctx.setLineDash([4, 3]);
+      drawVector(ctx, fromX, fromY, toX, toY, color, label, valText, lineWidth);
+      ctx.restore();
+    }
+
+    // Indítás
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

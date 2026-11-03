@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rozsomák tanár úr ütközésszimulátora – Ütközések és lendületmegmaradás</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Slab:wght@500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #F8F9FA;
+      --text-color: #2D2A26;
+      --accent-amber: #D97725;
+      --accent-amber-hover: #b8621b;
+      --accent-green: #2C5E4B;
+      --accent-green-hover: #224b3b;
+      --accent-blue: #1A5276;
+      --accent-blue-hover: #143e5a;
+      --accent-purple: #6C3483;
+      --error-color: #B83227;
+      --surface-white: #FFFFFF;
+      --surface-sand: #EAE6DF;
+      --border-dark: #2D2A26;
+      --hard-shadow: 4px 4px 0px #2D2A26;
+      --hard-shadow-sm: 2px 2px 0px #2D2A26;
+      --hard-shadow-lg: 6px 6px 0px #2D2A26;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Roboto Slab', serif;
+      color: var(--text-color);
+      font-weight: 700;
+    }
+
+    /* Fejléc */
+    header {
+      background-color: var(--surface-white);
+      border-bottom: 3px solid var(--border-dark);
+      padding: 1rem 1.5rem;
+    }
+
+    .header-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-color);
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-amber);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: #FFFFFF;
+    }
+
+    .brand-title {
+      font-size: 1.15rem;
+      font-family: 'Roboto Slab', serif;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .brand-subtitle {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #635E59;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: 2px solid var(--border-dark);
+      text-decoration: none;
+      color: var(--text-color);
+      background: var(--surface-sand);
+      box-shadow: var(--hard-shadow-sm);
+      transition: transform 0.08s ease, background-color 0.1s ease;
+    }
+
+    .nav-link:hover {
+      background: #FFFFFF;
+      transform: translate(-1px, -1px);
+    }
+
+    .nav-link.active {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
+    /* Fő tartalom */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: var(--surface-white);
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: #555;
+      margin-bottom: 1rem;
+    }
+
+    /* Gombok és vezérlők */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 0.55rem 1rem;
+      border: 2px solid var(--border-dark);
+      border-radius: 0;
+      cursor: pointer;
+      box-shadow: var(--hard-shadow-sm);
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      text-decoration: none;
+      color: var(--text-color);
+      background: var(--surface-sand);
+      user-select: none;
+    }
+
+    .btn:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: var(--hard-shadow);
+      background: #FFF;
+    }
+
+    .btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--border-dark);
+    }
+
+    .btn-primary {
+      background-color: var(--accent-amber);
+      color: #FFFFFF;
+    }
+    .btn-primary:hover {
+      background-color: var(--accent-amber-hover);
+      color: #FFFFFF;
+    }
+
+    .btn-green {
+      background-color: var(--accent-green);
+      color: #FFFFFF;
+    }
+    .btn-green:hover {
+      background-color: var(--accent-green-hover);
+      color: #FFFFFF;
+    }
+
+    .btn-blue {
+      background-color: var(--accent-blue);
+      color: #FFFFFF;
+    }
+
+    .btn-sm {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    /* Két oszlop a kocsikhoz */
+    .carts-control-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .cart-box {
+      border: 3px solid var(--border-dark);
+      padding: 1rem;
+      background: var(--surface-sand);
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    .cart-box.cart-1 {
+      border-top: 6px solid var(--accent-amber);
+    }
+
+    .cart-box.cart-2 {
+      border-top: 6px solid var(--accent-green);
+    }
+
+    .cart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+
+    .cart-badge {
+      font-family: 'Roboto Slab', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cart-box.cart-1 .cart-badge {
+      color: var(--accent-amber);
+    }
+
+    .cart-box.cart-2 .cart-badge {
+      color: var(--accent-green);
+    }
+
+    .control-row {
+      margin-bottom: 0.75rem;
+    }
+
+    .control-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+    }
+
+    .control-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .cart-1 .control-val {
+      color: var(--accent-amber);
+    }
+
+    .cart-2 .control-val {
+      color: var(--accent-green);
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      height: 8px;
+      cursor: pointer;
+    }
+
+    .cart-1 input[type="range"] {
+      accent-color: var(--accent-amber);
+    }
+
+    .cart-2 input[type="range"] {
+      accent-color: var(--accent-green);
+    }
+
+    .stepper-btn {
+      width: 28px;
+      height: 28px;
+      border: 2px solid var(--border-dark);
+      background: #FFFFFF;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 1px 1px 0 var(--border-dark);
+    }
+
+    .dir-toggle-btn {
+      border: 2px solid var(--border-dark);
+      background: #FFFFFF;
+      padding: 0.2rem 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 1px 1px 0 var(--border-dark);
+    }
+
+    /* Restitúció és presetek */
+    .restitution-box {
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      padding: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .restitution-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .restitution-slider-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    #slider-e {
+      accent-color: var(--accent-purple);
+    }
+
+    .restitution-type-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .type-chip {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      padding: 0.35rem 0.7rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--hard-shadow-sm);
+      transition: background 0.1s, transform 0.08s;
+    }
+
+    .type-chip:hover {
+      background: var(--surface-sand);
+      transform: translate(-1px, -1px);
+    }
+
+    .type-chip.active {
+      background: var(--accent-purple);
+      color: #FFFFFF;
+    }
+
+    /* Kísérleti presetek */
+    .presets-bar {
+      margin-bottom: 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .preset-chip {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      padding: 0.3rem 0.65rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.1s, transform 0.08s;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    .preset-chip:hover {
+      background: var(--surface-sand);
+      transform: translate(-1px, -1px);
+    }
+
+    .preset-chip.active {
+      background: var(--accent-amber);
+      color: #FFFFFF;
+    }
+
+    /* Akció és lejátszó sáv */
+    .action-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .action-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Canvas konténer */
+    .canvas-container {
+      position: relative;
+      background: #EDF3F7;
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      margin-bottom: 1.25rem;
+      overflow: hidden;
+    }
+
+    #sim-canvas {
+      display: block;
+      width: 100%;
+      height: 380px;
+      background: #EDF3F7;
+      cursor: grab;
+      user-select: none;
+    }
+
+    #sim-canvas:active {
+      cursor: grabbing;
+    }
+
+    .canvas-overlay-hud {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .hud-badge {
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      padding: 0.3rem 0.65rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .canvas-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      background: var(--surface-white);
+      border: 2px solid var(--border-dark);
+      padding: 0.6rem 1rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .canvas-options label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+
+    /* Megmaradási törvények panel */
+    .conservation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .conservation-card {
+      background: var(--surface-white);
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      padding: 1.25rem;
+    }
+
+    .conservation-title {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .law-badge {
+      font-size: 0.78rem;
+      padding: 0.2rem 0.5rem;
+      font-weight: 700;
+      border: 1.5px solid var(--border-dark);
+    }
+
+    .law-badge.conserved {
+      background: #D4EDDA;
+      color: #155724;
+    }
+
+    .law-badge.dissipated {
+      background: #FFF3CD;
+      color: #856404;
+    }
+
+    .bar-comparison-row {
+      margin-bottom: 0.75rem;
+    }
+
+    .bar-label-group {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .bar-outer {
+      height: 20px;
+      background: #E5E8E8;
+      border: 2px solid var(--border-dark);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .bar-segment-1 {
+      height: 100%;
+      background: var(--accent-amber);
+      transition: width 0.1s linear;
+    }
+
+    .bar-segment-2 {
+      height: 100%;
+      background: var(--accent-green);
+      transition: width 0.1s linear;
+    }
+
+    .bar-segment-loss {
+      height: 100%;
+      background: #E74C3C;
+      transition: width 0.1s linear;
+    }
+
+    .data-values-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      margin-top: 0.75rem;
+      background: var(--surface-sand);
+      padding: 0.75rem;
+      border: 2px solid var(--border-dark);
+    }
+
+    .data-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Számítási eredmény táblázat */
+    .analytic-summary {
+      background: var(--surface-sand);
+      border: 3px solid var(--border-dark);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--hard-shadow);
+    }
+
+    .analytic-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    .analytic-item {
+      background: #FFFFFF;
+      border: 2px solid var(--border-dark);
+      padding: 0.75rem;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    .analytic-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #635E59;
+    }
+
+    .analytic-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-top: 0.2rem;
+    }
+
+    /* Elméleti szekció */
+    .theory-section p {
+      margin-bottom: 0.75rem;
+      line-height: 1.6;
+    }
+
+    .theory-formula-box {
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      border-left: 6px solid var(--accent-amber);
+      padding: 0.75rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      margin: 0.75rem 0;
+    }
+
+    /* Lábléc */
+    footer {
+      background-color: var(--border-dark);
+      color: #F8F9FA;
+      padding: 1.5rem;
+      border-top: 3px solid var(--border-dark);
+      margin-top: auto;
+    }
+
+    .footer-content {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .footer-content a {
+      color: #F8F9FA;
+    }
+
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .carts-control-grid, .conservation-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fejléc -->
+  <header>
+    <div class="header-content">
+      <a href="index.html" class="brand">
+        <div class="brand-icon" title="Rozsomák mancsnyom">
+          <svg viewBox="0 0 24 24">
+            <ellipse cx="6" cy="8" rx="2" ry="3"/>
+            <ellipse cx="11" cy="5.5" rx="2" ry="3.2"/>
+            <ellipse cx="16" cy="6" rx="2" ry="3.2"/>
+            <ellipse cx="20.5" cy="9.5" rx="1.8" ry="2.7"/>
+            <path d="M14.5 10.5 C12 9.5, 9.5 9.8, 7.5 11 C5 12.5, 4 15, 6 18 C7.5 20, 10.5 21, 14 20 C18 19, 19.5 15.5, 18.5 13 C17.8 11.5, 16.5 10.9, 14.5 10.5 Z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="brand-title">Rozsomák tanár úr ütközésszimulátora</div>
+          <div class="brand-subtitle">Egydimenziós ütközések, lendület- és energiamegmaradás</div>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Gyakorló feladatok</a>
+        <a href="vonatkoztatasi_rendszerek.html" class="nav-link">Vonatkoztatási rendszerek</a>
+        <a href="hajitas_parbaj.html" class="nav-link">Hajításpárbaj</a>
+        <a href="lejto.html" class="nav-link">Lejtő</a>
+        <a href="utkozesek.html" class="nav-link active">Ütközések</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Fő tartalom -->
+  <main>
+
+    <!-- Beállítások és Kísérletek -->
+    <section class="card">
+      <h2 class="card-title">Kísérleti beállítások és paraméterek</h2>
+      <p class="card-subtitle">Állítsd be a testek tömegét, kezdősebességét és az ütközés rugalmasságát, vagy válassz egy klasszikus kísérletet!</p>
+
+      <!-- Preset kísérletek sáv -->
+      <div class="presets-bar">
+        <span style="font-size:0.85rem; font-weight:700; margin-right:0.3rem;">Klasszikus kísérletek:</span>
+        <button class="preset-chip active" id="preset-swap">1. Sebességcsere (m₁ = m₂, v₂ = 0, e = 1)</button>
+        <button class="preset-chip" id="preset-heavy">2. Nehéz &rarr; Könnyű (m₁ = 5kg, m₂ = 1kg, e = 1)</button>
+        <button class="preset-chip" id="preset-rebound">3. Könnyű &rarr; Nehéz (m₁ = 1kg, m₂ = 6kg, e = 1)</button>
+        <button class="preset-chip" id="preset-headon">4. Szembetalálkozás (v₁ = 3, v₂ = -3, e = 1)</button>
+        <button class="preset-chip" id="preset-inelastic">5. Tökéletesen rugalmatlan (e = 0)</button>
+        <button class="preset-chip" id="preset-billiard">6. Biliárd / reális (e = 0.85)</button>
+      </div>
+
+      <!-- Kocsik beállítása -->
+      <div class="carts-control-grid">
+        <!-- 1. Kocsi (Borostyán) -->
+        <div class="cart-box cart-1">
+          <div class="cart-header">
+            <span class="cart-badge">&#128663; 1. Kocsi (Bal)</span>
+            <span class="control-val" id="val-cart1-summary">m₁ = 2.0 kg | v₁ = +3.0 m/s</span>
+          </div>
+
+          <!-- Tömeg -->
+          <div class="control-row">
+            <div class="control-label">
+              <span>Tömeg (m₁)</span>
+              <span class="control-val" id="val-m1">2.0 kg</span>
+            </div>
+            <div class="slider-row">
+              <button class="stepper-btn" id="btn-m1-dec">&minus;</button>
+              <input type="range" id="slider-m1" min="0.5" max="10.0" step="0.5" value="2.0">
+              <button class="stepper-btn" id="btn-m1-inc">&plus;</button>
+            </div>
+          </div>
+
+          <!-- Kezdeti sebesség -->
+          <div class="control-row">
+            <div class="control-label">
+              <span>Kezdeti sebesség (v₁)</span>
+              <span class="control-val" id="val-v1">+3.0 m/s</span>
+            </div>
+            <div class="slider-row">
+              <button class="dir-toggle-btn" id="btn-v1-flip" title="Irány megfordítása">&harr;</button>
+              <input type="range" id="slider-v1" min="-8.0" max="8.0" step="0.5" value="3.0">
+              <button class="stepper-btn" id="btn-v1-zero" title="Megállítás">0</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Kocsi (Fenyőzöld) -->
+        <div class="cart-box cart-2">
+          <div class="cart-header">
+            <span class="cart-badge">&#128663; 2. Kocsi (Jobb)</span>
+            <span class="control-val" id="val-cart2-summary">m₂ = 2.0 kg | v₂ = 0.0 m/s</span>
+          </div>
+
+          <!-- Tömeg -->
+          <div class="control-row">
+            <div class="control-label">
+              <span>Tömeg (m₂)</span>
+              <span class="control-val" id="val-m2">2.0 kg</span>
+            </div>
+            <div class="slider-row">
+              <button class="stepper-btn" id="btn-m2-dec">&minus;</button>
+              <input type="range" id="slider-m2" min="0.5" max="10.0" step="0.5" value="2.0">
+              <button class="stepper-btn" id="btn-m2-inc">&plus;</button>
+            </div>
+          </div>
+
+          <!-- Kezdeti sebesség -->
+          <div class="control-row">
+            <div class="control-label">
+              <span>Kezdeti sebesség (v₂)</span>
+              <span class="control-val" id="val-v2">0.0 m/s</span>
+            </div>
+            <div class="slider-row">
+              <button class="dir-toggle-btn" id="btn-v2-flip" title="Irány megfordítása">&harr;</button>
+              <input type="range" id="slider-v2" min="-8.0" max="8.0" step="0.5" value="0.0">
+              <button class="stepper-btn" id="btn-v2-zero" title="Megállítás">0</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Restitúciós együttható vezérlő -->
+      <div class="restitution-box">
+        <div class="restitution-header">
+          <label style="font-size:0.9rem; font-weight:700;">
+            Restitúciós együttható (e): <span class="control-val" id="val-e" style="color:var(--accent-purple);">1.00</span>
+          </label>
+          <span id="restitution-desc" style="font-size:0.85rem; font-weight:700; color:var(--accent-purple);">
+            Tökéletesen rugalmas ütközés (&Delta;E<sub>k</sub> = 0)
+          </span>
+        </div>
+
+        <div class="restitution-slider-row">
+          <input type="range" id="slider-e" min="0.0" max="1.0" step="0.01" value="1.00">
+        </div>
+
+        <div class="restitution-type-chips">
+          <button class="type-chip active" data-e="1.00">e = 1.00 (Tökéletesen rugalmas)</button>
+          <button class="type-chip" data-e="0.85">e = 0.85 (Biliárdgolyók)</button>
+          <button class="type-chip" data-e="0.50">e = 0.50 (Fa / keménygumi)</button>
+          <button class="type-chip" data-e="0.20">e = 0.20 (Autókarosszéria)</button>
+          <button class="type-chip" data-e="0.00">e = 0.00 (Tökéletesen rugalmatlan / összetapadó)</button>
+        </div>
+      </div>
+
+      <!-- Akció és lejátszó sáv -->
+      <div class="action-bar">
+        <div class="action-group">
+          <button class="btn btn-primary" id="btn-play-pause">
+            <span id="play-icon">&#9654;</span> <span id="play-text">Indítás</span>
+          </button>
+          <button class="btn" id="btn-reset">&#8635; Újraindítás</button>
+          <button class="btn" id="btn-step">&#9197; Léptetés (+0.02s)</button>
+          <button class="btn" id="btn-slow">Lassítás: <span id="slow-val">1x</span></button>
+        </div>
+        <div class="action-group">
+          <label style="font-size:0.82rem; font-weight:700; display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+            <input type="checkbox" id="chk-wall-bounce" checked> Végfalakról visszapattanás
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Szimulációs vászon -->
+    <section class="card" style="padding-bottom: 1rem;">
+      <div class="canvas-container">
+        <canvas id="sim-canvas" width="900" height="380"></canvas>
+        <div class="canvas-overlay-hud">
+          <div class="hud-badge" id="hud-status">Állapot: <strong>Közelednek az ütközéshez</strong></div>
+          <div class="hud-badge" id="hud-hint">Tipp: A kocsikat egérrel is megfoghatod és elhúzhatod!</div>
+        </div>
+      </div>
+
+      <!-- Vizuális kapcsolók -->
+      <div class="canvas-options">
+        <label>
+          <input type="checkbox" id="chk-show-v" checked> Sebességvektorok (&rarr;v)
+        </label>
+        <label>
+          <input type="checkbox" id="chk-show-p" checked> Lendületvektorok (&rarr;I)
+        </label>
+        <label>
+          <input type="checkbox" id="chk-show-cm" checked> Tömegközéppont (TKP) mutatása
+        </label>
+        <label>
+          <input type="checkbox" id="chk-show-trail" checked> Nyomvonal mutatása
+        </label>
+      </div>
+    </section>
+
+    <!-- Elméleti számítások és analitikus végeredmény kártya -->
+    <section class="analytic-summary">
+      <h2 class="card-title" style="margin-bottom:0.25rem;">Analitikus ütközési számítás</h2>
+      <p style="font-size:0.85rem; color:#555;">Az elméleti fizikai képletek alapján kiszámított értékek az ütközés után:</p>
+      
+      <div class="analytic-grid">
+        <div class="analytic-item">
+          <div class="analytic-label">1. Kocsi új sebessége (u₁)</div>
+          <div class="analytic-val" id="val-u1" style="color:var(--accent-amber);">0.00 m/s</div>
+        </div>
+        <div class="analytic-item">
+          <div class="analytic-label">2. Kocsi új sebessége (u₂)</div>
+          <div class="analytic-val" id="val-u2" style="color:var(--accent-green);">+3.00 m/s</div>
+        </div>
+        <div class="analytic-item">
+          <div class="analytic-label">Közös összlendület (I<sub>össz</sub>)</div>
+          <div class="analytic-val" id="val-ptot">+6.00 kg&middot;m/s</div>
+        </div>
+        <div class="analytic-item">
+          <div class="analytic-label">Mechanikai energiaveszteség (&Delta;E<sub>k</sub>)</div>
+          <div class="analytic-val" id="val-eloss">0.00 J (0%)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Megmaradási törvények élő összehasonlító panel -->
+    <section class="conservation-grid">
+      <!-- Lendület panel -->
+      <div class="conservation-card">
+        <div class="conservation-title">
+          <span>Lendület (Impulzus: I = m&middot;v)</span>
+          <span class="law-badge conserved">&#10004; SZIGORÚAN MEGMARAD</span>
+        </div>
+
+        <div class="bar-comparison-row">
+          <div class="bar-label-group">
+            <span>Pillanatnyi összlendület (I₁ + I₂)</span>
+            <span id="label-live-p">+6.00 kg&middot;m/s</span>
+          </div>
+          <div class="bar-outer">
+            <div class="bar-segment-1" id="bar-p1" style="width: 50%;"></div>
+            <div class="bar-segment-2" id="bar-p2" style="width: 50%;"></div>
+          </div>
+        </div>
+
+        <div class="data-values-list">
+          <div class="data-line">
+            <span>1. Kocsi lendülete (I₁):</span>
+            <strong id="live-p1" style="color:var(--accent-amber);">+6.00 kg&middot;m/s</strong>
+          </div>
+          <div class="data-line">
+            <span>2. Kocsi lendülete (I₂):</span>
+            <strong id="live-p2" style="color:var(--accent-green);">0.00 kg&middot;m/s</strong>
+          </div>
+          <div class="data-line" style="border-top:1px solid #C4C0B8; padding-top:0.3rem;">
+            <span>Kezdeti összlendület (I<sub>össz,0</sub>):</span>
+            <strong id="init-ptot">+6.00 kg&middot;m/s</strong>
+          </div>
+          <div class="data-line">
+            <span>Jelenlegi összlendület (I<sub>össz</sub>):</span>
+            <strong id="curr-ptot">+6.00 kg&middot;m/s</strong>
+          </div>
+          <div class="data-line" style="color:var(--accent-green);">
+            <span>Különbség (&Delta;I):</span>
+            <strong id="diff-p">0.00 kg&middot;m/s (Nincs változás!)</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mozgási energia panel -->
+      <div class="conservation-card">
+        <div class="conservation-title">
+          <span>Mozgási energia (E<sub>k</sub> = &frac12;mv&sup2;)</span>
+          <span class="law-badge" id="energy-badge">MEGMARAD</span>
+        </div>
+
+        <div class="bar-comparison-row">
+          <div class="bar-label-group">
+            <span>Összes mozgási energia</span>
+            <span id="label-live-e">9.00 J / 9.00 J</span>
+          </div>
+          <div class="bar-outer">
+            <div class="bar-segment-1" id="bar-e1" style="width: 50%;"></div>
+            <div class="bar-segment-2" id="bar-e2" style="width: 50%;"></div>
+            <div class="bar-segment-loss" id="bar-eloss" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div class="data-values-list">
+          <div class="data-line">
+            <span>1. Kocsi energiája (E<sub>k1</sub>):</span>
+            <strong id="live-e1" style="color:var(--accent-amber);">9.00 J</strong>
+          </div>
+          <div class="data-line">
+            <span>2. Kocsi energiája (E<sub>k2</sub>):</span>
+            <strong id="live-e2" style="color:var(--accent-green);">0.00 J</strong>
+          </div>
+          <div class="data-line" style="border-top:1px solid #C4C0B8; padding-top:0.3rem;">
+            <span>Kezdeti összenergia (E<sub>k,0</sub>):</span>
+            <strong id="init-etot">9.00 J</strong>
+          </div>
+          <div class="data-line">
+            <span>Jelenlegi összenergia:</span>
+            <strong id="curr-etot">9.00 J</strong>
+          </div>
+          <div class="data-line" id="energy-diff-line">
+            <span>Hővé / deformációvá alakult (Q):</span>
+            <strong id="diff-e">0.00 J (0.0%)</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Elméleti magyarázat és levezetés -->
+    <section class="card theory-section">
+      <h2 class="card-title">Mit kell tudni az ütközésekről és a lendületről?</h2>
+      
+      <p>
+        Az ütközések leírásának alapköve Newton III. törvénye (hatás-ellenhatás). Mivel az ütközés során a testek
+        pontosan akkora és ellentétes irányú erőt fejtenek ki egymásra minden pillanatban, külső erők elhanyagolása mellett
+        a két testből álló zárt rendszer <strong>összes lendülete minden típusú ütközés során szigorúan állandó marad</strong>.
+      </p>
+
+      <div class="theory-formula-box">
+        <strong>Lendületmegmaradás törvénye:</strong><br>
+        I<sub>össz</sub> = m₁ &middot; v₁ + m₂ &middot; v₂ = m₁ &middot; u₁ + m₂ &middot; u₂ = állandó
+      </div>
+
+      <p>
+        <strong>A restitúciós együttható (e):</strong><br>
+        A restitúciós együttható az ütközés utáni és előtti relatív távolodási sebességek hányadosa:
+        <code>e = &minus;(u₂ &minus; u₁) / (v₂ &minus; v₁)</code>.
+      </p>
+
+      <div class="theory-formula-box">
+        <strong>Az ütközés utáni sebességek analitikus képlete:</strong><br>
+        u₁ = [(m₁ &minus; e &middot; m₂) &middot; v₁ + (1 + e) &middot; m₂ &middot; v₂] / (m₁ + m₂)<br>
+        u₂ = [(1 + e) &middot; m₁ &middot; v₁ + (m₂ &minus; e &middot; m₁) &middot; v₂] / (m₁ + m₂)
+      </div>
+
+      <p>
+        <strong>Az ütközések három fő típusa:</strong><br>
+        &bull; <strong>Tökéletesen rugalmas (e = 1):</strong> A mozgási energia maradéktalanul megmarad (&Delta;E<sub>k</sub> = 0), a testek az elnyelt rugalmas alakváltozási energiát teljesen visszakapják.<br>
+        &bull; <strong>Részben rugalmas (0 &lt; e &lt; 1):</strong> A mechanikai energia egy része belső energiává (hővé, hanggá, maradó alakváltozássá) alakul.<br>
+        &bull; <strong>Tökéletesen rugalmatlan (e = 0):</strong> A testek ütközés után összetapadnak és közös <code>u = (m₁v₁ + m₂v₂) / (m₁ + m₂)</code> sebességgel haladnak tovább. Ekkor vész el a lehető legtöbb mozgási energia!
+      </p>
+    </section>
+
+  </main>
+
+  <!-- Lábléc -->
+  <footer>
+    <div class="footer-content">
+      <div>Készítette: Rozsomák tanár úr | 2026</div>
+      <div>Licenc: CC0 / Public Domain forrásmegjelölés | Természettudományos gyakorlótér</div>
+    </div>
+  </footer>
+
+  <!-- Szimulációs script -->
+  <script>
+    // Állapotobjektum
+    let sim = {
+      // 1. Kocsi
+      m1: 2.0,
+      v1_init: 3.0,
+      x1: -2.0,      // méterben [-4.5, 4.5]
+      v1: 3.0,
+      
+      // 2. Kocsi
+      m2: 2.0,
+      v2_init: 0.0,
+      x2: 1.0,
+      v2: 0.0,
+
+      // Restitúció
+      e: 1.0,
+
+      // Szimuláció vezérlés
+      isRunning: false,
+      speedMultiplier: 1.0,
+      wallBounce: true,
+      hasCollided: false,
+      collisionFlashTimer: 0,
+      springCompression: 0,
+
+      // Nyomvonal
+      trail: [],
+
+      // Drag and drop
+      draggingCart: null,
+      dragOffsetX: 0
+    };
+
+    // DOM Elemek
+    const sliderM1 = document.getElementById('slider-m1');
+    const valM1 = document.getElementById('val-m1');
+    const btnM1Dec = document.getElementById('btn-m1-dec');
+    const btnM1Inc = document.getElementById('btn-m1-inc');
+
+    const sliderV1 = document.getElementById('slider-v1');
+    const valV1 = document.getElementById('val-v1');
+    const btnV1Flip = document.getElementById('btn-v1-flip');
+    const btnV1Zero = document.getElementById('btn-v1-zero');
+    const valCart1Summary = document.getElementById('val-cart1-summary');
+
+    const sliderM2 = document.getElementById('slider-m2');
+    const valM2 = document.getElementById('val-m2');
+    const btnM2Dec = document.getElementById('btn-m2-dec');
+    const btnM2Inc = document.getElementById('btn-m2-inc');
+
+    const sliderV2 = document.getElementById('slider-v2');
+    const valV2 = document.getElementById('val-v2');
+    const btnV2Flip = document.getElementById('btn-v2-flip');
+    const btnV2Zero = document.getElementById('btn-v2-zero');
+    const valCart2Summary = document.getElementById('val-cart2-summary');
+
+    const sliderE = document.getElementById('slider-e');
+    const valE = document.getElementById('val-e');
+    const restitutionDesc = document.getElementById('restitution-desc');
+    const typeChips = document.querySelectorAll('.type-chip');
+    const presetChips = document.querySelectorAll('.preset-chip');
+
+    const btnPlayPause = document.getElementById('btn-play-pause');
+    const playIcon = document.getElementById('play-icon');
+    const playText = document.getElementById('play-text');
+    const btnReset = document.getElementById('btn-reset');
+    const btnStep = document.getElementById('btn-step');
+    const btnSlow = document.getElementById('btn-slow');
+    const slowVal = document.getElementById('slow-val');
+    const chkWallBounce = document.getElementById('chk-wall-bounce');
+
+    const chkShowV = document.getElementById('chk-show-v');
+    const chkShowP = document.getElementById('chk-show-p');
+    const chkShowCM = document.getElementById('chk-show-cm');
+    const chkShowTrail = document.getElementById('chk-show-trail');
+
+    const hudStatus = document.getElementById('hud-status');
+
+    // Analitikus kártya
+    const valU1 = document.getElementById('val-u1');
+    const valU2 = document.getElementById('val-u2');
+    const valPtot = document.getElementById('val-ptot');
+    const valEloss = document.getElementById('val-eloss');
+
+    // Megmaradási panelek elemei
+    const labelLiveP = document.getElementById('label-live-p');
+    const barP1 = document.getElementById('bar-p1');
+    const barP2 = document.getElementById('bar-p2');
+    const liveP1 = document.getElementById('live-p1');
+    const liveP2 = document.getElementById('live-p2');
+    const initPtot = document.getElementById('init-ptot');
+    const currPtot = document.getElementById('curr-ptot');
+    const diffP = document.getElementById('diff-p');
+
+    const energyBadge = document.getElementById('energy-badge');
+    const labelLiveE = document.getElementById('label-live-e');
+    const barE1 = document.getElementById('bar-e1');
+    const barE2 = document.getElementById('bar-e2');
+    const barEloss = document.getElementById('bar-eloss');
+    const liveE1 = document.getElementById('live-e1');
+    const liveE2 = document.getElementById('live-e2');
+    const initEtot = document.getElementById('init-etot');
+    const currEtot = document.getElementById('curr-etot');
+    const diffE = document.getElementById('diff-e');
+
+    const canvas = document.getElementById('sim-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Pálya koordinátarendszer méretezése
+    const trackMeters = 10.0; // Pálya hossza -5m-től +5m-ig
+    const trackLeftM = -5.0;
+    const trackRightM = 5.0;
+
+    // Inicializálás
+    function init() {
+      setupEventListeners();
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+      updateAnalyticCalculation();
+      updateConservationDisplay();
+      requestAnimationFrame(loop);
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      canvas.height = 380 * dpr;
+      ctx.resetTransform();
+      ctx.scale(dpr, dpr);
+      draw();
+    }
+
+    // Koordináta konverziók: méter <-> pixel
+    function mToPx(m) {
+      const w = canvas.getBoundingClientRect().width;
+      const margin = 50;
+      const trackWidthPx = w - 2 * margin;
+      return margin + ((m - trackLeftM) / trackMeters) * trackWidthPx;
+    }
+
+    function pxToM(px) {
+      const w = canvas.getBoundingClientRect().width;
+      const margin = 50;
+      const trackWidthPx = w - 2 * margin;
+      return trackLeftM + ((px - margin) / trackWidthPx) * trackMeters;
+    }
+
+    // Kocsi szélessége a tömeg függvényében
+    function getCartWidthM(m) {
+      // 0.5 kg -> 0.7m, 10 kg -> 1.5m
+      return 0.6 + 0.9 * ((m - 0.5) / 9.5);
+    }
+
+    // Analitikus ütközés kalkuláció
+    function computeAnalyticCollision(m1, m2, v1, v2, e) {
+      const u1 = ((m1 - e * m2) * v1 + (1 + e) * m2 * v2) / (m1 + m2);
+      const u2 = ((1 + e) * m1 * v1 + (m2 - e * m1) * v2) / (m1 + m2);
+
+      const p_init = m1 * v1 + m2 * v2;
+      const p_final = m1 * u1 + m2 * u2;
+
+      const Ek_init = 0.5 * m1 * v1 * v1 + 0.5 * m2 * v2 * v2;
+      const Ek_final = 0.5 * m1 * u1 * u1 + 0.5 * m2 * u2 * u2;
+      const Eloss = Math.max(0, Ek_init - Ek_final);
+
+      return { u1, u2, p_init, p_final, Ek_init, Ek_final, Eloss };
+    }
+
+    function updateAnalyticCalculation() {
+      const res = computeAnalyticCollision(sim.m1, sim.m2, sim.v1_init, sim.v2_init, sim.e);
+
+      valU1.textContent = `${res.u1 >= 0 ? '+' : ''}${res.u1.toFixed(2)} m/s`;
+      valU2.textContent = `${res.u2 >= 0 ? '+' : ''}${res.u2.toFixed(2)} m/s`;
+      valPtot.textContent = `${res.p_init >= 0 ? '+' : ''}${res.p_init.toFixed(2)} kg·m/s`;
+
+      const lossPct = res.Ek_init > 0.001 ? (res.Eloss / res.Ek_init) * 100 : 0;
+      valEloss.textContent = `${res.Eloss.toFixed(2)} J (${lossPct.toFixed(1)}%)`;
+
+      initPtot.textContent = `${res.p_init >= 0 ? '+' : ''}${res.p_init.toFixed(2)} kg·m/s`;
+      initEtot.textContent = `${res.Ek_init.toFixed(2)} J`;
+
+      valCart1Summary.textContent = `m₁ = ${sim.m1.toFixed(1)} kg | v₁ = ${sim.v1_init >= 0 ? '+' : ''}${sim.v1_init.toFixed(1)} m/s`;
+      valCart2Summary.textContent = `m₂ = ${sim.m2.toFixed(1)} kg | v₂ = ${sim.v2_init >= 0 ? '+' : ''}${sim.v2_init.toFixed(1)} m/s`;
+    }
+
+    function updateConservationDisplay() {
+      const p1 = sim.m1 * sim.v1;
+      const p2 = sim.m2 * sim.v2;
+      const pTot = p1 + p2;
+
+      const e1 = 0.5 * sim.m1 * sim.v1 * sim.v1;
+      const e2 = 0.5 * sim.m2 * sim.v2 * sim.v2;
+      const eTot = e1 + e2;
+
+      const initRes = computeAnalyticCollision(sim.m1, sim.m2, sim.v1_init, sim.v2_init, sim.e);
+      const initE = initRes.Ek_init;
+
+      // Lendület
+      liveP1.textContent = `${p1 >= 0 ? '+' : ''}${p1.toFixed(2)} kg·m/s`;
+      liveP2.textContent = `${p2 >= 0 ? '+' : ''}${p2.toFixed(2)} kg·m/s`;
+      currPtot.textContent = `${pTot >= 0 ? '+' : ''}${pTot.toFixed(2)} kg·m/s`;
+      labelLiveP.textContent = `${pTot >= 0 ? '+' : ''}${pTot.toFixed(2)} kg·m/s`;
+
+      const pDiff = Math.abs(pTot - initRes.p_init);
+      if (pDiff < 0.05) {
+        diffP.textContent = '0.00 kg·m/s (Pontos megmaradás!)';
+        diffP.style.color = 'var(--accent-green)';
+      } else {
+        diffP.textContent = `${pDiff.toFixed(2)} kg·m/s (Falhatás)`;
+        diffP.style.color = '#B83227';
+      }
+
+      // Lendület csík megoszlása
+      const maxPDisplay = Math.max(Math.abs(pTot) * 1.5, 10);
+      const w1 = Math.min(Math.max((Math.abs(p1) / maxPDisplay) * 100, 0), 100);
+      const w2 = Math.min(Math.max((Math.abs(p2) / maxPDisplay) * 100, 0), 100);
+      barP1.style.width = `${w1 / 2}%`;
+      barP2.style.width = `${w2 / 2}%`;
+
+      // Mozgási energia
+      liveE1.textContent = `${e1.toFixed(2)} J`;
+      liveE2.textContent = `${e2.toFixed(2)} J`;
+      currEtot.textContent = `${eTot.toFixed(2)} J`;
+      labelLiveE.textContent = `${eTot.toFixed(2)} J / ${initE.toFixed(2)} J`;
+
+      const lostE = Math.max(0, initE - eTot);
+      const lostPct = initE > 0.001 ? (lostE / initE) * 100 : 0;
+      diffE.textContent = `${lostE.toFixed(2)} J (${lostPct.toFixed(1)}%)`;
+
+      if (sim.e >= 0.99) {
+        energyBadge.textContent = 'MEGMARAD';
+        energyBadge.className = 'law-badge conserved';
+      } else {
+        energyBadge.textContent = `DISSZIPÁCIÓ: -${lostPct.toFixed(0)}%`;
+        energyBadge.className = 'law-badge dissipated';
+      }
+
+      if (initE > 0.001) {
+        barE1.style.width = `${(e1 / initE) * 100}%`;
+        barE2.style.width = `${(e2 / initE) * 100}%`;
+        barEloss.style.width = `${(lostE / initE) * 100}%`;
+      } else {
+        barE1.style.width = '0%';
+        barE2.style.width = '0%';
+        barEloss.style.width = '0%';
+      }
+    }
+
+    // Eseménykezelők
+    function setupEventListeners() {
+      // 1. Kocsi Tömeg
+      sliderM1.addEventListener('input', (e) => {
+        sim.m1 = parseFloat(e.target.value);
+        valM1.textContent = `${sim.m1.toFixed(1)} kg`;
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+      btnM1Dec.addEventListener('click', () => {
+        sim.m1 = Math.max(0.5, parseFloat((sim.m1 - 0.5).toFixed(1)));
+        sliderM1.value = sim.m1;
+        valM1.textContent = `${sim.m1.toFixed(1)} kg`;
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+      btnM1Inc.addEventListener('click', () => {
+        sim.m1 = Math.min(10.0, parseFloat((sim.m1 + 0.5).toFixed(1)));
+        sliderM1.value = sim.m1;
+        valM1.textContent = `${sim.m1.toFixed(1)} kg`;
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+
+      // 1. Kocsi Sebesség
+      sliderV1.addEventListener('input', (e) => {
+        sim.v1_init = parseFloat(e.target.value);
+        sim.v1 = sim.v1_init;
+        valV1.textContent = `${sim.v1 >= 0 ? '+' : ''}${sim.v1.toFixed(1)} m/s`;
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+      btnV1Flip.addEventListener('click', () => {
+        sim.v1_init = -sim.v1_init;
+        sim.v1 = sim.v1_init;
+        sliderV1.value = sim.v1_init;
+        valV1.textContent = `${sim.v1 >= 0 ? '+' : ''}${sim.v1.toFixed(1)} m/s`;
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+      btnV1Zero.addEventListener('click', () => {
+        sim.v1_init = 0;
+        sim.v1 = 0;
+        sliderV1.value = 0;
+        valV1.textContent = '0.0 m/s';
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+
+      // 2. Kocsi Tömeg
+      sliderM2.addEventListener('input', (e) => {
+        sim.m2 = parseFloat(e.target.value);
+        valM2.textContent = `${sim.m2.toFixed(1)} kg`;
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+      btnM2Dec.addEventListener('click', () => {
+        sim.m2 = Math.max(0.5, parseFloat((sim.m2 - 0.5).toFixed(1)));
+        sliderM2.value = sim.m2;
+        valM2.textContent = `${sim.m2.toFixed(1)} kg`;
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+      btnM2Inc.addEventListener('click', () => {
+        sim.m2 = Math.min(10.0, parseFloat((sim.m2 + 0.5).toFixed(1)));
+        sliderM2.value = sim.m2;
+        valM2.textContent = `${sim.m2.toFixed(1)} kg`;
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+
+      // 2. Kocsi Sebesség
+      sliderV2.addEventListener('input', (e) => {
+        sim.v2_init = parseFloat(e.target.value);
+        sim.v2 = sim.v2_init;
+        valV2.textContent = `${sim.v2 >= 0 ? '+' : ''}${sim.v2.toFixed(1)} m/s`;
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+      btnV2Flip.addEventListener('click', () => {
+        sim.v2_init = -sim.v2_init;
+        sim.v2 = sim.v2_init;
+        sliderV2.value = sim.v2_init;
+        valV2.textContent = `${sim.v2 >= 0 ? '+' : ''}${sim.v2.toFixed(1)} m/s`;
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+      btnV2Zero.addEventListener('click', () => {
+        sim.v2_init = 0;
+        sim.v2 = 0;
+        sliderV2.value = 0;
+        valV2.textContent = '0.0 m/s';
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+        draw();
+      });
+
+      // Restitúció
+      sliderE.addEventListener('input', (e) => {
+        sim.e = parseFloat(e.target.value);
+        valE.textContent = sim.e.toFixed(2);
+        updateRestitutionDescription();
+        updateAnalyticCalculation();
+        updateConservationDisplay();
+      });
+
+      typeChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          typeChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          sim.e = parseFloat(chip.dataset.e);
+          sliderE.value = sim.e;
+          valE.textContent = sim.e.toFixed(2);
+          updateRestitutionDescription();
+          updateAnalyticCalculation();
+          updateConservationDisplay();
+        });
+      });
+
+      // Presetek
+      document.getElementById('preset-swap').addEventListener('click', () => {
+        applyPreset(2.0, 3.0, 2.0, 0.0, 1.0, 'preset-swap');
+      });
+      document.getElementById('preset-heavy').addEventListener('click', () => {
+        applyPreset(5.0, 4.0, 1.0, 0.0, 1.0, 'preset-heavy');
+      });
+      document.getElementById('preset-rebound').addEventListener('click', () => {
+        applyPreset(1.0, 5.0, 6.0, 0.0, 1.0, 'preset-rebound');
+      });
+      document.getElementById('preset-headon').addEventListener('click', () => {
+        applyPreset(2.0, 3.0, 2.0, -3.0, 1.0, 'preset-headon');
+      });
+      document.getElementById('preset-inelastic').addEventListener('click', () => {
+        applyPreset(2.0, 4.0, 3.0, -1.0, 0.0, 'preset-inelastic');
+      });
+      document.getElementById('preset-billiard').addEventListener('click', () => {
+        applyPreset(1.5, 3.5, 1.5, 0.0, 0.85, 'preset-billiard');
+      });
+
+      // Lejátszás / Szünet
+      btnPlayPause.addEventListener('click', () => {
+        sim.isRunning = !sim.isRunning;
+        if (sim.isRunning) {
+          playIcon.innerHTML = '&#10074;&#10074;';
+          playText.textContent = 'Szünet';
+          btnPlayPause.classList.add('btn-green');
+          btnPlayPause.classList.remove('btn-primary');
+        } else {
+          playIcon.innerHTML = '&#9654;';
+          playText.textContent = 'Indítás';
+          btnPlayPause.classList.add('btn-primary');
+          btnPlayPause.classList.remove('btn-green');
+        }
+      });
+
+      // Újraindítás
+      btnReset.addEventListener('click', () => {
+        resetSimulation();
+      });
+
+      // Léptetés
+      btnStep.addEventListener('click', () => {
+        if (!sim.isRunning) {
+          stepPhysics(0.02);
+          draw();
+        }
+      });
+
+      // Lassítás
+      btnSlow.addEventListener('click', () => {
+        if (sim.speedMultiplier === 1.0) {
+          sim.speedMultiplier = 0.5;
+          slowVal.textContent = '0.5x';
+        } else if (sim.speedMultiplier === 0.5) {
+          sim.speedMultiplier = 0.25;
+          slowVal.textContent = '0.25x';
+        } else {
+          sim.speedMultiplier = 1.0;
+          slowVal.textContent = '1x';
+        }
+      });
+
+      // Végfalak visszapattanás
+      chkWallBounce.addEventListener('change', (e) => {
+        sim.wallBounce = e.target.checked;
+      });
+
+      // Vizuális opciók újrarajzolása
+      [chkShowV, chkShowP, chkShowCM, chkShowTrail].forEach(chk => {
+        chk.addEventListener('change', () => draw());
+      });
+
+      // Drag and Drop támogatás
+      setupDragAndDrop();
+    }
+
+    function applyPreset(m1, v1, m2, v2, e, btnId) {
+      presetChips.forEach(c => c.classList.remove('active'));
+      const activeBtn = document.getElementById(btnId);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      sim.m1 = m1;
+      sliderM1.value = m1;
+      valM1.textContent = `${m1.toFixed(1)} kg`;
+
+      sim.v1_init = v1;
+      sim.v1 = v1;
+      sliderV1.value = v1;
+      valV1.textContent = `${v1 >= 0 ? '+' : ''}${v1.toFixed(1)} m/s`;
+
+      sim.m2 = m2;
+      sliderM2.value = m2;
+      valM2.textContent = `${m2.toFixed(1)} kg`;
+
+      sim.v2_init = v2;
+      sim.v2 = v2;
+      sliderV2.value = v2;
+      valV2.textContent = `${v2 >= 0 ? '+' : ''}${v2.toFixed(1)} m/s`;
+
+      sim.e = e;
+      sliderE.value = e;
+      valE.textContent = e.toFixed(2);
+      updateRestitutionDescription();
+
+      resetSimulation();
+    }
+
+    function updateRestitutionDescription() {
+      if (sim.e >= 0.99) {
+        restitutionDesc.textContent = 'Tökéletesen rugalmas ütközés (Mozgási energia megmarad: ΔEk = 0)';
+      } else if (sim.e <= 0.01) {
+        restitutionDesc.textContent = 'Tökéletesen rugalmatlan / összetapadó ütközés (Maximális energiaveszteség)';
+      } else if (sim.e >= 0.7) {
+        restitutionDesc.textContent = 'Erősen rugalmas (kis mértékű disszipáció, pl. biliárd)';
+      } else {
+        restitutionDesc.textContent = 'Részben rugalmas ütközés (jelentős energiaveszteség)';
+      }
+
+      typeChips.forEach(chip => {
+        if (Math.abs(parseFloat(chip.dataset.e) - sim.e) < 0.03) {
+          chip.classList.add('active');
+        } else {
+          chip.classList.remove('active');
+        }
+      });
+    }
+
+    function resetSimulation() {
+      sim.x1 = -2.5;
+      sim.x2 = 1.0;
+      sim.v1 = sim.v1_init;
+      sim.v2 = sim.v2_init;
+      sim.hasCollided = false;
+      sim.collisionFlashTimer = 0;
+      sim.springCompression = 0;
+      sim.trail = [];
+
+      hudStatus.innerHTML = 'Állapot: <strong>Közelednek az ütközéshez</strong>';
+
+      updateAnalyticCalculation();
+      updateConservationDisplay();
+      draw();
+    }
+
+    // Egér húzás (Drag and drop)
+    function setupDragAndDrop() {
+      canvas.addEventListener('mousedown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        const trackY = 220;
+        if (Math.abs(mouseY - trackY) > 60) return;
+
+        const xM = pxToM(mouseX);
+        const w1 = getCartWidthM(sim.m1);
+        const w2 = getCartWidthM(sim.m2);
+
+        if (Math.abs(xM - sim.x1) <= w1 / 2) {
+          sim.draggingCart = 1;
+          sim.dragOffsetX = xM - sim.x1;
+          sim.isRunning = false;
+          playIcon.innerHTML = '&#9654;';
+          playText.textContent = 'Indítás';
+          btnPlayPause.classList.add('btn-primary');
+          btnPlayPause.classList.remove('btn-green');
+        } else if (Math.abs(xM - sim.x2) <= w2 / 2) {
+          sim.draggingCart = 2;
+          sim.dragOffsetX = xM - sim.x2;
+          sim.isRunning = false;
+          playIcon.innerHTML = '&#9654;';
+          playText.textContent = 'Indítás';
+          btnPlayPause.classList.add('btn-primary');
+          btnPlayPause.classList.remove('btn-green');
+        }
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!sim.draggingCart) return;
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const xM = pxToM(mouseX) - sim.dragOffsetX;
+
+        const w1 = getCartWidthM(sim.m1);
+        const w2 = getCartWidthM(sim.m2);
+
+        if (sim.draggingCart === 1) {
+          sim.x1 = Math.max(trackLeftM + w1 / 2, Math.min(sim.x2 - (w1 + w2) / 2 - 0.05, xM));
+        } else if (sim.draggingCart === 2) {
+          sim.x2 = Math.min(trackRightM - w2 / 2, Math.max(sim.x1 + (w1 + w2) / 2 + 0.05, xM));
+        }
+        draw();
+      });
+
+      window.addEventListener('mouseup', () => {
+        if (sim.draggingCart) {
+          sim.draggingCart = null;
+          updateConservationDisplay();
+        }
+      });
+    }
+
+    // Fizikai léptetés
+    function stepPhysics(dt) {
+      const w1 = getCartWidthM(sim.m1);
+      const w2 = getCartWidthM(sim.m2);
+      const minDistance = (w1 + w2) / 2;
+
+      // Elmozdulás
+      sim.x1 += sim.v1 * dt;
+      sim.x2 += sim.v2 * dt;
+
+      // Ütközés detektálás a két kocsi között
+      if (sim.x2 - sim.x1 <= minDistance) {
+        // Relatív sebesség (ha közelednek: v1 > v2)
+        if (sim.v1 > sim.v2) {
+          // Ütközés történik!
+          const m1 = sim.m1;
+          const m2 = sim.m2;
+          const v1 = sim.v1;
+          const v2 = sim.v2;
+          const e = sim.e;
+
+          const u1 = ((m1 - e * m2) * v1 + (1 + e) * m2 * v2) / (m1 + m2);
+          const u2 = ((1 + e) * m1 * v1 + (m2 - e * m1) * v2) / (m1 + m2);
+
+          sim.v1 = u1;
+          sim.v2 = u2;
+
+          sim.hasCollided = true;
+          sim.collisionFlashTimer = 0.2; // 200 ms flash
+          sim.springCompression = 1.0;
+
+          // Átfedés korrekciója
+          const overlap = minDistance - (sim.x2 - sim.x1);
+          sim.x1 -= overlap / 2;
+          sim.x2 += overlap / 2;
+
+          hudStatus.innerHTML = 'Állapot: <strong style="color:var(--accent-purple);">&#9889; Ütközés megtörtént!</strong>';
+        }
+      }
+
+      // Végfalakról való visszapattanás
+      const leftLimit = trackLeftM + w1 / 2;
+      const rightLimit = trackRightM - w2 / 2;
+
+      if (sim.wallBounce) {
+        if (sim.x1 <= leftLimit && sim.v1 < 0) {
+          sim.x1 = leftLimit;
+          sim.v1 = -sim.v1;
+        }
+        if (sim.x2 >= rightLimit && sim.v2 > 0) {
+          sim.x2 = rightLimit;
+          sim.v2 = -sim.v2;
+        }
+      } else {
+        // Megállás a végfalnál
+        if (sim.x1 <= leftLimit && sim.v1 < 0) {
+          sim.x1 = leftLimit;
+          sim.v1 = 0;
+        }
+        if (sim.x2 >= rightLimit && sim.v2 > 0) {
+          sim.x2 = rightLimit;
+          sim.v2 = 0;
+        }
+      }
+
+      // Nyomvonal mentése
+      if (chkShowTrail.checked) {
+        sim.trail.push({ x1: sim.x1, x2: sim.x2 });
+        if (sim.trail.length > 60) sim.trail.shift();
+      }
+
+      updateConservationDisplay();
+    }
+
+    // Fő szimulációs ciklus
+    let lastTime = performance.now();
+    function loop(now) {
+      const dtRaw = (now - lastTime) / 1000;
+      lastTime = now;
+      const dt = Math.min(dtRaw, 0.05) * sim.speedMultiplier;
+
+      if (sim.isRunning) {
+        stepPhysics(dt);
+      }
+
+      if (sim.collisionFlashTimer > 0) {
+        sim.collisionFlashTimer -= dtRaw;
+      }
+      if (sim.springCompression > 0) {
+        sim.springCompression = Math.max(0, sim.springCompression - dtRaw * 4);
+      }
+
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    // Kirajzolás
+    function draw() {
+      const w = canvas.getBoundingClientRect().width;
+      const h = 380;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // 1. Háttér (laboratóriumi technikai hangulat)
+      const grad = ctx.createLinearGradient(0, 0, 0, h);
+      grad.addColorStop(0, '#E9F2F7');
+      grad.addColorStop(1, '#D9E8F0');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Finom háttérrács
+      ctx.strokeStyle = 'rgba(200, 215, 225, 0.5)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < w; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+      }
+
+      // 2. Légpárnás sín
+      const trackY = 230;
+      const trackStartPx = mToPx(trackLeftM);
+      const trackEndPx = mToPx(trackRightM);
+      const trackWidthPx = trackEndPx - trackStartPx;
+
+      // Sín törzse (ezüst fém test)
+      ctx.fillStyle = '#CFD8DC';
+      ctx.fillRect(trackStartPx, trackY, trackWidthPx, 22);
+      ctx.strokeStyle = '#2D2A26';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(trackStartPx, trackY, trackWidthPx, 22);
+
+      // Végütközők (bal és jobb fal)
+      ctx.fillStyle = '#78909C';
+      ctx.fillRect(trackStartPx - 14, trackY - 35, 14, 60);
+      ctx.strokeRect(trackStartPx - 14, trackY - 35, 14, 60);
+
+      ctx.fillRect(trackEndPx, trackY - 35, 14, 60);
+      ctx.strokeRect(trackEndPx, trackY - 35, 14, 60);
+
+      // Végfal rugók
+      ctx.strokeStyle = '#2D2A26';
+      ctx.lineWidth = 2;
+      drawSpring(ctx, trackStartPx - 14, trackY - 10, trackStartPx, trackY - 10, 4, 8);
+      drawSpring(ctx, trackEndPx + 14, trackY - 10, trackEndPx, trackY - 10, 4, 8);
+
+      // Sín skála és osztások (méterek és félméterek)
+      ctx.fillStyle = '#2D2A26';
+      ctx.font = '10px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      for (let m = trackLeftM; m <= trackRightM; m += 1.0) {
+        const px = mToPx(m);
+        ctx.beginPath();
+        ctx.moveTo(px, trackY);
+        ctx.lineTo(px, trackY + 8);
+        ctx.stroke();
+
+        ctx.fillText(`${m > 0 ? '+' : ''}${m.toFixed(0)}m`, px, trackY + 18);
+
+        // Félméteres osztás
+        if (m < trackRightM) {
+          const halfPx = mToPx(m + 0.5);
+          ctx.beginPath();
+          ctx.moveTo(halfPx, trackY);
+          ctx.lineTo(halfPx, trackY + 4);
+          ctx.stroke();
+        }
+      }
+
+      // Sín furatok (légpárna lyukak)
+      ctx.fillStyle = '#37474F';
+      for (let px = trackStartPx + 10; px < trackEndPx; px += 18) {
+        ctx.beginPath();
+        ctx.arc(px, trackY + 3, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 3. Tömegközéppont (TKP) jelölése
+      if (chkShowCM.checked) {
+        const cmM = (sim.m1 * sim.x1 + sim.m2 * sim.x2) / (sim.m1 + sim.m2);
+        const cmPx = mToPx(cmM);
+        
+        ctx.save();
+        ctx.setLineDash([4, 4]);
+        ctx.strokeStyle = '#6C3483';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(cmPx, trackY - 90);
+        ctx.lineTo(cmPx, trackY + 30);
+        ctx.stroke();
+        ctx.restore();
+
+        ctx.fillStyle = '#6C3483';
+        ctx.font = 'bold 11px "Inter", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('TKP', cmPx, trackY - 95);
+        ctx.beginPath();
+        ctx.arc(cmPx, trackY - 80, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 4. Kocsik kirajzolása
+      const w1M = getCartWidthM(sim.m1);
+      const w2M = getCartWidthM(sim.m2);
+      const w1Px = (w1M / trackMeters) * trackWidthPx;
+      const w2Px = (w2M / trackMeters) * trackWidthPx;
+
+      const x1Px = mToPx(sim.x1);
+      const x2Px = mToPx(sim.x2);
+
+      // Ütközési flash villanás
+      if (sim.collisionFlashTimer > 0) {
+        const contactPx = (x1Px + w1Px / 2 + x2Px - w2Px / 2) / 2;
+        ctx.save();
+        ctx.fillStyle = 'rgba(255, 230, 0, 0.4)';
+        ctx.beginPath();
+        ctx.arc(contactPx, trackY - 20, 45, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#D97725';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(contactPx, trackY - 20, 45, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // Becsapódási szikrák
+        ctx.fillStyle = '#B83227';
+        ctx.font = 'bold 14px "Roboto Slab", serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('FLASH!', contactPx, trackY - 70);
+        ctx.restore();
+      }
+
+      // 1. Kocsi (Borostyán, bal)
+      drawCart(ctx, x1Px, trackY, w1Px, 44, '#D97725', '#B8621B', '1', sim.m1, sim.v1, true, sim.e, sim.springCompression);
+
+      // 2. Kocsi (Fenyőzöld, jobb)
+      drawCart(ctx, x2Px, trackY, w2Px, 44, '#2C5E4B', '#1E4335', '2', sim.m2, sim.v2, false, sim.e, sim.springCompression);
+
+      // 5. Vektorok a kocsik felett
+      if (chkShowV.checked) {
+        drawVelocityVector(ctx, x1Px, trackY - 55, sim.v1, '#D97725', 'v₁');
+        drawVelocityVector(ctx, x2Px, trackY - 55, sim.v2, '#2C5E4B', 'v₂');
+      }
+
+      if (chkShowP.checked) {
+        const p1 = sim.m1 * sim.v1;
+        const p2 = sim.m2 * sim.v2;
+        drawMomentumVector(ctx, x1Px, trackY - 80, p1, '#9C5115', 'I₁');
+        drawMomentumVector(ctx, x2Px, trackY - 80, p2, '#1E4335', 'I₂');
+      }
+    }
+
+    // Kocsi kirajzoló segédfüggvény
+    function drawCart(ctx, centerPx, trackY, widthPx, heightPx, fillColor, darkColor, idText, mass, vel, isLeftCart, e, springComp) {
+      const leftPx = centerPx - widthPx / 2;
+      const topPx = trackY - heightPx;
+
+      ctx.save();
+
+      // Kocsi teste
+      ctx.fillStyle = fillColor;
+      ctx.fillRect(leftPx, topPx, widthPx, heightPx - 8);
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = '#2D2A26';
+      ctx.strokeRect(leftPx, topPx, widthPx, heightPx - 8);
+
+      // Belső panel / fémes díszítés
+      ctx.fillStyle = darkColor;
+      ctx.fillRect(leftPx + 4, topPx + 4, widthPx - 8, heightPx - 16);
+
+      // Felirat a testen: Kocsi száma és tömege
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = 'bold 12px "Roboto Slab", serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`${idText}. kocsi`, centerPx, topPx + 14);
+
+      ctx.font = 'bold 11px "JetBrains Mono", monospace';
+      ctx.fillText(`${mass.toFixed(1)} kg`, centerPx, topPx + 27);
+
+      // Kerekek (légpárnás csúszótalpak / kerekek)
+      const wheelR = 4;
+      const wheelY = trackY - wheelR;
+      ctx.fillStyle = '#2D2A26';
+      ctx.beginPath();
+      ctx.arc(leftPx + 10, wheelY, wheelR, 0, Math.PI * 2);
+      ctx.arc(leftPx + widthPx - 10, wheelY, wheelR, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Ütközők a belső oldalon
+      if (isLeftCart) {
+        // Bal kocsi jobb oldali ütközője
+        const bumperX = leftPx + widthPx;
+        const bumperY = topPx + (heightPx - 8) / 2;
+
+        if (e > 0.05) {
+          // Rugós ütköző
+          const springLen = 14 * (1 - springComp * 0.5);
+          drawSpring(ctx, bumperX, bumperY, bumperX + springLen, bumperY, 3, 6);
+          ctx.fillStyle = '#2D2A26';
+          ctx.beginPath();
+          ctx.arc(bumperX + springLen, bumperY, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // Tépőzár / összekapcsoló bilincs
+          ctx.fillStyle = '#2D2A26';
+          ctx.fillRect(bumperX, bumperY - 5, 8, 10);
+        }
+      } else {
+        // Jobb kocsi bal oldali ütközője
+        const bumperX = leftPx;
+        const bumperY = topPx + (heightPx - 8) / 2;
+
+        if (e > 0.05) {
+          const springLen = 14 * (1 - springComp * 0.5);
+          drawSpring(ctx, bumperX, bumperY, bumperX - springLen, bumperY, 3, 6);
+          ctx.fillStyle = '#2D2A26';
+          ctx.beginPath();
+          ctx.arc(bumperX - springLen, bumperY, 3.5, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = '#2D2A26';
+          ctx.fillRect(bumperX - 8, bumperY - 5, 8, 10);
+        }
+      }
+
+      ctx.restore();
+    }
+
+    // Rugó kirajzolása
+    function drawSpring(ctx, x1, y1, x2, y2, coils, radius) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      const dx = (x2 - x1) / (coils * 2);
+      for (let i = 1; i <= coils * 2; i++) {
+        const cy = (i % 2 === 1) ? y1 - radius : y1 + radius;
+        ctx.lineTo(x1 + i * dx, cy);
+      }
+      ctx.lineTo(x2, y2);
+      ctx.strokeStyle = '#2D2A26';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Sebességvektor rajzolása
+    function drawVelocityVector(ctx, startX, y, v, color, label) {
+      if (Math.abs(v) < 0.05) return;
+
+      const pxLen = v * 15; // 1 m/s = 15 px
+      const endX = startX + pxLen;
+
+      drawVectorArrow(ctx, startX, y, endX, y, color, `${label} = ${v >= 0 ? '+' : ''}${v.toFixed(1)} m/s`, 2.5);
+    }
+
+    // Lendületvektor rajzolása
+    function drawMomentumVector(ctx, startX, y, p, color, label) {
+      if (Math.abs(p) < 0.05) return;
+
+      const pxLen = p * 6; // 1 kg*m/s = 6 px
+      const endX = startX + pxLen;
+
+      ctx.save();
+      ctx.setLineDash([3, 2]);
+      drawVectorArrow(ctx, startX, y, endX, y, color, `${label} = ${p >= 0 ? '+' : ''}${p.toFixed(1)}`, 2);
+      ctx.restore();
+    }
+
+    function drawVectorArrow(ctx, fromX, fromY, toX, toY, color, text, lineWidth) {
+      const dx = toX - fromX;
+      const dy = toY - fromY;
+      const len = Math.hypot(dx, dy);
+      if (len < 3) return;
+
+      const headLen = Math.min(10, len * 0.4);
+      const angle = Math.atan2(dy, dx);
+
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = lineWidth;
+
+      ctx.beginPath();
+      ctx.moveTo(fromX, fromY);
+      ctx.lineTo(toX, toY);
+      ctx.stroke();
+
+      // Nyílhegy
+      ctx.beginPath();
+      ctx.moveTo(toX, toY);
+      ctx.lineTo(toX - headLen * Math.cos(angle - Math.PI / 6), toY - headLen * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(toX - headLen * Math.cos(angle + Math.PI / 6), toY - headLen * Math.sin(angle + Math.PI / 6));
+      ctx.closePath();
+      ctx.fill();
+
+      // Szöveg
+      if (text) {
+        ctx.font = 'bold 11px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillStyle = '#2D2A26';
+        ctx.fillText(text, (fromX + toX) / 2, fromY - 7);
+      }
+      ctx.restore();
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
