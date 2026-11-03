@@ -813,16 +813,16 @@
 
       <!-- Csúszkák -->
       <div class="controls-grid">
-        <!-- 1. Szög -->
+        <!-- 1. Meredekség / Szög -->
         <div class="control-group">
           <div class="control-label">
-            <span>Lejtő szöge (&alpha;)</span>
-            <span class="control-val" id="val-angle">25&deg;</span>
+            <span>Lejtő meredeksége (hossz: l = 10 m)</span>
+            <span class="control-val" id="val-angle">h = 4.2 m (25&deg;)</span>
           </div>
           <div class="slider-row">
-            <button class="stepper-btn" id="btn-angle-dec">&minus;</button>
+            <button class="stepper-btn" id="btn-angle-dec" title="Magasság / szög csökkentése">&minus;</button>
             <input type="range" id="slider-angle" min="0" max="80" step="1" value="25">
-            <button class="stepper-btn" id="btn-angle-inc">&plus;</button>
+            <button class="stepper-btn" id="btn-angle-inc" title="Magasság / szög növelése">&plus;</button>
           </div>
         </div>
 
@@ -996,35 +996,35 @@
           <span id="status-icon">&#10004;</span> <span id="status-text">A TEST NYUGALOMBAN VAN (Tapad)</span>
         </div>
         <div class="critical-angle-info" id="critical-angle-info">
-          Kritikus szög: &alpha;<sub>krit</sub> = arctan(&mu;<sub>0</sub>) = <strong>24.2&deg;</strong>
+          Csúszási küszöb: <strong>h / d = &mu;<sub>0</sub> = 0.45</strong> (h<sub>krit</sub> = 4.1 m)
         </div>
       </div>
 
       <div class="status-explanation" id="status-explanation">
-        A lejtőirányú húzóerő nem éri el a maximális tapadási súrlódást. A felület meg tudja tartani a hasábot.
+        A lejtő meredeksége (h / d) nem éri el a súrlódási együtthatót (&mu;<sub>0</sub>), ezért a lejtőirányú húzóerő kisebb a maximális tapadásnál.
       </div>
 
       <!-- Erő-egyensúly összehasonlító mérce -->
       <div class="gauge-wrapper">
         <div class="gauge-labels">
-          <span>Lejtőirányú erő (F<sub>||</sub>) vs. Maximális tapadási erő (F<sub>s,max</sub>)</span>
-          <span id="gauge-ratio-text">F<sub>||</sub> / F<sub>s,max</sub> = 85%</span>
+          <span>Lejtő meredeksége (h / d) vs. Maximális tapadási határ (&mu;<sub>0</sub>)</span>
+          <span id="gauge-ratio-text">(h / d) / &mu;<sub>0</sub> = 85%</span>
         </div>
         <div class="gauge-bar-bg">
           <div class="gauge-bar-fill" id="gauge-fill" style="width: 85%;"></div>
-          <div class="gauge-marker" style="left: 100%;" title="Megindulási küszöb (100%)"></div>
+          <div class="gauge-marker" style="left: 100%;" title="Megindulási küszöb (h / d = μ₀)"></div>
         </div>
         <div class="gauge-legend">
-          <span id="gauge-left-val">F<sub>||</sub> = 20.7 N</span>
-          <span>&#9650; Megindulási határ (F<sub>s,max</sub>)</span>
-          <span id="gauge-right-val">F<sub>s,max</sub> = 24.3 N</span>
+          <span id="gauge-left-val">h / d = 0.46 (Meredekség)</span>
+          <span>&#9650; Megindulási határ: &mu;<sub>0</sub></span>
+          <span id="gauge-right-val">&mu;<sub>0</sub> = 0.45</span>
         </div>
       </div>
     </section>
 
     <!-- Számítási adatok kártyák -->
     <section class="card">
-      <h2 class="card-title">Kiszámított fizikai értékek</h2>
+      <h2 class="card-title">Kiszámított fizikai értékek (hasonló háromszögekkel, szögfüggvény nélkül)</h2>
       <div class="data-table-grid">
         <div class="data-card">
           <div class="data-card-title">Súlyerő (G)</div>
@@ -1034,12 +1034,12 @@
         <div class="data-card">
           <div class="data-card-title">Nyomóerő (F<sub>&perp;</sub> = F<sub>ny</sub>)</div>
           <div class="data-card-value" id="calc-Fperp">44.45 N</div>
-          <div class="data-card-formula">F<sub>&perp;</sub> = m &middot; g &middot; cos(&alpha;)</div>
+          <div class="data-card-formula">F<sub>ny</sub> = G &middot; (d / l)</div>
         </div>
         <div class="data-card">
-          <div class="data-card-title">Lejtőirányú erő (F<sub>||</sub>)</div>
+          <div class="data-card-title">Lejtőirányú húzóerő (F<sub>||</sub>)</div>
           <div class="data-card-value" id="calc-Fpar">20.73 N</div>
-          <div class="data-card-formula">F<sub>||</sub> = m &middot; g &middot; sin(&alpha;)</div>
+          <div class="data-card-formula">F<sub>||</sub> = G &middot; (h / l)</div>
         </div>
         <div class="data-card">
           <div class="data-card-title">Max. tapadási erő (F<sub>s,max</sub>)</div>
@@ -1071,43 +1071,64 @@
 
     <!-- Oktatási levezetés és magyarázat -->
     <section class="card theory-section">
-      <h2 class="card-title">Hogyan működik a lejtő és mikor indul meg a csúszás?</h2>
+      <h2 class="card-title">Hogyan működik a lejtő szögfüggvények nélkül? (A hasonló háromszögek elve)</h2>
       <p>
-        A lejtőn lévő testre két alapvető erő hat: a Föld vonzása miatti <strong>G súlyerő</strong> (függőlegesen lefelé),
-        valamint a lejtő felülete által kifejtett <strong>érintkezési kényszererő</strong> (tartóerő és súrlódás).
+        A lejtőn lévő test fizikai leírásához <strong>nincs szükség szögfüggvényekre (sin, cos)</strong>!
+        A lejtő mechanikája közvetlenül megérthető az általános iskolai <em>hasonló derékszögű háromszögek</em> segítségével.
       </p>
 
       <div class="theory-formula-box">
-        <strong>1. A súlyerő felbontása:</strong><br>
-        &bull; Lejtőre merőleges nyomó komponens: F<sub>&perp;</sub> = m &middot; g &middot; cos(&alpha;)<br>
-        &bull; Lejtővel párhuzamos lefelé gyorsító komponens: F<sub>||</sub> = m &middot; g &middot; sin(&alpha;)
+        <strong>1. A lejtő három alapvető mérete:</strong><br>
+        &bull; <strong>h</strong>: A lejtő függőleges <em>magassága</em> (milyen magasra visz fel)<br>
+        &bull; <strong>d</strong>: A lejtő vízszintes <em>alapja</em> (milyen hosszú vízszintesen a terep)<br>
+        &bull; <strong>l</strong>: A lejtő <em>hossza</em> a lejtőfelület mentén (amennyit a test megtesz)
       </div>
 
       <p>
-        A felületre merőleges irányban nem történik elmozdulás, ezért a lejtő által kifejtett <strong>F<sub>ny</sub> tartóerő</strong>
-        pontosan egyenlő és ellentétes irányú az F<sub>&perp;</sub> komponenssel: <code>F<sub>ny</sub> = m &middot; g &middot; cos(&alpha;)</code>.
+        <strong>2. Az erőháromszög és a lejtő hasonlósága:</strong><br>
+        A lefelé mutató <strong>G súlyerő</strong>, a lejtőirányú <strong>F<sub>||</sub> húzóerő</strong> és a felületre merőleges <strong>F<sub>&perp;</sub> nyomóerő</strong>
+        egy olyan derékszögű háromszöget alkotnak, amelynek oldalai merőlegesek a lejtő háromszögének oldalaira. Ezért a két háromszög <strong>hasonló</strong>!
       </p>
 
       <div class="theory-formula-box">
-        <strong>2. A megindulás (csúszás) feltétele:</strong><br>
-        A tapadási súrlódási erőnek van egy maximális határa: F<sub>s,max</sub> = &mu;<sub>0</sub> &middot; F<sub>ny</sub> = &mu;<sub>0</sub> &middot; m &middot; g &middot; cos(&alpha;).<br><br>
-        A test akkor és csak akkor indul meg lefelé, ha a lefelé húzó erő legyőzi ezt a határt:<br>
-        F<sub>||</sub> &gt; F<sub>s,max</sub> &hArr; m &middot; g &middot; sin(&alpha;) &gt; &mu;<sub>0</sub> &middot; m &middot; g &middot; cos(&alpha;)<br><br>
-        Mindkét oldalt leosztva (m &middot; g &middot; cos(&alpha;))-val kapjuk az alapvető összefüggést:<br>
-        <strong>tan(&alpha;) &gt; &mu;<sub>0</sub> &nbsp;&rArr;&nbsp; &alpha; &gt; &alpha;<sub>krit</sub> = arctan(&mu;<sub>0</sub>)</strong>
+        <strong>Az erők kiszámítása egyszerű aránypárokkal:</strong><br><br>
+        &bull; <strong>Lejtőirányú húzóerő:</strong><br>
+        F<sub>||</sub> / G = h / l &nbsp;&rArr;&nbsp; <strong>F<sub>||</sub> = G &middot; (h / l)</strong><br>
+        <em>(A lejtő mentén a súlyerőnek pontosan akkora része húzza le a testet, amekkora a magasság aránya a lejtő hosszához képest!)</em><br><br>
+        &bull; <strong>Lejtőre merőleges nyomó- és tartóerő:</strong><br>
+        F<sub>ny</sub> / G = d / l &nbsp;&rArr;&nbsp; <strong>F<sub>ny</sub> = G &middot; (d / l)</strong><br>
+        <em>(A felületre ható nyomóerő akkora része a súlyerőnek, amekkora a vízszintes alap aránya a hosszhoz képest!)</em>
+      </div>
+
+      <div class="theory-formula-box">
+        <strong>3. Mikor kezd el csúszni a tárgy? (A csúszási feltétel):</strong><br>
+        A tapadási súrlódási erő maximális értéke: <code>F<sub>s,max</sub> = &mu;<sub>0</sub> &middot; F<sub>ny</sub> = &mu;<sub>0</sub> &middot; G &middot; (d / l)</code>.<br><br>
+        A hasáb akkor indul meg lefelé, ha a lefelé húzó erő legyőzi ezt a maximális tapadást:<br>
+        F<sub>||</sub> &gt; F<sub>s,max</sub> &nbsp;&hArr;&nbsp; G &middot; (h / l) &gt; &mu;<sub>0</sub> &middot; G &middot; (d / l)<br><br>
+        Osszuk el mindkét oldalt a <code>G &middot; (1 / l)</code> közös tényezővel:<br>
+        <strong>h &gt; &mu;<sub>0</sub> &middot; d &nbsp;&hArr;&nbsp; (h / d) &gt; &mu;<sub>0</sub></strong><br><br>
+        &bull; <strong>Kritikus magasság:</strong> h<sub>krit</sub> = &mu;<sub>0</sub> &middot; d
       </div>
 
       <p>
-        <strong>Fontos felismerés a diákok számára:</strong> A képletből a test <em>m</em> tömege kiesett! Ez azt jelenti, hogy 
-        egy 10 grammos fakocka és egy 10 tonnás fahordó pontosan ugyanannál a dőlésszögnél fog elkezdeni csúszni a lejtőn!
+        <strong>Tanulság:</strong> A tárgy pontosan akkor indul meg a lejtőn, ha a lejtő <strong>magasságának és vízszintes alapjának aránya (h / d meredekség)</strong>
+        meghaladja a felületek közötti <strong>&mu;<sub>0</sub> súrlódási együtthatót</strong>!
       </p>
 
       <p>
-        <strong>Mi történik a megindulás után?</strong><br>
-        Amint a test megmozdul, a tapadás megszűnik, és helyébe a <em>csúszási súrlódási erő</em> lép: <code>F<sub>cs</sub> = &mu; &middot; F<sub>ny</sub></code>.
-        Mivel szinte minden reális anyagnál <code>&mu; &lt; &mu;<sub>0</sub></code>, a súrlódás a megindulás pillanatában hirtelen lecsökken,
-        így a test még határozottabban gyorsul lefelé: <code>a = g &middot; (sin(&alpha;) &minus; &mu; &middot; cos(&alpha;))</code>.
+        <strong>Miért nem függ a csúszás megindulása a tömegtől?</strong><br>
+        Mivel a <em>G</em> súlyerőből az <em>m</em> tömeg mindkét oldalon kiesett, a megindulás kizárólag a lejtő geometriai alakjától (h / d arányától)
+        és a felületek tapadásától függ. Egy 5 dkg-os kis kocka és egy 500 kg-os nagy láda pontosan ugyanannál a meredekségnél indul meg!
       </p>
+
+      <div style="background:#FFFFFF; border:2px dashed var(--border-dark); padding:0.8rem 1rem; margin-top:1rem; font-size:0.85rem;">
+        <strong>💡 Kitekintés a 10. osztályos matematika anyagra (szögfüggvények):</strong><br>
+        Ha később matematikából tanuljátok a szögfüggvényeket, látni fogjátok, hogy a derékszögű háromszög oldalainak ezeket az arányait nevezik el:<br>
+        &bull; <code>h / l = sin(&alpha;)</code> (magasság per hossz)<br>
+        &bull; <code>d / l = cos(&alpha;)</code> (alap per hossz)<br>
+        &bull; <code>h / d = tan(&alpha;)</code> (magasság per alap, azaz meredekség)<br>
+        A fizika lényege azonban maga a geometriai arányosság, ami szögfüggvények nélkül is tökéletesen működik!
+      </div>
     </section>
 
   </main>
@@ -1250,19 +1271,31 @@
       draw();
     }
 
-    // Fizikai számítások segédfüggvénye
+    // Fizikai számítások segédfüggvénye (szögfüggvények nélkül, hasonló háromszögekkel)
     function getPhysics() {
       const alphaRad = (state.angleDeg * Math.PI) / 180;
       const m = state.mass;
       const G = m * g;
-      const Fperp = G * Math.cos(alphaRad);
-      const Fpar = G * Math.sin(alphaRad);
-      const Fsmax = state.mu0 * Fperp;
-      const criticalAngleRad = Math.atan(state.mu0);
-      const criticalAngleDeg = (criticalAngleRad * 180) / Math.PI;
+      const rampL = state.rampLengthM; // 10.0 m lejtőhossz
 
-      // Megindulási feltétel: Fpar > Fsmax
-      const willSlide = (Fpar > Fsmax + 1e-5);
+      // Geometriai méretek (h: magasság, d: vízszintes alap)
+      const h = rampL * Math.sin(alphaRad);
+      const d = rampL * Math.cos(alphaRad);
+      const h_over_l = h / rampL;                      // magasság és lejtőhossz aránya (h / l)
+      const d_over_l = d / rampL;                      // alap és lejtőhossz aránya (d / l)
+      const slope_ratio = d > 0.001 ? (h / d) : 999;  // meredekség (h / d)
+      const h_crit = state.mu0 * d;                    // meginduláshoz szükséges kritikus magasság
+
+      // Erők a hasonló háromszögek tétele szerint:
+      // F|| = G · (h / l)
+      // Fny = G · (d / l)
+      const Fperp = G * d_over_l;
+      const Fpar = G * h_over_l;
+      const Fsmax = state.mu0 * Fperp;
+
+      // Megindulási feltétel szögfüggvény nélkül:
+      // Fpar > Fsmax <=> (h / d) > mu0
+      const willSlide = (slope_ratio > state.mu0 + 1e-4);
 
       let Fs = 0;
       let Fnet = 0;
@@ -1287,7 +1320,13 @@
 
       return {
         alphaRad,
-        criticalAngleDeg,
+        h,
+        d,
+        rampL,
+        h_over_l,
+        d_over_l,
+        slope_ratio,
+        h_crit,
         willSlide,
         G,
         Fperp,
@@ -1303,13 +1342,13 @@
     function updatePhysicsCalculations() {
       const p = getPhysics();
 
-      // Értékek frissítése
-      valAngle.innerHTML = `${state.angleDeg}&deg;`;
+      // Értékek frissítése (h, d, l méretek kiemelése)
+      valAngle.innerHTML = `h = ${p.h.toFixed(1)} m | d = ${p.d.toFixed(1)} m <span style="font-size:0.8rem; font-weight:normal; color:#666;">(${state.angleDeg}&deg;)</span>`;
       valMass.textContent = `${state.mass.toFixed(1)} kg`;
       valMu0.textContent = state.mu0.toFixed(2);
       valMu.textContent = state.mu.toFixed(2);
 
-      hudAngleBadge.innerHTML = `Szög: <strong>${state.angleDeg}&deg;</strong>`;
+      hudAngleBadge.innerHTML = `Méretek: <strong>h = ${p.h.toFixed(1)} m, d = ${p.d.toFixed(1)} m, l = 10 m</strong> (${state.angleDeg}&deg;)`;
 
       // Kártyák adatai
       calcG.textContent = `${p.G.toFixed(2)} N`;
@@ -1336,20 +1375,21 @@
       hudRowFperp.style.display = chkComponents && chkComponents.checked ? 'flex' : 'none';
       hudRowFnet.style.display = chkResultant && chkResultant.checked ? 'flex' : 'none';
 
-      criticalAngleInfo.innerHTML = `Kritikus szög: &alpha;<sub>krit</sub> = arctan(${state.mu0.toFixed(2)}) = <strong>${p.criticalAngleDeg.toFixed(1)}&deg;</strong>`;
+      const critDeg = ((Math.atan(state.mu0) * 180) / Math.PI).toFixed(1);
+      criticalAngleInfo.innerHTML = `Csúszási küszöb: <strong>h / d = &mu;<sub>0</sub> = ${state.mu0.toFixed(2)}</strong> (h<sub>krit</sub> = ${p.h_crit.toFixed(1)} m)`;
 
-      // Gauge arány (Fpar / Fsmax)
+      // Gauge arány (meredekség vs. súrlódási határ)
       let ratio = 0;
-      if (p.Fsmax > 0.001) {
-        ratio = (p.Fpar / p.Fsmax) * 100;
+      if (state.mu0 > 0.001) {
+        ratio = (p.slope_ratio / state.mu0) * 100;
       } else {
-        ratio = p.Fpar > 0 ? 150 : 0;
+        ratio = p.slope_ratio > 0 ? 150 : 0;
       }
       const displayRatio = Math.min(Math.round(ratio), 200);
-      gaugeRatioText.textContent = `F_{||} / F_{s,max} = ${Math.round(ratio)}%`;
+      gaugeRatioText.textContent = `(h / d) / &mu;₀ = ${Math.round(ratio)}%`;
       gaugeFill.style.width = `${Math.min(displayRatio, 100)}%`;
-      gaugeLeftVal.textContent = `F_{||} = ${p.Fpar.toFixed(1)} N`;
-      gaugeRightVal.textContent = `F_{s,max} = ${p.Fsmax.toFixed(1)} N`;
+      gaugeLeftVal.textContent = `h / d = ${p.slope_ratio.toFixed(2)} (Meredekség)`;
+      gaugeRightVal.textContent = `&mu;₀ = ${state.mu0.toFixed(2)} (Küszöb)`;
 
       // Állapotjelző badge és panel váltás
       if (p.willSlide || state.velocity > 0.05) {
@@ -1357,7 +1397,7 @@
         statusIcon.innerHTML = '&#9889;';
         statusText.textContent = 'A TEST MEGINDULT ÉS GYORSULVA CSÚSZIK!';
         hudStateBadge.innerHTML = 'Állapot: <strong style="color:var(--accent-amber);">Csúszás lefelé</strong>';
-        statusExplanation.innerHTML = `A lejtőirányú erő (<strong>${p.Fpar.toFixed(2)} N</strong>) meghaladja a maximális tapadási súrlódást (<strong>${p.Fsmax.toFixed(2)} N</strong>)! A test csúszási súrlódás (${p.Fs.toFixed(2)} N) mellett <strong>a = ${p.accel.toFixed(2)} m/s&sup2;</strong> gyorsulással csúszik lefelé.`;
+        statusExplanation.innerHTML = `A lejtő meredeksége (<strong>h / d = ${p.slope_ratio.toFixed(2)}</strong>) meghaladja a súrlódási együtthatót (<strong>&mu;₀ = ${state.mu0.toFixed(2)}</strong>)! A lejtőirányú húzóerő (F<sub>||</sub> = G &middot; h/l = ${p.Fpar.toFixed(1)} N) legyőzte a maximális tapadást (${p.Fsmax.toFixed(1)} N). A test <strong>a = ${p.accel.toFixed(2)} m/s&sup2;</strong> gyorsulással csúszik lefelé!`;
         gaugeFill.style.backgroundColor = 'var(--accent-amber)';
         calcFsFormula.textContent = `Csúszáskor: F_{cs} = μ · F_{ny}`;
         calcFnetFormula.textContent = `F_{||} − F_{cs} = ${p.Fnet.toFixed(2)} N`;
@@ -1366,7 +1406,7 @@
         statusIcon.innerHTML = '&#10004;';
         statusText.textContent = 'A TEST NYUGALOMBAN VAN (Tapadás)';
         hudStateBadge.innerHTML = 'Állapot: <strong style="color:var(--accent-green);">Nyugalom (Tapad)</strong>';
-        statusExplanation.innerHTML = `A lejtő dőlésszöge (${state.angleDeg}&deg;) kisebb a kritikus szögnél (${p.criticalAngleDeg.toFixed(1)}&deg;). A lejtőirányú erő (${p.Fpar.toFixed(2)} N) &le; a maximális tapadási erő (${p.Fsmax.toFixed(2)} N), így a test stabilan áll.`;
+        statusExplanation.innerHTML = `A lejtő magassága (h = ${p.h.toFixed(1)} m) még nem éri el a megindulási határt (h<sub>krit</sub> = ${p.h_crit.toFixed(1)} m). A meredekség (h / d = ${p.slope_ratio.toFixed(2)}) &le; a súrlódási együttható (&mu;₀ = ${state.mu0.toFixed(2)}), így a test stabilan áll.`;
         gaugeFill.style.backgroundColor = 'var(--accent-green)';
         calcFsFormula.textContent = `Nyugalomban: F_{s} = F_{||}`;
         calcFnetFormula.textContent = `Egyensúlyban: F_{eredő} = 0 N`;
@@ -2045,11 +2085,90 @@
         ctx.fill();
 
         ctx.fillStyle = '#2D2A26';
-        ctx.font = 'bold 13px "JetBrains Mono", monospace';
+        ctx.font = 'bold 12px "JetBrains Mono", monospace';
         const textDist = arcRadius + 18;
         const textAngle = -alphaRad / 2;
         ctx.fillText(`${state.angleDeg}°`, pivotX + textDist * Math.cos(textAngle), pivotY + textDist * Math.sin(textAngle) + 4);
       }
+
+      // Geometriai méretvonalak a lejtőn (h: magasság, d: alap, l: lejtőhossz)
+      const p = getPhysics();
+
+      // h: Magasság méretvonal a jobb oldalon
+      if (p.h > 0.3) {
+        const dimX = Math.min(topX + 22, w - 18);
+        ctx.save();
+        ctx.strokeStyle = '#1A5276';
+        ctx.fillStyle = '#1A5276';
+        ctx.lineWidth = 1.6;
+
+        // Vezetővonalak
+        ctx.beginPath();
+        ctx.moveTo(topX + 3, topY);
+        ctx.lineTo(dimX + 5, topY);
+        ctx.moveTo(topX + 3, pivotY);
+        ctx.lineTo(dimX + 5, pivotY);
+        ctx.stroke();
+
+        // Kétirányú nyíl vonal
+        ctx.beginPath();
+        ctx.moveTo(dimX, topY);
+        ctx.lineTo(dimX, pivotY);
+        ctx.stroke();
+
+        drawDimArrow(ctx, dimX, topY, 0, -1);
+        drawDimArrow(ctx, dimX, pivotY, 0, 1);
+
+        // Szöveg
+        ctx.font = 'bold 11px "JetBrains Mono", monospace';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`h = ${p.h.toFixed(1)}m`, dimX + 7, (topY + pivotY) / 2);
+        ctx.restore();
+      }
+
+      // d: Vízszintes alap méretvonal a talaj alatt
+      if (p.d > 0.5) {
+        const dimY = groundY + 22;
+        ctx.save();
+        ctx.strokeStyle = '#2D2A26';
+        ctx.fillStyle = '#2D2A26';
+        ctx.lineWidth = 1.6;
+
+        // Vezetővonalak
+        ctx.beginPath();
+        ctx.moveTo(pivotX, pivotY + 2);
+        ctx.lineTo(pivotX, dimY + 5);
+        ctx.moveTo(topX, pivotY + 2);
+        ctx.lineTo(topX, dimY + 5);
+        ctx.stroke();
+
+        // Méretvonal
+        ctx.beginPath();
+        ctx.moveTo(pivotX, dimY);
+        ctx.lineTo(topX, dimY);
+        ctx.stroke();
+
+        drawDimArrow(ctx, pivotX, dimY, -1, 0);
+        drawDimArrow(ctx, topX, dimY, 1, 0);
+
+        ctx.font = 'bold 11px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText(`d = ${p.d.toFixed(1)}m (alap)`, (pivotX + topX) / 2, dimY + 3);
+        ctx.restore();
+      }
+
+      // l: Lejtő hossza a lejtő élén
+      ctx.save();
+      ctx.translate((pivotX + topX) / 2, (pivotY + topY) / 2);
+      ctx.rotate(-alphaRad);
+      ctx.fillStyle = '#5D3C1F';
+      ctx.font = 'bold 11px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(`l = 10m (lejtőhossz)`, 0, -5);
+      ctx.restore();
 
       // 3. Tárgy pozicionálása a lejtőn
       const blockRelPos = 1 - state.pos;
@@ -2076,7 +2195,6 @@
       const contactX = blockCenterX;
       const contactY = blockCenterY;
 
-      const p = getPhysics();
       const scaleN = Math.max(0.6, Math.min(1.4, 260 / (state.mass * g)));
       const showValues = chkValues && chkValues.checked;
 
@@ -2223,6 +2341,19 @@
       ctx.setLineDash([4, 3]);
       drawCleanVector(ctx, fromX, fromY, toX, toY, color, symbol, valText, lineWidth);
       ctx.restore();
+    }
+
+    // Segédfüggvény: méretnyíl rajzolása
+    function drawDimArrow(ctx, x, y, dx, dy) {
+      const len = 6;
+      const perpX = -dy * 3.5;
+      const perpY = dx * 3.5;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x - dx * len + perpX, y - dy * len + perpY);
+      ctx.lineTo(x - dx * len - perpX, y - dy * len - perpY);
+      ctx.closePath();
+      ctx.fill();
     }
 
     // Indítás
