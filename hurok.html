@@ -944,6 +944,8 @@
       fallY: 0,
       fallVx: 0,
       fallVy: 0,
+      fallAngle: 0,
+      fallOmega: 0,
       hasFallen: false,
 
       // Statisztika / Mérések
@@ -1056,6 +1058,12 @@
       state.maxGForce = 1.0;
       state.minFNInLoop = Infinity;
       state.wheelAngle = 0;
+      state.fallX = 0;
+      state.fallY = 0;
+      state.fallVx = 0;
+      state.fallVy = 0;
+      state.fallAngle = 0;
+      state.fallOmega = 0;
       state.starParticles = [];
 
       const m = getTotalMass();
@@ -1088,6 +1096,11 @@
           state.phase = 'loop';
           state.theta = 0;
           setStatus("A jármű belépett a hurokba!", '#FEF9E7', 'var(--accent-amber)');
+        } else if (state.s_linear <= 0 && state.v < 0) {
+          state.s_linear = 0;
+          state.v = 0;
+          state.phase = 'stopped';
+          setStatus("A jármű visszagurult a start mezőre és megállt.", '#FAF8F5', 'var(--border-dark)');
         }
 
       } else if (state.phase === 'loop') {
@@ -1105,7 +1118,7 @@
         const FN = m * (vSq / R + g * cosTheta);
 
         // Ellenőrzés: ha nincs biztonsági sín és FN <= 0 a felső félben:
-        if (!state.hasSafetyRails && FN <= 0 && state.theta > Math.PI * 0.4 && state.theta < Math.PI * 1.6) {
+        if (!state.hasSafetyRails && FN <= 0 && state.theta > Math.PI * 0.5 && state.theta < Math.PI * 1.5) {
           state.phase = 'freefall';
           state.hasFallen = true;
 
@@ -1115,10 +1128,12 @@
           const loopCenterY = groundY - R * scale;
 
           state.fallX = loopCenterX + R * scale * Math.sin(state.theta);
-          state.fallY = loopCenterY + R * scale * (-cosTheta);
+          state.fallY = loopCenterY + R * scale * Math.cos(state.theta);
 
           state.fallVx = state.v * Math.cos(state.theta);
           state.fallVy = -state.v * Math.sin(state.theta);
+          state.fallAngle = -state.theta;
+          state.fallOmega = -state.v / R;
 
           setStatus("A kocsi levált a pályáról a tetőpont előtt! (Szabadesés)", '#FADBD8', 'var(--error-color)');
           createStarBurst(state.fallX, state.fallY);
@@ -1128,15 +1143,12 @@
         // Visszagurulás kezelése (ha v lecsökken 0-ra az emelkedő ágon)
         if (v_prev > 0 && state.v <= 0) {
           if (state.theta < Math.PI * 0.5) {
-            state.v = -0.05;
             setStatus("A kocsi visszagurul a hurok alja felé!", '#FEF9E7', 'var(--accent-amber)');
           } else {
             if (!state.hasSafetyRails) {
               state.phase = 'freefall';
               state.hasFallen = true;
               return;
-            } else {
-              state.v = -0.05;
             }
           }
         }
@@ -1182,16 +1194,17 @@
       } else if (state.phase === 'freefall') {
         // 4. Szabadesés / parabolapálya
         const scale = getScale();
+        state.fallVy += g * dt;
         state.fallX += state.fallVx * scale * dt;
-        state.fallVy += g * scale * dt;
-        state.fallY += state.fallVy * dt;
+        state.fallY += state.fallVy * scale * dt;
+        state.fallAngle += (state.fallOmega || 0) * dt;
 
         state.wheelAngle += 0.2;
 
         const groundY = getGroundY();
-        if (state.fallY >= groundY - 15) {
-          state.fallY = groundY - 15;
-          state.fallVx *= 0.3;
+        if (state.fallY >= groundY) {
+          state.fallY = groundY;
+          state.fallVx = 0;
           state.fallVy = 0;
           state.phase = 'stopped';
           setStatus("A kocsi a földbe csapódott! Állíts be v₀ ≥ √(5·g·R) kezdősebességet!", '#FADBD8', 'var(--error-color)');
@@ -1513,8 +1526,8 @@
         cartAngle = 0;
       } else if (state.phase === 'loop') {
         cartX = loopCenterX + R_px * Math.sin(state.theta);
-        cartY = loopCenterY - R_px * Math.cos(state.theta);
-        cartAngle = state.theta;
+        cartY = loopCenterY + R_px * Math.cos(state.theta);
+        cartAngle = -state.theta;
       } else if (state.phase === 'exit') {
         cartX = loopCenterX + state.s_linear * scale;
         cartY = groundY;
@@ -1522,7 +1535,7 @@
       } else if (state.phase === 'freefall' || (state.phase === 'stopped' && state.hasFallen)) {
         cartX = state.fallX;
         cartY = state.fallY;
-        cartAngle = state.wheelAngle;
+        cartAngle = state.fallAngle;
       }
 
       ctx.save();
@@ -1859,10 +1872,10 @@
         const Fcp = m * (vSq / R);
 
         const nx = -Math.sin(state.theta);
-        const ny = Math.cos(state.theta);
+        const ny = -Math.cos(state.theta);
 
         const tx = Math.cos(state.theta);
-        const ty = Math.sin(state.theta);
+        const ty = -Math.sin(state.theta);
 
         // Tartóerő (FN)
         if (state.showFN && Math.abs(FN) > 5) {
