@@ -306,6 +306,235 @@
       color: #55504A;
     }
 
+    /* Módválasztó */
+    .mode-selector {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .mode-selector {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mode-card {
+      padding: 1.25rem;
+      border: 2px solid var(--border-dark);
+      background: var(--surface-white);
+      box-shadow: var(--hard-shadow-sm);
+      cursor: pointer;
+      transition: transform 0.08s ease, background-color 0.1s ease;
+      position: relative;
+    }
+
+    .mode-card:hover {
+      background: #FAF8F5;
+      transform: translate(-1px, -1px);
+    }
+
+    .mode-card.active {
+      background: var(--surface-sand);
+      border-width: 3px;
+      box-shadow: var(--hard-shadow);
+      border-color: var(--border-dark);
+    }
+
+    .mode-card.active::after {
+      content: "Kiválasztva";
+      position: absolute;
+      top: 0.65rem;
+      right: 0.65rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: var(--accent-amber);
+      color: #FFFFFF;
+      padding: 0.15rem 0.45rem;
+      border: 1px solid var(--border-dark);
+    }
+
+    .mode-title {
+      font-family: 'Roboto Slab', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.35rem;
+      color: var(--text-color);
+    }
+
+    .mode-desc {
+      font-size: 0.85rem;
+      color: #55504A;
+      line-height: 1.4;
+    }
+
+    /* Kihívás infódoboz */
+    .challenge-info-card {
+      background: #FAF8F5;
+      border: 2px solid var(--border-dark);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .challenge-rules-list {
+      margin: 0.75rem 0 0 1.25rem;
+      font-size: 0.9rem;
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .challenge-levels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .challenge-level-pill {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid var(--border-dark);
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    /* Kihívás fejléc a feladatmegoldó felületen */
+    .challenge-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      margin-bottom: 1.25rem;
+      box-shadow: var(--hard-shadow-sm);
+    }
+
+    .challenge-timer {
+      font-family: 'Roboto Slab', monospace, serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-color);
+      background: #FFFFFF;
+      padding: 0.25rem 0.75rem;
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .streak-tracker {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .streak-dots {
+      display: inline-flex;
+      gap: 0.35rem;
+    }
+
+    .streak-dot {
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--border-dark);
+      background: #FFFFFF;
+      display: inline-block;
+      transition: background-color 0.15s ease, transform 0.15s ease;
+    }
+
+    .streak-dot.filled {
+      background: var(--accent-green);
+      transform: scale(1.1);
+    }
+
+    /* Szintlépési szalag */
+    .level-up-banner {
+      background: #EBF4F0;
+      border: 2px solid var(--accent-green);
+      box-shadow: var(--hard-shadow-sm);
+      padding: 0.85rem 1rem;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--accent-green);
+    }
+
+    /* Győzelmi képernyő */
+    .victory-card {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      background: var(--surface-white);
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-lg);
+    }
+
+    .victory-trophy {
+      font-size: 3.5rem;
+      margin-bottom: 0.75rem;
+      line-height: 1;
+    }
+
+    .victory-time-box {
+      display: inline-block;
+      background: #FAF8F5;
+      border: 2px solid var(--border-dark);
+      box-shadow: var(--hard-shadow-sm);
+      padding: 1rem 2.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .victory-time-val {
+      font-family: 'Roboto Slab', serif;
+      font-size: 2.6rem;
+      font-weight: 700;
+      color: var(--accent-amber);
+      line-height: 1.2;
+    }
+
+    .victory-stats-grid {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .victory-stat-item {
+      background: var(--surface-sand);
+      border: 2px solid var(--border-dark);
+      padding: 0.75rem 1.25rem;
+      min-width: 140px;
+    }
+
+    .victory-stat-val {
+      font-size: 1.5rem;
+      font-weight: 700;
+      font-family: 'Roboto Slab', serif;
+      color: var(--text-color);
+    }
+
+    .victory-stat-label {
+      font-size: 0.8rem;
+      color: #55504A;
+      margin-top: 0.2rem;
+    }
+
     /* Gyakorló felület */
     .exercise-meta {
       display: flex;
@@ -610,24 +839,103 @@
 
   <!-- Fő tartalom -->
   <main>
-    <!-- 1. Témaválasztó képernyő -->
+    <!-- 1. Témaválasztó és módválasztó képernyő -->
     <section id="setup-screen" class="card">
       <div class="setup-header">
-        <h2>Válassz feladattípusokat a gyakorláshoz</h2>
-        <p>Jelöld be azokat a feladattípusokat, amelyekből feladványokat szeretnél kapni, majd indítsd el a gyakorlást!</p>
+        <h2>Válassz módot a gyakorláshoz</h2>
+        <p>Gyakorolj kötetlenül tetszőleges témakörökből, vagy tedd próbára a tudásod a fokozatosan nehezedő, stopperes Kihívás módban!</p>
       </div>
 
-      <div class="topic-list" id="topic-list">
-        <!-- A feladattípusok listája dinamikusan a feladat_adatok.json / feladat_adatok.js-ből töltődik be -->
+      <!-- Módválasztó kártyák -->
+      <div class="mode-selector">
+        <div class="mode-card active" id="mode-practice-card">
+          <div class="mode-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 20h9"></path>
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+            </svg>
+            Gyakorló mód
+          </div>
+          <div class="mode-desc">Szabadon választható témakörök, tetszőleges feladatszám, időkorlát nélkül.</div>
+        </div>
+
+        <div class="mode-card" id="mode-challenge-card">
+          <div class="mode-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="7"></circle>
+              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+            </svg>
+            Kihívás mód ⏱️
+          </div>
+          <div class="mode-desc">10 szint, szintenként 3 egymás utáni jó válasz a szintlépéshez, stopperes időméréssel!</div>
+        </div>
       </div>
 
-      <div style="margin-top: 1.5rem;">
-        <button id="start-btn" class="btn btn-primary">Gyakorlás indítása</button>
+      <!-- Gyakorló mód beállításai -->
+      <div id="practice-setup-container">
+        <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Gyakorolni kívánt témakörök</h3>
+        <p style="color: #55504A; font-size: 0.9rem; margin-bottom: 1rem;">Jelöld be azokat a feladattípusokat, amelyekből feladványokat szeretnél kapni:</p>
+        <div class="topic-list" id="topic-list">
+          <!-- A feladattípusok listája dinamikusan a feladat_adatok.json / feladat_adatok.js-ből töltődik be -->
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <button id="start-btn" class="btn btn-primary">Gyakorlás indítása</button>
+        </div>
+      </div>
+
+      <!-- Kihívás mód beállításai -->
+      <div id="challenge-setup-container" style="display: none;">
+        <div class="challenge-info-card">
+          <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">A Rozsomák Kihívás szabályai</h3>
+          <ul class="challenge-rules-list">
+            <li><strong>1. szinttől indulsz:</strong> Először csak az 1. típusból (v = x / t) kapsz feladványokat.</li>
+            <li><strong>3 jó válasz egymás után:</strong> Akkor léphetsz a következő szintre, ha 3 feladatot egymás után hibátlanul megoldasz.</li>
+            <li><strong>Fokozatos nehezedés:</strong> Minden szintlépéskor feloldódik a következő típus (pl. 2. szinten már az 1. és a 2. típus is szerepel).</li>
+            <li><strong>Kiemelt új típus:</strong> A feladatok <strong>harmada (1/3) mindig az újonnan feloldott típusból</strong> érkezik, hogy alaposan begyakorold.</li>
+            <li><strong>Időmérés:</strong> A beépített stopper méri az időt a kihívás kezdetétől mind a 10 szint sikeres befejezéséig.</li>
+            <li><strong>Hiba vagy kihagyás esetén:</strong> Ha hibázol vagy feladod a feladatot, az adott szinten a 3-as sorozatod nullázódik.</li>
+          </ul>
+
+          <div style="margin-top: 1.25rem;">
+            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem;">A kihívás szintjei és témakörei:</div>
+            <div class="challenge-levels-grid" id="challenge-levels-preview"></div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem;">
+          <button id="start-challenge-btn" class="btn btn-green">Kihívás indítása ⏱️</button>
+        </div>
       </div>
     </section>
 
     <!-- 2. Feladatmegoldó képernyő -->
     <section id="exercise-screen" class="card" style="display: none;">
+      <!-- Kihívás mód információs sáv -->
+      <div id="challenge-meta-bar" class="challenge-meta-bar" style="display: none;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <span class="badge badge-green">🏆 Kihívás mód</span>
+          <span class="badge badge-amber" id="challenge-level-badge">1. szint / 10</span>
+          <div class="streak-tracker">
+            <span>Sorozat: <strong id="streak-num">0</strong>/3</span>
+            <div class="streak-dots">
+              <span class="streak-dot" id="sdot-1"></span>
+              <span class="streak-dot" id="sdot-2"></span>
+              <span class="streak-dot" id="sdot-3"></span>
+            </div>
+          </div>
+        </div>
+        <div class="challenge-timer" id="challenge-timer-display">⏱️ 00:00</div>
+      </div>
+
+      <!-- Szintlépési értesítő szalag -->
+      <div id="level-up-banner" class="level-up-banner" style="display: none;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+        </svg>
+        <div id="level-up-text">🎉 Szintlépés! Feloldva a következő típus!</div>
+      </div>
+
       <div class="exercise-meta">
         <div>
           <span class="badge badge-amber" id="exercise-type-badge">1. Típus</span>
@@ -690,6 +998,40 @@
         <div id="solution-steps"></div>
       </div>
     </section>
+
+    <!-- 3. Kihívás Győzelmi képernyő -->
+    <section id="challenge-victory-screen" class="card victory-card" style="display: none;">
+      <div class="victory-trophy">🏆</div>
+      <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Rozsomák Kihívás teljesítve!</h2>
+      <p style="color: #4A4641; font-size: 1.05rem; max-width: 600px; margin: 0 auto;">
+        Fantasztikus teljesítmény! Mind a 10 fizika feladattípust sikeresen elsajátítottad és teljesítetted a teljes kihívást!
+      </p>
+
+      <div class="victory-time-box">
+        <div style="font-size: 0.9rem; text-transform: uppercase; font-weight: 700; color: #55504A; letter-spacing: 0.5px;">Összesített időeredményed</div>
+        <div class="victory-time-val" id="victory-time">00:00</div>
+      </div>
+
+      <div class="victory-stats-grid">
+        <div class="victory-stat-item">
+          <div class="victory-stat-val" id="victory-solved">30</div>
+          <div class="victory-stat-label">Helyes megoldás</div>
+        </div>
+        <div class="victory-stat-item">
+          <div class="victory-stat-val" id="victory-errors">0</div>
+          <div class="victory-stat-label">Hibás próbálkozás</div>
+        </div>
+        <div class="victory-stat-item">
+          <div class="victory-stat-val" id="victory-levels">10 / 10</div>
+          <div class="victory-stat-label">Teljesített szint</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <button id="restart-challenge-btn" class="btn btn-green">Új kihívás indítása ⏱️</button>
+        <button id="victory-back-btn" class="btn">Vissza a kezdőlapra</button>
+      </div>
+    </section>
   </main>
 
   <!-- Lábléc -->
@@ -732,13 +1074,29 @@
 
     // Állapotváltozók
     let state = {
+      mode: 'practice', // 'practice' | 'challenge'
       solvedCount: 0,
       currentExerciseNum: 0,
       activeTypes: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       currentTask: null,
       countdownTimer: null,
       countdownLeft: 15,
-      isResolved: false
+      isResolved: false,
+
+      // Kihívás mód állapota
+      challenge: {
+        currentLevel: 1,
+        maxLevel: 10,
+        streak: 0,
+        requiredStreak: 3,
+        startTime: null,
+        elapsedSeconds: 0,
+        timerInterval: null,
+        totalSolved: 0,
+        totalErrors: 0,
+        justLeveledUp: false,
+        unlockedTypeTitle: ""
+      }
     };
 
     // --- FELADAT GENERÁTOROK ---
@@ -2072,7 +2430,18 @@
 
     const setupScreen = document.getElementById('setup-screen');
     const exerciseScreen = document.getElementById('exercise-screen');
+    const challengeVictoryScreen = document.getElementById('challenge-victory-screen');
+
+    const modePracticeCard = document.getElementById('mode-practice-card');
+    const modeChallengeCard = document.getElementById('mode-challenge-card');
+    const practiceSetupContainer = document.getElementById('practice-setup-container');
+    const challengeSetupContainer = document.getElementById('challenge-setup-container');
+
     const startBtn = document.getElementById('start-btn');
+    const startChallengeBtn = document.getElementById('start-challenge-btn');
+    const restartChallengeBtn = document.getElementById('restart-challenge-btn');
+    const victoryBackBtn = document.getElementById('victory-back-btn');
+
     const checkBtn = document.getElementById('check-btn');
     const nextBtnSkip = document.getElementById('next-btn-skip');
     const nextBtnCorrect = document.getElementById('next-btn-correct');
@@ -2081,6 +2450,24 @@
     const backToSetupBtn = document.getElementById('back-to-setup-btn');
     const brandLink = document.getElementById('brand-link');
 
+    // Kihívás felületi elemek
+    const challengeMetaBar = document.getElementById('challenge-meta-bar');
+    const challengeLevelBadge = document.getElementById('challenge-level-badge');
+    const streakNum = document.getElementById('streak-num');
+    const sdot1 = document.getElementById('sdot-1');
+    const sdot2 = document.getElementById('sdot-2');
+    const sdot3 = document.getElementById('sdot-3');
+    const challengeTimerDisplay = document.getElementById('challenge-timer-display');
+    const levelUpBanner = document.getElementById('level-up-banner');
+    const levelUpText = document.getElementById('level-up-text');
+
+    // Győzelmi képernyő elemek
+    const victoryTime = document.getElementById('victory-time');
+    const victorySolved = document.getElementById('victory-solved');
+    const victoryErrors = document.getElementById('victory-errors');
+    const victoryLevels = document.getElementById('victory-levels');
+
+    // Feladatmegoldó elemek
     const exerciseTypeBadge = document.getElementById('exercise-type-badge');
     const exerciseNumBadge = document.getElementById('exercise-num-badge');
     const exerciseStory = document.getElementById('exercise-story');
@@ -2094,6 +2481,19 @@
     const solutionContainer = document.getElementById('solution-container');
     const solutionSteps = document.getElementById('solution-steps');
     const solvedCountElem = document.getElementById('solved-count');
+
+    // Időformázó segédfüggvény (mm:ss vagy hh:mm:ss)
+    function formatTimer(totalSec) {
+      const mins = Math.floor(totalSec / 60);
+      const secs = totalSec % 60;
+      const pad = (n) => n < 10 ? '0' + n : n;
+      if (mins >= 60) {
+        const hrs = Math.floor(mins / 60);
+        const remMins = mins % 60;
+        return `${pad(hrs)}:${pad(remMins)}:${pad(secs)}`;
+      }
+      return `${pad(mins)}:${pad(secs)}`;
+    }
 
     // Témaválasztó lista renderelése a konfiguráció alapján
     function renderTopicList() {
@@ -2110,6 +2510,38 @@
       `).join('');
     }
 
+    // Kihívási szintek előnézetének renderelése
+    function renderChallengePreview() {
+      const container = document.getElementById('challenge-levels-preview');
+      if (!container || !appConfig.taskTypes) return;
+      container.innerHTML = appConfig.taskTypes.map((t, idx) => `
+        <div class="challenge-level-pill">
+          <span class="badge ${idx === 0 ? 'badge-amber' : ''}" style="padding: 0.15rem 0.4rem; font-size: 0.75rem;">${idx + 1}. szint</span>
+          <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${t.title.replace(/^\d+\.\s*/, '')}</span>
+        </div>
+      `).join('');
+    }
+
+    // Módváltás a beállító képernyőn
+    function setSetupMode(newMode) {
+      state.mode = newMode;
+      if (newMode === 'practice') {
+        modePracticeCard.classList.add('active');
+        modeChallengeCard.classList.remove('active');
+        practiceSetupContainer.style.display = 'block';
+        challengeSetupContainer.style.display = 'none';
+      } else {
+        modePracticeCard.classList.remove('active');
+        modeChallengeCard.classList.add('active');
+        practiceSetupContainer.style.display = 'none';
+        challengeSetupContainer.style.display = 'block';
+        renderChallengePreview();
+      }
+    }
+
+    if (modePracticeCard) modePracticeCard.addEventListener('click', () => setSetupMode('practice'));
+    if (modeChallengeCard) modeChallengeCard.addEventListener('click', () => setSetupMode('challenge'));
+
     // JSON konfiguráció aszinkron betöltése (ha HTTP/HTTPS környezetben fut)
     async function loadConfigJson() {
       try {
@@ -2117,6 +2549,7 @@
         if (res.ok) {
           appConfig = await res.json();
           renderTopicList();
+          renderChallengePreview();
         }
       } catch (err) {
         // file:// esetén csendes tartalék: a feladat_adatok.js marad érvényben
@@ -2125,10 +2558,12 @@
 
     // Kezdeti inicializálás
     renderTopicList();
+    renderChallengePreview();
     loadConfigJson();
 
-    // Kezdés
+    // Gyakorlás indítása (Gyakorló mód)
     startBtn.addEventListener('click', () => {
+      state.mode = 'practice';
       const checkedBoxes = document.querySelectorAll('.topic-checkbox:checked');
       state.activeTypes = Array.from(checkedBoxes).map(cb => parseInt(cb.dataset.typeId, 10));
 
@@ -2138,21 +2573,116 @@
       }
 
       setupScreen.style.display = 'none';
+      challengeVictoryScreen.style.display = 'none';
       exerciseScreen.style.display = 'block';
+      challengeMetaBar.style.display = 'none';
+      levelUpBanner.style.display = 'none';
+      backToSetupBtn.innerText = "Témakörök módosítása";
+
       loadNextExercise();
     });
 
-    backToSetupBtn.addEventListener('click', () => {
-      clearInterval(state.countdownTimer);
-      exerciseScreen.style.display = 'none';
-      setupScreen.style.display = 'block';
-    });
+    // Kihívás indítása (Kihívás mód)
+    function startChallenge() {
+      state.mode = 'challenge';
+      state.challenge.currentLevel = 1;
+      state.challenge.streak = 0;
+      state.challenge.totalSolved = 0;
+      state.challenge.totalErrors = 0;
+      state.challenge.justLeveledUp = false;
+      state.challenge.startTime = Date.now();
+      state.challenge.elapsedSeconds = 0;
 
+      // Előző stopper törlése ha futna
+      if (state.challenge.timerInterval) {
+        clearInterval(state.challenge.timerInterval);
+      }
+      challengeTimerDisplay.innerText = '⏱️ 00:00';
+      state.challenge.timerInterval = setInterval(() => {
+        state.challenge.elapsedSeconds = Math.floor((Date.now() - state.challenge.startTime) / 1000);
+        challengeTimerDisplay.innerText = `⏱️ ${formatTimer(state.challenge.elapsedSeconds)}`;
+      }, 1000);
+
+      setupScreen.style.display = 'none';
+      challengeVictoryScreen.style.display = 'none';
+      exerciseScreen.style.display = 'block';
+      challengeMetaBar.style.display = 'flex';
+      levelUpBanner.style.display = 'none';
+      backToSetupBtn.innerText = "Kilépés a kihívásból";
+
+      updateChallengeStreakUI();
+      loadNextExercise();
+    }
+
+    if (startChallengeBtn) startChallengeBtn.addEventListener('click', startChallenge);
+    if (restartChallengeBtn) restartChallengeBtn.addEventListener('click', startChallenge);
+
+    // Sorozat UI frissítése kihívás módban
+    function updateChallengeStreakUI() {
+      if (streakNum) streakNum.innerText = state.challenge.streak;
+      const s = state.challenge.streak;
+      if (sdot1) sdot1.classList.toggle('filled', s >= 1);
+      if (sdot2) sdot2.classList.toggle('filled', s >= 2);
+      if (sdot3) sdot3.classList.toggle('filled', s >= 3);
+      if (challengeLevelBadge) {
+        challengeLevelBadge.innerText = `${state.challenge.currentLevel}. szint / ${state.challenge.maxLevel}`;
+      }
+    }
+
+    // Kihívás mód feladattípus kiválasztása
+    function getChallengeTaskType() {
+      const level = state.challenge.currentLevel;
+      if (level <= 1) {
+        return 1;
+      }
+      // "A feladatok harmada mindig az új típusból legyen"
+      const pickNewType = Math.random() < (1 / 3);
+      if (pickNewType) {
+        return level;
+      } else {
+        const previousTypes = [];
+        for (let i = 1; i < level; i++) {
+          previousTypes.push(i);
+        }
+        return getRandomItem(previousTypes);
+      }
+    }
+
+    // Kihívás sikeres befejezése (10 szint teljesítve)
+    function finishChallenge() {
+      clearInterval(state.countdownTimer);
+      if (state.challenge.timerInterval) {
+        clearInterval(state.challenge.timerInterval);
+        state.challenge.timerInterval = null;
+      }
+
+      exerciseScreen.style.display = 'none';
+      challengeVictoryScreen.style.display = 'block';
+
+      const finalSec = state.challenge.elapsedSeconds;
+      victoryTime.innerText = formatTimer(finalSec);
+      victorySolved.innerText = state.challenge.totalSolved;
+      victoryErrors.innerText = state.challenge.totalErrors;
+      victoryLevels.innerText = `${state.challenge.maxLevel} / ${state.challenge.maxLevel}`;
+    }
+
+    // Visszatérés a beállító felületre
+    function returnToSetup() {
+      clearInterval(state.countdownTimer);
+      if (state.challenge.timerInterval) {
+        clearInterval(state.challenge.timerInterval);
+        state.challenge.timerInterval = null;
+      }
+      exerciseScreen.style.display = 'none';
+      challengeVictoryScreen.style.display = 'none';
+      setupScreen.style.display = 'block';
+    }
+
+    backToSetupBtn.addEventListener('click', returnToSetup);
+    if (victoryBackBtn) victoryBackBtn.addEventListener('click', returnToSetup);
     brandLink.addEventListener('click', (e) => {
       e.preventDefault();
-      clearInterval(state.countdownTimer);
-      exerciseScreen.style.display = 'none';
-      setupScreen.style.display = 'block';
+      returnToSetup();
     });
 
     // Következő feladat betöltése
@@ -2175,11 +2705,33 @@
       userInput.disabled = false;
       checkBtn.disabled = false;
 
+      // Kihívás fejléc / szintlépési banner frissítése
+      if (state.mode === 'challenge') {
+        challengeMetaBar.style.display = 'flex';
+        if (state.challenge.justLeveledUp) {
+          levelUpBanner.style.display = 'flex';
+          levelUpText.innerHTML = `🎉 <strong>Szintlépés!</strong> Sikeresen elérted a(z) <strong>${state.challenge.currentLevel}. szintet</strong>! Újonnan feloldva: <strong>${state.challenge.unlockedTypeTitle}</strong>`;
+          state.challenge.justLeveledUp = false;
+        } else {
+          levelUpBanner.style.display = 'none';
+        }
+        updateChallengeStreakUI();
+      } else {
+        challengeMetaBar.style.display = 'none';
+        levelUpBanner.style.display = 'none';
+      }
+
       state.currentExerciseNum++;
       exerciseNumBadge.innerText = `Feladat #${state.currentExerciseNum}`;
 
-      // Véletlenszerű típus kiválasztása az aktívak közül
-      const chosenType = getRandomItem(state.activeTypes);
+      // Feladattípus kiválasztása a módnak megfelelően
+      let chosenType;
+      if (state.mode === 'challenge') {
+        chosenType = getChallengeTaskType();
+      } else {
+        chosenType = getRandomItem(state.activeTypes);
+      }
+
       if (chosenType === 1) {
         state.currentTask = generateType1();
       } else if (chosenType === 2) {
@@ -2238,7 +2790,7 @@
       const isCorrect = (absDiff <= tolAbs) || (relDiff < tolRel);
 
       if (isCorrect) {
-        // Helyes ág
+        // Helyes válasz
         clearInterval(state.countdownTimer);
         state.isResolved = true;
         state.solvedCount++;
@@ -2246,7 +2798,32 @@
 
         feedbackIncorrect.style.display = 'none';
         feedbackCorrect.style.display = 'block';
-        document.getElementById('correct-summary').innerHTML = `Pontos érték: <strong>${formatNumber(expectedRounded, decimals)} ${state.currentTask.expectedUnit}</strong> (Te válaszod: ${formatNumber(userNum, decimals)}).`;
+
+        let extraNote = "";
+        if (state.mode === 'challenge') {
+          state.challenge.totalSolved++;
+          state.challenge.streak++;
+          updateChallengeStreakUI();
+
+          if (state.challenge.streak >= state.challenge.requiredStreak) {
+            if (state.challenge.currentLevel < state.challenge.maxLevel) {
+              state.challenge.currentLevel++;
+              state.challenge.streak = 0;
+              state.challenge.justLeveledUp = true;
+              const nextTypeObj = appConfig.taskTypes.find(t => t.id === state.challenge.currentLevel);
+              state.challenge.unlockedTypeTitle = nextTypeObj ? nextTypeObj.title : `${state.challenge.currentLevel}. Típus`;
+              extraNote = `<br><strong style="color: var(--accent-green); display: inline-block; margin-top: 0.5rem;">🎉 3/3 egymás utáni jó válasz! Szintlépés a(z) ${state.challenge.currentLevel}. szintre! Új típus: ${state.challenge.unlockedTypeTitle}</strong>`;
+            } else {
+              // Mind a 10 szinten meglett a 3 jó válasz egymás után!
+              finishChallenge();
+              return;
+            }
+          } else {
+            extraNote = `<br><span style="font-weight: 700; color: var(--accent-green); display: inline-block; margin-top: 0.5rem;">Sorozat: ${state.challenge.streak} / 3 a szintlépéshez</span>`;
+          }
+        }
+
+        document.getElementById('correct-summary').innerHTML = `Pontos érték: <strong>${formatNumber(expectedRounded, decimals)} ${state.currentTask.expectedUnit}</strong> (Te válaszod: ${formatNumber(userNum, decimals)}).${extraNote}`;
         
         // Levezetés megjelenítése a helyes válasz alatt
         showSolutionSteps();
@@ -2256,9 +2833,22 @@
         checkBtn.disabled = true;
         nextBtnCorrect.focus();
       } else {
-        // Helytelen ág
+        // Helytelen válasz
         feedbackCorrect.style.display = 'none';
         feedbackIncorrect.style.display = 'block';
+
+        let streakBreakMsg = "";
+        if (state.mode === 'challenge') {
+          state.challenge.totalErrors++;
+          const hadStreak = state.challenge.streak > 0;
+          state.challenge.streak = 0;
+          updateChallengeStreakUI();
+          if (hadStreak) {
+            streakBreakMsg = `<br><strong style="color: var(--error-color); display: inline-block; margin-top: 0.4rem;">⚠️ A 3-as sorozat megszakadt (0 / 3). A szintlépéshez 3 egymás utáni jó válasz szükséges!</strong>`;
+          }
+        }
+
+        document.getElementById('incorrect-message').innerHTML = `Próbáld meg újraszámolni, vagy ellenőrizd az átváltásokat és a kerekítést!${streakBreakMsg}`;
         userInput.focus();
         userInput.select();
       }
@@ -2293,6 +2883,16 @@
       }, 1000);
     });
 
+    // Feladat kihagyása
+    function handleSkip() {
+      if (state.mode === 'challenge') {
+        state.challenge.totalErrors++;
+        state.challenge.streak = 0;
+        updateChallengeStreakUI();
+      }
+      loadNextExercise();
+    }
+
     // Eseménykezelők
     checkBtn.addEventListener('click', checkAnswer);
     userInput.addEventListener('keydown', (e) => {
@@ -2301,9 +2901,9 @@
       }
     });
 
-    nextBtnSkip.addEventListener('click', loadNextExercise);
+    nextBtnSkip.addEventListener('click', handleSkip);
     nextBtnCorrect.addEventListener('click', loadNextExercise);
-    nextBtnIncorrect.addEventListener('click', loadNextExercise);
+    nextBtnIncorrect.addEventListener('click', handleSkip);
 
   </script>
 </body>

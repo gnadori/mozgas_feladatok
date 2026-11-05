@@ -467,6 +467,25 @@
       cursor: grabbing;
     }
 
+    /* Grafikon konténer */
+    .graph-container {
+      position: relative;
+      background: #FFFFFF;
+      border: 3px solid var(--border-dark);
+      box-shadow: var(--hard-shadow);
+      margin-bottom: 0.75rem;
+      overflow: hidden;
+    }
+
+    #graph-canvas {
+      display: block;
+      width: 100%;
+      height: 260px;
+      background: #FFFFFF;
+      cursor: crosshair;
+      user-select: none;
+    }
+
     .canvas-overlay-hud {
       position: absolute;
       top: 10px;
@@ -879,6 +898,58 @@
       </div>
     </section>
 
+    <!-- Sebesség–idő grafikon kártya -->
+    <section class="card" id="graph-section">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem;">
+        <div>
+          <h2 class="card-title" style="margin-bottom: 0.25rem;">
+            <span>&#128200;</span> Sebesség–idő grafikon (v₁ és v₂ az időben)
+          </h2>
+          <p class="card-subtitle" style="margin-bottom: 0;">
+            A kocsik sebességének valós idejű változása. Figyeld meg az ugrásszerű sebességváltozást az ütközés pillanatában!
+          </p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+          <div class="hud-badge" style="font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;">
+            t = <strong id="graph-live-t">0.00</strong> s
+          </div>
+          <div class="hud-badge" style="color: var(--accent-amber); font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;">
+            v₁ = <strong id="graph-live-v1">+3.00</strong> m/s
+          </div>
+          <div class="hud-badge" style="color: var(--accent-green); font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;">
+            v₂ = <strong id="graph-live-v2">0.00</strong> m/s
+          </div>
+          <button class="btn btn-sm" id="btn-graph-clear" title="Grafikon előzményeinek törlése">&#128465; Törlés</button>
+        </div>
+      </div>
+
+      <div class="graph-container">
+        <canvas id="graph-canvas" width="900" height="260"></canvas>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; font-size: 0.85rem; font-weight: 600;">
+        <div style="display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
+          <span style="display: inline-flex; align-items: center; gap: 0.4rem;">
+            <span style="display: inline-block; width: 16px; height: 4px; background: var(--accent-amber); border-radius: 1px;"></span>
+            <span>1. Kocsi sebessége (v₁)</span>
+          </span>
+          <span style="display: inline-flex; align-items: center; gap: 0.4rem;">
+            <span style="display: inline-block; width: 16px; height: 4px; background: var(--accent-green); border-radius: 1px;"></span>
+            <span>2. Kocsi sebessége (v₂)</span>
+          </span>
+          <span style="display: inline-flex; align-items: center; gap: 0.4rem; color: #635E59;">
+            <span style="display: inline-block; width: 16px; height: 0; border-top: 1.5px dashed #888;"></span>
+            <span>v = 0 referencia</span>
+          </span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <label style="display: flex; align-items: center; gap: 0.35rem; cursor: pointer; user-select: none;">
+            <input type="checkbox" id="chk-graph-autoscroll" checked> Gördülő időablak (utolsó 10 s)
+          </label>
+        </div>
+      </div>
+    </section>
+
     <!-- Elméleti számítások és analitikus végeredmény kártya -->
     <section class="analytic-summary">
       <h2 class="card-title" style="margin-bottom:0.25rem;">Analitikus ütközési számítás</h2>
@@ -1069,7 +1140,13 @@
 
       // Drag and drop
       draggingCart: null,
-      dragOffsetX: 0
+      dragOffsetX: 0,
+
+      // Idő és grafikon
+      t: 0,
+      graphHistory: [],
+      graphCollisions: [],
+      graphHoverX: null
     };
 
     // DOM Elemek
@@ -1147,6 +1224,15 @@
     const canvas = document.getElementById('sim-canvas');
     const ctx = canvas.getContext('2d');
 
+    // Grafikon DOM elemek
+    const graphCanvas = document.getElementById('graph-canvas');
+    const graphCtx = graphCanvas.getContext('2d');
+    const graphLiveT = document.getElementById('graph-live-t');
+    const graphLiveV1 = document.getElementById('graph-live-v1');
+    const graphLiveV2 = document.getElementById('graph-live-v2');
+    const btnGraphClear = document.getElementById('btn-graph-clear');
+    const chkGraphAutoscroll = document.getElementById('chk-graph-autoscroll');
+
     // Pálya koordinátarendszer méretezése
     const trackMeters = 10.0; // Pálya hossza -5m-től +5m-ig
     const trackLeftM = -5.0;
@@ -1155,10 +1241,16 @@
     // Inicializálás
     function init() {
       setupEventListeners();
+      setupGraphEvents();
       resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
+      resizeGraphCanvas();
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        resizeGraphCanvas();
+      });
       updateAnalyticCalculation();
       updateConservationDisplay();
+      resetGraphData();
       requestAnimationFrame(loop);
     }
 
@@ -1170,6 +1262,17 @@
       ctx.resetTransform();
       ctx.scale(dpr, dpr);
       draw();
+    }
+
+    function resizeGraphCanvas() {
+      if (!graphCanvas) return;
+      const rect = graphCanvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      graphCanvas.width = rect.width * dpr;
+      graphCanvas.height = 260 * dpr;
+      graphCtx.resetTransform();
+      graphCtx.scale(dpr, dpr);
+      drawGraph();
     }
 
     // Koordináta konverziók: méter <-> pixel
@@ -1322,7 +1425,11 @@
         valV1.textContent = `${sim.v1 >= 0 ? '+' : ''}${sim.v1.toFixed(1)} m/s`;
         updateAnalyticCalculation();
         updateConservationDisplay();
+        if (!sim.isRunning && sim.t === 0) {
+          resetGraphData();
+        }
         draw();
+        drawGraph();
       });
       btnV1Flip.addEventListener('click', () => {
         sim.v1_init = -sim.v1_init;
@@ -1331,7 +1438,11 @@
         valV1.textContent = `${sim.v1 >= 0 ? '+' : ''}${sim.v1.toFixed(1)} m/s`;
         updateAnalyticCalculation();
         updateConservationDisplay();
+        if (!sim.isRunning && sim.t === 0) {
+          resetGraphData();
+        }
         draw();
+        drawGraph();
       });
       btnV1Zero.addEventListener('click', () => {
         sim.v1_init = 0;
@@ -1340,7 +1451,11 @@
         valV1.textContent = '0.0 m/s';
         updateAnalyticCalculation();
         updateConservationDisplay();
+        if (!sim.isRunning && sim.t === 0) {
+          resetGraphData();
+        }
         draw();
+        drawGraph();
       });
 
       // 2. Kocsi Tömeg
@@ -1375,7 +1490,11 @@
         valV2.textContent = `${sim.v2 >= 0 ? '+' : ''}${sim.v2.toFixed(1)} m/s`;
         updateAnalyticCalculation();
         updateConservationDisplay();
+        if (!sim.isRunning && sim.t === 0) {
+          resetGraphData();
+        }
         draw();
+        drawGraph();
       });
       btnV2Flip.addEventListener('click', () => {
         sim.v2_init = -sim.v2_init;
@@ -1384,7 +1503,11 @@
         valV2.textContent = `${sim.v2 >= 0 ? '+' : ''}${sim.v2.toFixed(1)} m/s`;
         updateAnalyticCalculation();
         updateConservationDisplay();
+        if (!sim.isRunning && sim.t === 0) {
+          resetGraphData();
+        }
         draw();
+        drawGraph();
       });
       btnV2Zero.addEventListener('click', () => {
         sim.v2_init = 0;
@@ -1393,7 +1516,11 @@
         valV2.textContent = '0.0 m/s';
         updateAnalyticCalculation();
         updateConservationDisplay();
+        if (!sim.isRunning && sim.t === 0) {
+          resetGraphData();
+        }
         draw();
+        drawGraph();
       });
 
       // Restitúció
@@ -1464,6 +1591,7 @@
         if (!sim.isRunning) {
           stepPhysics(0.02);
           draw();
+          drawGraph();
         }
       });
 
@@ -1560,7 +1688,9 @@
 
       updateAnalyticCalculation();
       updateConservationDisplay();
+      resetGraphData();
       draw();
+      drawGraph();
     }
 
     // Egér húzás (Drag and drop)
@@ -1636,6 +1766,10 @@
         // Relatív sebesség (ha közelednek: v1 > v2)
         if (sim.v1 > sim.v2) {
           // Ütközés történik!
+          const tCol = sim.t;
+          const preV1 = sim.v1;
+          const preV2 = sim.v2;
+
           const m1 = sim.m1;
           const m2 = sim.m2;
           const v1 = sim.v1;
@@ -1645,8 +1779,12 @@
           const u1 = ((m1 - e * m2) * v1 + (1 + e) * m2 * v2) / (m1 + m2);
           const u2 = ((1 + e) * m1 * v1 + (m2 - e * m1) * v2) / (m1 + m2);
 
+          // Rögzítjük az ütközési pontot az átváltás előtt és után (függőleges lépcső)
+          sim.graphHistory.push({ t: tCol, v1: preV1, v2: preV2 });
           sim.v1 = u1;
           sim.v2 = u2;
+          sim.graphHistory.push({ t: tCol, v1: u1, v2: u2 });
+          sim.graphCollisions.push({ t: tCol });
 
           sim.hasCollided = true;
           sim.collisionFlashTimer = 0.2; // 200 ms flash
@@ -1667,22 +1805,30 @@
 
       if (sim.wallBounce) {
         if (sim.x1 <= leftLimit && sim.v1 < 0) {
+          sim.graphHistory.push({ t: sim.t, v1: sim.v1, v2: sim.v2 });
           sim.x1 = leftLimit;
           sim.v1 = -sim.v1;
+          sim.graphHistory.push({ t: sim.t, v1: sim.v1, v2: sim.v2 });
         }
         if (sim.x2 >= rightLimit && sim.v2 > 0) {
+          sim.graphHistory.push({ t: sim.t, v1: sim.v1, v2: sim.v2 });
           sim.x2 = rightLimit;
           sim.v2 = -sim.v2;
+          sim.graphHistory.push({ t: sim.t, v1: sim.v1, v2: sim.v2 });
         }
       } else {
         // Megállás a végfalnál
         if (sim.x1 <= leftLimit && sim.v1 < 0) {
+          sim.graphHistory.push({ t: sim.t, v1: sim.v1, v2: sim.v2 });
           sim.x1 = leftLimit;
           sim.v1 = 0;
+          sim.graphHistory.push({ t: sim.t, v1: sim.v1, v2: sim.v2 });
         }
         if (sim.x2 >= rightLimit && sim.v2 > 0) {
+          sim.graphHistory.push({ t: sim.t, v1: sim.v1, v2: sim.v2 });
           sim.x2 = rightLimit;
           sim.v2 = 0;
+          sim.graphHistory.push({ t: sim.t, v1: sim.v1, v2: sim.v2 });
         }
       }
 
@@ -1690,6 +1836,13 @@
       if (chkShowTrail.checked) {
         sim.trail.push({ x1: sim.x1, x2: sim.x2 });
         if (sim.trail.length > 60) sim.trail.shift();
+      }
+
+      // Idő léptetése és grafikon pont rögzítése
+      sim.t += dt;
+      sim.graphHistory.push({ t: sim.t, v1: sim.v1, v2: sim.v2 });
+      if (sim.graphHistory.length > 5000) {
+        sim.graphHistory.splice(0, 1000);
       }
 
       updateConservationDisplay();
@@ -1714,6 +1867,7 @@
       }
 
       draw();
+      drawGraph();
       requestAnimationFrame(loop);
     }
 
@@ -2026,6 +2180,368 @@
         ctx.fillText(text, (fromX + toX) / 2, fromY - 7);
       }
       ctx.restore();
+    }
+
+    // Grafikon állapot alaphelyzetbe állítása
+    function resetGraphData() {
+      sim.t = 0;
+      sim.graphHistory = [{ t: 0, v1: sim.v1, v2: sim.v2 }];
+      sim.graphCollisions = [];
+      sim.graphHoverX = null;
+      if (graphLiveT) graphLiveT.textContent = '0.00';
+      if (graphLiveV1) graphLiveV1.textContent = `${sim.v1 >= 0 ? '+' : ''}${sim.v1.toFixed(2)}`;
+      if (graphLiveV2) graphLiveV2.textContent = `${sim.v2 >= 0 ? '+' : ''}${sim.v2.toFixed(2)}`;
+    }
+
+    // Grafikon interaktív eseménykezelői
+    function setupGraphEvents() {
+      if (!graphCanvas) return;
+
+      graphCanvas.addEventListener('mousemove', (e) => {
+        const rect = graphCanvas.getBoundingClientRect();
+        sim.graphHoverX = e.clientX - rect.left;
+        drawGraph();
+      });
+
+      graphCanvas.addEventListener('mouseleave', () => {
+        sim.graphHoverX = null;
+        drawGraph();
+      });
+
+      if (btnGraphClear) {
+        btnGraphClear.addEventListener('click', () => {
+          resetGraphData();
+          drawGraph();
+        });
+      }
+
+      if (chkGraphAutoscroll) {
+        chkGraphAutoscroll.addEventListener('change', () => {
+          drawGraph();
+        });
+      }
+    }
+
+    // Grafikon kirajzolása (v₁ és v₂ az időben)
+    function drawGraph() {
+      if (!graphCanvas || !graphCtx) return;
+      const rect = graphCanvas.getBoundingClientRect();
+      const w = rect.width;
+      const h = 260;
+
+      graphCtx.clearRect(0, 0, w, h);
+
+      // Margók
+      const mLeft = 52;
+      const mRight = 20;
+      const mTop = 26;
+      const mBottom = 34;
+      const pWidth = w - mLeft - mRight;
+      const pHeight = h - mTop - mBottom;
+
+      if (pWidth <= 10 || pHeight <= 10) return;
+
+      // Időskála meghatározása
+      const autoscroll = chkGraphAutoscroll ? chkGraphAutoscroll.checked : true;
+      const windowSpan = 10.0;
+      let tMax, tMin;
+      if (autoscroll) {
+        tMax = Math.max(windowSpan, sim.t);
+        tMin = tMax > windowSpan ? tMax - windowSpan : 0.0;
+      } else {
+        tMin = 0.0;
+        tMax = Math.max(8.0, sim.t);
+      }
+
+      // Sebességskála meghatározása (szimmetrikus 0 körül)
+      let maxAbsV = Math.max(3.0, Math.abs(sim.v1_init), Math.abs(sim.v2_init), Math.abs(sim.v1), Math.abs(sim.v2));
+      for (let i = sim.graphHistory.length - 1; i >= 0; i--) {
+        const pt = sim.graphHistory[i];
+        if (pt.t < tMin - 1.0) break;
+        maxAbsV = Math.max(maxAbsV, Math.abs(pt.v1), Math.abs(pt.v2));
+      }
+      maxAbsV = Math.ceil(maxAbsV + 0.5);
+      const vMax = maxAbsV;
+      const vMin = -maxAbsV;
+
+      // Konverziós segédfüggvények
+      function tToX(t) {
+        return mLeft + ((t - tMin) / (tMax - tMin)) * pWidth;
+      }
+      function vToY(v) {
+        return mTop + ((vMax - v) / (vMax - vMin)) * pHeight;
+      }
+
+      // 1. Rajzterület háttere
+      graphCtx.fillStyle = '#FAFCFD';
+      graphCtx.fillRect(mLeft, mTop, pWidth, pHeight);
+
+      // 2. Vízszintes rácsvonalak (sebesség)
+      const vStep = vMax <= 4 ? 1 : (vMax <= 8 ? 2 : 4);
+      graphCtx.font = '10px "JetBrains Mono", monospace';
+      graphCtx.textAlign = 'right';
+      graphCtx.textBaseline = 'middle';
+
+      for (let v = -vMax; v <= vMax; v += vStep) {
+        const y = vToY(v);
+        if (y < mTop - 1 || y > mTop + pHeight + 1) continue;
+
+        if (Math.abs(v) < 0.001) {
+          // v = 0 referenciavonal (kiemelt, határozott)
+          graphCtx.strokeStyle = 'rgba(45, 42, 38, 0.6)';
+          graphCtx.lineWidth = 1.8;
+          graphCtx.setLineDash([4, 2]);
+        } else {
+          graphCtx.strokeStyle = 'rgba(45, 42, 38, 0.1)';
+          graphCtx.lineWidth = 1;
+          graphCtx.setLineDash([]);
+        }
+
+        graphCtx.beginPath();
+        graphCtx.moveTo(mLeft, y);
+        graphCtx.lineTo(mLeft + pWidth, y);
+        graphCtx.stroke();
+        graphCtx.setLineDash([]);
+
+        // Skálafelirat a bal oldalon
+        graphCtx.fillStyle = Math.abs(v) < 0.001 ? '#2D2A26' : '#635E59';
+        graphCtx.fillText(`${v > 0 ? '+' : ''}${v.toFixed(0)}`, mLeft - 8, y);
+      }
+
+      // Függőleges tengely felirat
+      graphCtx.fillStyle = '#2D2A26';
+      graphCtx.font = 'bold 11px "Inter", sans-serif';
+      graphCtx.textAlign = 'left';
+      graphCtx.textBaseline = 'bottom';
+      graphCtx.fillText('v (m/s)', mLeft, mTop - 6);
+
+      // 3. Függőleges rácsvonalak (idő)
+      const timeSpan = tMax - tMin;
+      const tStep = timeSpan <= 10 ? 1.0 : (timeSpan <= 25 ? 2.0 : 5.0);
+      const startT = Math.ceil(tMin / tStep) * tStep;
+
+      graphCtx.font = '10px "JetBrains Mono", monospace';
+      graphCtx.textAlign = 'center';
+      graphCtx.textBaseline = 'top';
+
+      for (let t = startT; t <= tMax + 0.001; t += tStep) {
+        const x = tToX(t);
+        if (x < mLeft - 1 || x > mLeft + pWidth + 1) continue;
+
+        graphCtx.strokeStyle = 'rgba(45, 42, 38, 0.08)';
+        graphCtx.lineWidth = 1;
+        graphCtx.beginPath();
+        graphCtx.moveTo(x, mTop);
+        graphCtx.lineTo(x, mTop + pHeight);
+        graphCtx.stroke();
+
+        // Idő felirat alul
+        graphCtx.fillStyle = '#635E59';
+        graphCtx.fillText(`${t.toFixed(tStep < 1 ? 1 : 0)}s`, x, mTop + pHeight + 6);
+      }
+
+      // Vízszintes tengely felirat
+      graphCtx.fillStyle = '#2D2A26';
+      graphCtx.font = 'bold 11px "Inter", sans-serif';
+      graphCtx.textAlign = 'right';
+      graphCtx.textBaseline = 'top';
+      graphCtx.fillText('t (s)', mLeft + pWidth, mTop + pHeight + 18);
+
+      // 4. Görbék és eseményjelölők kirajzolása vágómaszkban
+      graphCtx.save();
+      graphCtx.beginPath();
+      graphCtx.rect(mLeft, mTop, pWidth, pHeight);
+      graphCtx.clip();
+
+      // Ütközés jelölők (függőleges lila vonal + címke)
+      for (const col of sim.graphCollisions) {
+        if (col.t >= tMin && col.t <= tMax) {
+          const cx = tToX(col.t);
+
+          graphCtx.save();
+          graphCtx.setLineDash([4, 3]);
+          graphCtx.strokeStyle = '#6C3483';
+          graphCtx.lineWidth = 2;
+          graphCtx.beginPath();
+          graphCtx.moveTo(cx, mTop);
+          graphCtx.lineTo(cx, mTop + pHeight);
+          graphCtx.stroke();
+          graphCtx.restore();
+
+          // Címke
+          graphCtx.fillStyle = '#6C3483';
+          graphCtx.font = 'bold 9px "Roboto Slab", serif';
+          graphCtx.textAlign = 'center';
+          graphCtx.textBaseline = 'top';
+          graphCtx.fillText('⚡ ÜTKÖZÉS', cx, mTop + 4);
+        }
+      }
+
+      // Adatpontok kirajzolása
+      const pts = sim.graphHistory;
+      if (pts.length > 0) {
+        let startIdx = 0;
+        for (let i = 0; i < pts.length; i++) {
+          if (pts[i].t >= tMin - 1.0) {
+            startIdx = Math.max(0, i - 1);
+            break;
+          }
+        }
+
+        // 1. Kocsi sebességgörbéje (v₁ - Borostyán)
+        graphCtx.strokeStyle = '#D97725';
+        graphCtx.lineWidth = 2.8;
+        graphCtx.lineCap = 'round';
+        graphCtx.lineJoin = 'round';
+        graphCtx.beginPath();
+        let started1 = false;
+        for (let i = startIdx; i < pts.length; i++) {
+          const x = tToX(pts[i].t);
+          const y = vToY(pts[i].v1);
+          if (!started1) {
+            graphCtx.moveTo(x, y);
+            started1 = true;
+          } else {
+            graphCtx.lineTo(x, y);
+          }
+        }
+        graphCtx.stroke();
+
+        // 2. Kocsi sebességgörbéje (v₂ - Fenyőzöld)
+        graphCtx.strokeStyle = '#2C5E4B';
+        graphCtx.lineWidth = 2.8;
+        graphCtx.lineCap = 'round';
+        graphCtx.lineJoin = 'round';
+        graphCtx.beginPath();
+        let started2 = false;
+        for (let i = startIdx; i < pts.length; i++) {
+          const x = tToX(pts[i].t);
+          const y = vToY(pts[i].v2);
+          if (!started2) {
+            graphCtx.moveTo(x, y);
+            started2 = true;
+          } else {
+            graphCtx.lineTo(x, y);
+          }
+        }
+        graphCtx.stroke();
+
+        // Aktuális pontok jelölése (fej pontok karikával)
+        if (sim.t >= tMin && sim.t <= tMax) {
+          const curX = tToX(sim.t);
+          const curY1 = vToY(sim.v1);
+          const curY2 = vToY(sim.v2);
+
+          // 1. Pont
+          graphCtx.fillStyle = '#D97725';
+          graphCtx.beginPath();
+          graphCtx.arc(curX, curY1, 5, 0, Math.PI * 2);
+          graphCtx.fill();
+          graphCtx.strokeStyle = '#FFFFFF';
+          graphCtx.lineWidth = 2;
+          graphCtx.stroke();
+
+          // 2. Pont
+          graphCtx.fillStyle = '#2C5E4B';
+          graphCtx.beginPath();
+          graphCtx.arc(curX, curY2, 5, 0, Math.PI * 2);
+          graphCtx.fill();
+          graphCtx.strokeStyle = '#FFFFFF';
+          graphCtx.lineWidth = 2;
+          graphCtx.stroke();
+        }
+      }
+
+      graphCtx.restore(); // Vágómaszk vége
+
+      // 5. Rajzterület kerete (sötét határozott keret)
+      graphCtx.strokeStyle = '#2D2A26';
+      graphCtx.lineWidth = 2;
+      graphCtx.strokeRect(mLeft, mTop, pWidth, pHeight);
+
+      // 6. Interaktív egérkurzor / mérővonal és tooltip
+      if (sim.graphHoverX !== null && sim.graphHoverX >= mLeft && sim.graphHoverX <= mLeft + pWidth && pts.length > 0) {
+        const hoverT = tMin + ((sim.graphHoverX - mLeft) / pWidth) * (tMax - tMin);
+
+        // Legközelebbi adatpont keresése
+        let bestPt = pts[0];
+        let minDiff = Infinity;
+        for (let i = 0; i < pts.length; i++) {
+          const diff = Math.abs(pts[i].t - hoverT);
+          if (diff < minDiff) {
+            minDiff = diff;
+            bestPt = pts[i];
+          }
+        }
+
+        if (bestPt) {
+          const hX = tToX(bestPt.t);
+          const hY1 = vToY(bestPt.v1);
+          const hY2 = vToY(bestPt.v2);
+
+          // Függőleges szálkereszt
+          graphCtx.save();
+          graphCtx.setLineDash([3, 2]);
+          graphCtx.strokeStyle = '#2D2A26';
+          graphCtx.lineWidth = 1.2;
+          graphCtx.beginPath();
+          graphCtx.moveTo(hX, mTop);
+          graphCtx.lineTo(hX, mTop + pHeight);
+          graphCtx.stroke();
+          graphCtx.restore();
+
+          // Pontok kiemelése a szálkereszten
+          graphCtx.fillStyle = '#D97725';
+          graphCtx.beginPath();
+          graphCtx.arc(hX, hY1, 4, 0, Math.PI * 2);
+          graphCtx.fill();
+          graphCtx.strokeStyle = '#2D2A26';
+          graphCtx.lineWidth = 1.5;
+          graphCtx.stroke();
+
+          graphCtx.fillStyle = '#2C5E4B';
+          graphCtx.beginPath();
+          graphCtx.arc(hX, hY2, 4, 0, Math.PI * 2);
+          graphCtx.fill();
+          graphCtx.strokeStyle = '#2D2A26';
+          graphCtx.lineWidth = 1.5;
+          graphCtx.stroke();
+
+          // Tooltip doboz
+          const tText = `t = ${bestPt.t.toFixed(2)} s`;
+          const v1Text = `v₁ = ${bestPt.v1 >= 0 ? '+' : ''}${bestPt.v1.toFixed(2)} m/s`;
+          const v2Text = `v₂ = ${bestPt.v2 >= 0 ? '+' : ''}${bestPt.v2.toFixed(2)} m/s`;
+
+          graphCtx.font = 'bold 11px "JetBrains Mono", monospace';
+          const boxW = 145;
+          const boxH = 58;
+          let boxX = hX + 10;
+          if (boxX + boxW > mLeft + pWidth) {
+            boxX = hX - boxW - 10;
+          }
+          let boxY = mTop + 10;
+
+          graphCtx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+          graphCtx.fillRect(boxX, boxY, boxW, boxH);
+          graphCtx.strokeStyle = '#2D2A26';
+          graphCtx.lineWidth = 2;
+          graphCtx.strokeRect(boxX, boxY, boxW, boxH);
+
+          graphCtx.textAlign = 'left';
+          graphCtx.textBaseline = 'top';
+          graphCtx.fillStyle = '#2D2A26';
+          graphCtx.fillText(tText, boxX + 8, boxY + 6);
+          graphCtx.fillStyle = '#D97725';
+          graphCtx.fillText(v1Text, boxX + 8, boxY + 22);
+          graphCtx.fillStyle = '#2C5E4B';
+          graphCtx.fillText(v2Text, boxX + 8, boxY + 38);
+        }
+      }
+
+      // 7. Értékjelzők frissítése a kártya fejlécében
+      if (graphLiveT) graphLiveT.textContent = sim.t.toFixed(2);
+      if (graphLiveV1) graphLiveV1.textContent = `${sim.v1 >= 0 ? '+' : ''}${sim.v1.toFixed(2)}`;
+      if (graphLiveV2) graphLiveV2.textContent = `${sim.v2 >= 0 ? '+' : ''}${sim.v2.toFixed(2)}`;
     }
 
     window.addEventListener('DOMContentLoaded', init);
