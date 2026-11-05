@@ -684,7 +684,7 @@
         </label>
         <label class="force-toggle-label">
           <input type="checkbox" id="chk-fn" checked>
-          <span style="color: #2C5E4B; font-weight: 700;">■ F_N</span> (Nyomóerő)
+          <span style="color: #2C5E4B; font-weight: 700;">■ F_N</span> (Tartóerő)
         </label>
         <label class="force-toggle-label">
           <input type="checkbox" id="chk-fcp" checked>
@@ -756,7 +756,7 @@
             <span id="fhud-g">539,5 N</span>
           </div>
           <div class="force-hud-row" style="color: #2C5E4B;">
-            <div class="force-hud-name"><span class="force-dot" style="background: #2C5E4B;"></span> F_N (Pályanyomás):</div>
+            <div class="force-hud-name"><span class="force-dot" style="background: #2C5E4B;"></span> F_N (Tartóerő):</div>
             <span id="fhud-fn">3972,0 N</span>
           </div>
           <div class="force-hud-row" style="color: #1A5276;">
@@ -821,7 +821,7 @@
         <div class="theory-item">
           <h3>1. Erők a körpályán</h3>
           <p>
-            A hurokban a kocsira sugárirányban két alapvető erő hat: a <strong>nehézségi erő</strong> (<span class="formula-tag">G = m · g</span>) és a <strong>pálya által kifejtett nyomóerő</strong> (<span class="formula-tag">F_N</span>).
+            A hurokban a kocsira sugárirányban két alapvető erő hat: a <strong>nehézségi erő</strong> (<span class="formula-tag">G = m · g</span>) és a <strong>tartóerő</strong> (<span class="formula-tag">F_N</span>).
           </p>
           <p style="margin-top: 0.4rem;">
             A körpályán tartáshoz szükséges centripetális gyorsulást e két erő sugárirányú összege szolgáltatja:
@@ -830,7 +830,7 @@
             <span class="formula-tag">F_N + m · g · cos(θ) = m · v² / R</span>
           </div>
           <p>
-            Így a pálya által kifejtett támasztóerő:
+            Így a pálya által kifejtett tartóerő:
             <span class="formula-tag">F_N = m · (v² / R - g · cos(θ))</span> (ahol a tetőponton cos(180°) = −1).
           </p>
         </div>
@@ -839,7 +839,7 @@
         <div class="theory-item">
           <h3>2. Kritikus sebesség a tetőponton</h3>
           <p>
-            Ahhoz, hogy a kocsi a belső íven maradjon (és ne essen le szabad pálya esetén), a pályanyomóerőnek pozitívnak kell lennie: <span class="formula-tag">F_N ≥ 0</span>.
+            Ahhoz, hogy a kocsi a belső íven maradjon (és ne essen le szabad pálya esetén), a tartóerőnek pozitívnak kell lennie: <span class="formula-tag">F_N ≥ 0</span>.
           </p>
           <p style="margin-top: 0.4rem;">
             A legkritikusabb pont a <strong>hurok legfelső pontja (tetőpont, y = 2R)</strong>, ahol a gravitáció már önmagában a kör közepe felé mutat:
@@ -883,7 +883,7 @@
             <span class="formula-tag">F_N = m · g + m · v² / R</span>
           </div>
           <p>
-            A kritikus kezdősebességnél (<span class="formula-tag">v₀ = √(5gR)</span>) a hurok alján a pályanyomóerő pontosan:
+            A kritikus kezdősebességnél (<span class="formula-tag">v₀ = √(5gR)</span>) a hurok alján a tartóerő pontosan:
             <span class="formula-tag">F_N = m·g + 5·m·g = 6 · m · g</span> (azaz <strong>6 g terhelés</strong>)!
           </p>
         </div>
@@ -1100,7 +1100,7 @@
         const v_prev = state.v;
         state.v += at * dt;
 
-        // Pályanyomóerő: FN = m * (v²/R + g*cos(theta))
+        // Tartóerő: FN = m * (v²/R + g*cos(theta))
         const vSq = state.v * state.v;
         const FN = m * (vSq / R + g * cosTheta);
 
@@ -1864,7 +1864,7 @@
         const tx = Math.cos(state.theta);
         const ty = Math.sin(state.theta);
 
-        // Nyomóerő (FN)
+        // Tartóerő (FN)
         if (state.showFN && Math.abs(FN) > 5) {
           const lenFN = FN * forceScale;
           const toX = cartX + nx * lenFN;
