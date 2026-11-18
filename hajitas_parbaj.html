@@ -661,10 +661,11 @@
 
         <!-- Elméleti képlet súgó doboz -->
         <div class="formula-box" id="formulaGuide">
-          <div class="formula-title" id="formulaTitle">Hajítás alapegyenletei</div>
+          <div class="formula-title" id="formulaTitle">Hajítás alapegyenletei (azonos magasságban)</div>
           <div id="formulaText">
-            Vízszintesen: <code>&Delta;x = v<sub>x</sub> &middot; t</code> &rarr; a repülési idő azonnal meghatározható!<br>
-            Függőlegesen: <code>&Delta;y = v<sub>y</sub> &middot; t - &frac12; g t²</code>.<br>
+            Mivel a két ágyú azonos magasságban van, a mozgás szimmetrikus (nincs másodfokú egyenlet!):<br>
+            Függőlegesen: <code>t<sub>fel</sub> = v<sub>y</sub> / g</code> &rarr; teljes repülési idő: <code>t = 2 &middot; t<sub>fel</sub> = 2 &middot; v<sub>y</sub> / g</code>.<br>
+            Vízszintesen: <code>&Delta;x = v<sub>x</sub> &middot; t</code> &rarr; egyenletes mozgás.<br>
             <strong>Feltétel a hegy felett:</strong> az <code>x<sub>hegy</sub></code> helyen a magasság <code>y(t<sub>hegy</sub>) > y<sub>hegy</sub></code> legyen!
           </div>
         </div>
@@ -878,9 +879,10 @@
         vyHint.innerText = "(Ezt kell kiszámolnod!)";
         fTitle.innerText = "1. Eset módszertan: vx adott";
         fText.innerHTML = `
-          1. <strong>Repülési idő kiszámítása:</strong> <code>t = &Delta;x / v<sub>x</sub></code><br>
-          2. <strong>Szükséges v<sub>y</sub> kifejezése:</strong> <code>&Delta;y = v<sub>y</sub> &middot; t - &frac12; g t²</code> &rarr; <code>v<sub>y</sub> = (&Delta;y + &frac12; g t²) / t</code><br>
-          3. <strong>Hegy ellenőrzése:</strong> <code>t<sub>h</sub> = (x<sub>h</sub> - x<sub>0</sub>) / v<sub>x</sub></code> alatt <code>y(t<sub>h</sub>) > y<sub>h</sub></code>!
+          Mivel az ágyúk azonos magasságban vannak (&Delta;y = 0), a repülés szimmetrikus:<br>
+          1. <strong>Repülési idő a vízszintes mozgásból:</strong> <code>t = &Delta;x / v<sub>x</sub></code><br>
+          2. <strong>Szükséges v<sub>y</sub>:</strong> Mivel <code>t = 2 &middot; v<sub>y</sub> / g</code>, ezért <code>v<sub>y</sub> = &frac12; &middot; g &middot; t</code>.<br>
+          3. <strong>Hegy ellenőrzése:</strong> <code>t<sub>hegy</sub> = |x<sub>hegy</sub> - x<sub>0</sub>| / v<sub>x</sub></code> alatt <code>y(t<sub>hegy</sub>) > y<sub>hegy</sub></code>!
         `;
       } else if (mode === 2) {
         vxInput.disabled = false;
@@ -889,9 +891,10 @@
         vyHint.innerText = "(Fix érték a feladatban)";
         fTitle.innerText = "2. Eset módszertan: vy adott";
         fText.innerHTML = `
-          1. <strong>Repülési idő a függőleges mozgásból:</strong> <code>&frac12; g t² - v<sub>y</sub> t + &Delta;y = 0</code> másodfokú egyenletből!<br>
-          2. A célt a lefelé szálló ágban érjük el (a nagyobbik gyök: <code>t<sub>2</sub></code>).<br>
-          3. <strong>Szükséges v<sub>x</sub> kiszámítása:</strong> <code>v<sub>x</sub> = &Delta;x / t</code>.
+          Mivel az ágyúk azonos magasságban vannak, nincs szükség másodfokú egyenletre!<br>
+          1. <strong>Repülési idő a függőleges mozgásból:</strong> <code>t<sub>fel</sub> = v<sub>y</sub> / g</code>, így a teljes repülési idő: <code>t = 2 &middot; t<sub>fel</sub> = 2 &middot; v<sub>y</sub> / g</code>.<br>
+          2. <strong>Szükséges v<sub>x</sub>:</strong> Vízszintesen egyenletes mozgás: <code>v<sub>x</sub> = &Delta;x / t</code>.<br>
+          3. <strong>Hegy ellenőrzése:</strong> A pálya csúcsmagassága <code>y<sub>max</sub> = y<sub>0</sub> + v<sub>y</sub>² / (2g)</code> magasabb kell legyen, mint a hegy!
         `;
       } else {
         vxInput.disabled = false;
@@ -900,9 +903,10 @@
         vyHint.innerText = "(Szabadon választható)";
         fTitle.innerText = "3. Eset módszertan: Szabad választás";
         fText.innerHTML = `
-          Végtelen sok (v<sub>x</sub>, v<sub>y</sub>) páros találja el a célt, <strong>DE a hegy korlátot szab</strong>!<br>
-          <em>Stratégia:</em> Válassz ki egy tetszőleges v<sub>x</sub> értéket (vagy repülési időt t), majd számold ki a hozzá tartozó v<sub>y</sub>-t: <code>v<sub>y</sub> = (&Delta;y + &frac12; g t²) / t</code>.<br>
-          Ellenőrizd, hogy a hegycsúcs felett száll-e el! Ha túl lapos a pálya, növeld a v<sub>y</sub>-t és csökkentsd a v<sub>x</sub>-et!
+          Mivel az ágyúk azonos magasságban vannak: <code>t = 2 &middot; v<sub>y</sub> / g</code> és <code>v<sub>x</sub> = &Delta;x / t</code>.<br>
+          <em>Egyszerű stratégia:</em> Válassz egy tetszőleges repülési időt (pl. <code>t = 4 s</code> vagy <code>5 s</code>)!<br>
+          Ebből azonnal: <code>v<sub>y</sub> = &frac12; &middot; g &middot; t</code> és <code>v<sub>x</sub> = &Delta;x / t</code>.<br>
+          Csak arra figyelj, hogy a csúcsmagasság <code>y<sub>max</sub> = y<sub>0</sub> + v<sub>y</sub>² / (2g)</code> nagyobb legyen a hegycsúcsnál!
         `;
       }
 
@@ -921,40 +925,30 @@
       projectile = null;
       document.getElementById('solutionBox').classList.remove('visible');
 
-      // Véletlen terep generálása
-      // P1: bal oldal (x: 15-35 m, y: 5-25 m dombon)
+      // Véletlen terep generálása: az ágyúk azonos magasságban vannak (nincs másodfokú egyenlet!)
+      const commonY = Math.round(10 + Math.random() * 8); // 10-18 m
+      p1.y = commonY;
+      p2.y = commonY;
       p1.x = Math.round(15 + Math.random() * 20);
-      p1.y = Math.round(5 + Math.random() * 20);
-
-      // P2: jobb oldal (x: 180-220 m, y: 5-25 m dombon)
       p2.x = Math.round(180 + Math.random() * 35);
-      p2.y = Math.round(5 + Math.random() * 20);
 
       // Hegy a kettő között
       const midX = (p1.x + p2.x) / 2;
       mountain.x = Math.round(midX - 15 + Math.random() * 30);
       mountain.width = Math.round(45 + Math.random() * 25);
-      // Hegy magassága a két pont felett legyen min 15-30 m-rel
-      const maxY = Math.max(p1.y, p2.y);
-      mountain.height = Math.round(maxY + 20 + Math.random() * 25);
+      // Hegy magassága a két ágyú felett legyen min 20-45 m-rel
+      mountain.height = Math.round(commonY + 20 + Math.random() * 25);
 
       // Adott paraméterek beállítása úgy, hogy biztosan létezzen érvényes átdobható megoldás
       const shooter = (currentPlayer === 1) ? p1 : p2;
       const target = (currentPlayer === 1) ? p2 : p1;
       const dx = Math.abs(target.x - shooter.x);
-      const dy = target.y - shooter.y;
 
       // Számolunk egy biztonságos tesztidőt, ahol a csúcs magasan a hegy felett van
-      // Pl. csúcsmagasság = mountain.height + 15 m
       const targetApexY = mountain.height + 15;
-      const vyTest = Math.sqrt(Math.max(10, 2 * g * (targetApexY - shooter.y)));
-      // Repülési idő a célmagasságig
-      // dy = vy*t - 0.5*g*t^2 => 0.5*g*t^2 - vy*t + dy = 0
-      const disc = vyTest * vyTest - 2 * g * dy;
-      let tFlight = 5.0;
-      if (disc > 0) {
-        tFlight = (vyTest + Math.sqrt(disc)) / g;
-      }
+      const vyTest = Math.sqrt(2 * g * (targetApexY - shooter.y));
+      // Teljes repülési idő szimmetrikusan: t = 2 * vy / g
+      const tFlight = (2 * vyTest) / g;
       const vxTest = dx / tFlight;
 
       presetVx = Math.round(vxTest * 10) / 10;
@@ -984,12 +978,11 @@
       const shooter = (currentPlayer === 1) ? p1 : p2;
       const target = (currentPlayer === 1) ? p2 : p1;
       const dx = Math.abs(target.x - shooter.x);
-      const dy = target.y - shooter.y;
 
       document.getElementById('dispShooterPos').innerText = `x = ${shooter.x} m, y = ${shooter.y} m`;
       document.getElementById('dispTargetPos').innerText = `x = ${target.x} m, y = ${target.y} m`;
       document.getElementById('dispMountainPos').innerText = `x = ${mountain.x} m, csúcs = ${mountain.height} m`;
-      document.getElementById('dispDeltaX').innerText = `Δx = ${dx.toFixed(1)} m (Δy = ${dy >= 0 ? '+' : ''}${dy.toFixed(1)} m)`;
+      document.getElementById('dispDeltaX').innerText = `Δx = ${dx.toFixed(1)} m (azonos magasság: y = ${shooter.y} m)`;
 
       // Turn banner
       const banner = document.getElementById('turnBanner');
@@ -1021,8 +1014,6 @@
       const target = (currentPlayer === 1) ? p2 : p1;
       const dir = (target.x > shooter.x) ? 1 : -1;
       const dx = Math.abs(target.x - shooter.x);
-      const dy = target.y - shooter.y;
-
       const distToMountain = Math.abs(mountain.x - shooter.x);
 
       let textHtml = '';
@@ -1031,8 +1022,8 @@
         // vx adott, vy-t keresünk
         const vx = presetVx;
         const tFlight = dx / vx;
-        // dy = vy * t - 0.5 * g * t^2 => vy = (dy + 0.5 * g * t^2) / t
-        const vyReq = (dy + 0.5 * g * tFlight * tFlight) / tFlight;
+        // Azonos magasság miatt: t = 2 * vy / g => vy = 0.5 * g * t
+        const vyReq = 0.5 * g * tFlight;
 
         // Magasság a hegynél
         const tMountain = distToMountain / vx;
@@ -1050,72 +1041,66 @@
 
         textHtml = `
           <ul class="step-list">
-            <li><strong>1. lépés: Repülési idő (t) a horizontális sebességből:</strong><br>
+            <li><strong>1. lépés: Repülési idő (t) a vízszintes sebességből:</strong><br>
                 <code>t = &Delta;x / v<sub>x</sub> = ${dx.toFixed(1)} / ${vx.toFixed(1)} = ${tFlight.toFixed(2)} s</code></li>
             <li><strong>2. lépés: Szükséges függőleges kezdősebesség (v<sub>y</sub>):</strong><br>
-                <code>v<sub>y</sub> = (&Delta;y + &frac12; g t²) / t = (${dy.toFixed(1)} + 0.5 &middot; ${g.toFixed(1)} &middot; ${tFlight.toFixed(2)}²) / ${tFlight.toFixed(2)} = <strong>${vyReq.toFixed(2)} m/s</strong></code></li>
+                Mivel a célpont az ágyúval azonos magasságban van (&Delta;y = 0), a repülési idő fele az emelkedés, fele a leereszkedés: <code>t = 2 &middot; t<sub>fel</sub> = 2 &middot; v<sub>y</sub> / g</code>.<br>
+                Átrendezve: <code>v<sub>y</sub> = &frac12; &middot; g &middot; t = 0,5 &middot; ${g.toFixed(1)} &middot; ${tFlight.toFixed(2)} = <strong>${vyReq.toFixed(2)} m/s</strong></code>.</li>
             <li><strong>3. lépés: Hegy feletti áthaladás ellenőrzése (x = ${mountain.x} m, &Delta;x<sub>h</sub> = ${distToMountain.toFixed(1)} m):</strong><br>
-                <code>t<sub>hegy</sub> = ${distToMountain.toFixed(1)} / ${vx.toFixed(1)} = ${tMountain.toFixed(2)} s</code><br>
-                <code>y(t<sub>hegy</sub>) = ${shooter.y} + (${vyReq.toFixed(2)} &middot; ${tMountain.toFixed(2)}) - (0.5 &middot; ${g.toFixed(1)} &middot; ${tMountain.toFixed(2)}²) = <strong>${yAtMountain.toFixed(1)} m</strong></code><br>
-                ${clearsMountain ? `<span style="color:var(--accent-green); font-weight:700;">✓ Átrepül a hegycsúcs felett (${(yAtMountain - mountain.height).toFixed(1)} m szabad hellyel)!</span>` : `<span style="color:var(--error-color); font-weight:700;">✗ A lövedék a hegy alatt menne el! Nagyobb repülési időre / magasabb kezdőívre van szükség!</span>`}
+                A hegy elérésének ideje: <code>t<sub>hegy</sub> = ${distToMountain.toFixed(1)} / ${vx.toFixed(1)} = ${tMountain.toFixed(2)} s</code><br>
+                Magasság a hegycsúcs felett: <code>y(t<sub>hegy</sub>) = ${shooter.y} + (${vyReq.toFixed(2)} &middot; ${tMountain.toFixed(2)}) - (0,5 &middot; ${g.toFixed(1)} &middot; ${tMountain.toFixed(2)}²) = <strong>${yAtMountain.toFixed(1)} m</strong></code><br>
+                ${clearsMountain ? `<span style="color:var(--accent-green); font-weight:700;">✓ Átrepül a hegycsúcs felett (${(yAtMountain - mountain.height).toFixed(1)} m szabad hellyel)!</span>` : `<span style="color:var(--error-color); font-weight:700;">✗ A lövedék a hegy alatt menne el!</span>`}
             </li>
           </ul>
         `;
       } else if (currentMode === 2) {
         // vy adott, vx-et keresünk
         const vy = presetVy;
-        // 0.5 * g * t^2 - vy * t + dy = 0
-        const a = 0.5 * g;
-        const b = -vy;
-        const c = dy;
-        const disc = b * b - 4 * a * c;
+        // Azonos magasság miatt nincs másodfokú egyenlet!
+        const tUp = vy / g;
+        const tFlight = 2 * tUp; // 2 * vy / g
+        const vxReq = dx / tFlight;
 
-        if (disc < 0) {
-          textHtml = `Az adott v<sub>y</sub> = ${vy} m/s sebességgel a golyó el sem éri a cél magasságát!`;
-        } else {
-          const t1 = (-b - Math.sqrt(disc)) / (2 * a);
-          const t2 = (-b + Math.sqrt(disc)) / (2 * a);
-          // Hegy túloldalán való becsapódáshoz a lefelé jövő ág, t2 szükséges!
-          const tFlight = t2;
-          const vxReq = dx / tFlight;
+        const apexY = shooter.y + (vy * vy) / (2 * g);
+        const tMountain = distToMountain / vxReq;
+        const yAtMountain = shooter.y + vy * tMountain - 0.5 * g * tMountain * tMountain;
+        const clearsMountain = yAtMountain > mountain.height;
 
-          const tMountain = distToMountain / vxReq;
-          const yAtMountain = shooter.y + vy * tMountain - 0.5 * g * tMountain * tMountain;
-          const clearsMountain = yAtMountain > mountain.height;
+        currentSolution = {
+          mode: 2,
+          tFlight,
+          vxReq,
+          tMountain,
+          yAtMountain,
+          clearsMountain
+        };
 
-          currentSolution = {
-            mode: 2,
-            tFlight,
-            vxReq,
-            tMountain,
-            yAtMountain,
-            clearsMountain
-          };
-
-          textHtml = `
-            <ul class="step-list">
-              <li><strong>1. lépés: Függőleges mozgás egyenlete a repülési időre:</strong><br>
-                  <code>&frac12; g t² - v<sub>y</sub> t + &Delta;y = 0 &rarr; ${a.toFixed(1)} t² - ${vy.toFixed(1)} t + (${dy.toFixed(1)}) = 0</code></li>
-              <li>A másodfokú egyenlet lefelé szálló ága adja a becsapódási időt a célpontba:<br>
-                  <code>t = ${tFlight.toFixed(2)} s</code> (felszálló ág: ${t1.toFixed(2)} s)</li>
-              <li><strong>2. lépés: Szükséges vízszintes kezdősebesség (v<sub>x</sub>):</strong><br>
-                  <code>v<sub>x</sub> = &Delta;x / t = ${dx.toFixed(1)} / ${tFlight.toFixed(2)} = <strong>${vxReq.toFixed(2)} m/s</strong></code></li>
-              <li><strong>3. lépés: Hegy ellenőrzése:</strong><br>
-                  A hegy elérésének ideje: <code>t<sub>hegy</sub> = ${distToMountain.toFixed(1)} / ${vxReq.toFixed(2)} = ${tMountain.toFixed(2)} s</code><br>
-                  Magasság a hegynél: <code>y = <strong>${yAtMountain.toFixed(1)} m</strong></code> (hegy: ${mountain.height} m) &rarr; ${clearsMountain ? '<strong style="color:var(--accent-green)">Átrepül felette!</strong>' : '<strong style="color:var(--error-color)">Becsapódna a hegybe!</strong>'}</li>
-            </ul>
-          `;
-        }
+        textHtml = `
+          <ul class="step-list">
+            <li><strong>1. lépés: Repülési idő a függőleges mozgásból (szimmetria miatt):</strong><br>
+                Emelkedési idő a csúcsig: <code>t<sub>fel</sub> = v<sub>y</sub> / g = ${vy.toFixed(1)} / ${g.toFixed(1)} = ${tUp.toFixed(2)} s</code><br>
+                Mivel a célpont az ágyúval azonos magasságban van (&Delta;y = 0), a leérkezés ideje is pontosan ugyanennyi:<br>
+                Teljes repülési idő: <code>t = 2 &middot; t<sub>fel</sub> = 2 &middot; ${tUp.toFixed(2)} s = <strong>${tFlight.toFixed(2)} s</strong></code> <em>(nincs szükség másodfokú egyenletre!)</em></li>
+            <li><strong>2. lépés: Szükséges vízszintes kezdősebesség (v<sub>x</sub>):</strong><br>
+                Vízszintesen a mozgás egyenletes:<br>
+                <code>v<sub>x</sub> = &Delta;x / t = ${dx.toFixed(1)} / ${tFlight.toFixed(2)} = <strong>${vxReq.toFixed(2)} m/s</strong></code></li>
+            <li><strong>3. lépés: Hegy ellenőrzése:</strong><br>
+                A pálya csúcsmagassága: <code>y<sub>max</sub> = y<sub>0</sub> + v<sub>y</sub>² / (2g) = ${shooter.y} + ${((vy*vy)/(2*g)).toFixed(1)} = <strong>${apexY.toFixed(1)} m</strong></code><br>
+                A hegyhez érés ideje: <code>t<sub>hegy</sub> = ${distToMountain.toFixed(1)} / ${vxReq.toFixed(2)} = ${tMountain.toFixed(2)} s</code><br>
+                Magasság a hegynél: <code>y = <strong>${yAtMountain.toFixed(1)} m</strong></code> (hegy: ${mountain.height} m) &rarr; ${clearsMountain ? '<strong style="color:var(--accent-green)">Átrepül felette!</strong>' : '<strong style="color:var(--error-color)">Becsapódna a hegybe!</strong>'}</li>
+          </ul>
+        `;
       } else {
         // Szabad választás
         currentSolution = { mode: 3 };
         textHtml = `
           <ul class="step-list">
-            <li>Ebben a módban bármilyen (v<sub>x</sub>, v<sub>y</sub>) párost választhatsz, amire teljesül:
-                <code>v<sub>y</sub> = (&Delta;y + &frac12; g (&Delta;x / v<sub>x</sub>)²) / (&Delta;x / v<sub>x</sub>)</code></li>
-            <li><strong>Példa egy lehetséges megoldásra:</strong> Ha választasz egy <code>v<sub>x</sub> = ${(dx / 5).toFixed(1)} m/s</code> sebességet (t = 5,0 s repülési időhöz), akkor:<br>
-                <code>v<sub>y</sub> = (${dy.toFixed(1)} + 0.5 &middot; ${g.toFixed(1)} &middot; 25) / 5.0 = <strong>${((dy + 0.5 * g * 25) / 5).toFixed(2)} m/s</strong></code>.</li>
-            <li>Figyelj arra, hogy a pálya csúcsmagassága <code>y<sub>max</sub> = y<sub>0</sub> + v<sub>y</sub>² / (2g)</code> nagyobb legyen, mint a hegy magassága (${mountain.height} m)!</li>
+            <li>Mivel a két ágyú azonos magasságban van, az összefüggés egyszerű:<br>
+                <code>t = 2 &middot; v<sub>y</sub> / g &harr; v<sub>y</sub> = &frac12; &middot; g &middot; t</code> és <code>v<sub>x</sub> = &Delta;x / t</code></li>
+            <li><strong>Példa egy lehetséges megoldásra:</strong> Válasszunk pl. <code>t = 5,0 s</code> repülési időt!<br>
+                Vízszintes sebesség: <code>v<sub>x</sub> = &Delta;x / t = ${dx.toFixed(1)} / 5,0 = <strong>${(dx / 5).toFixed(1)} m/s</strong></code>.<br>
+                Függőleges sebesség: <code>v<sub>y</sub> = &frac12; &middot; ${g.toFixed(1)} &middot; 5,0 = <strong>${(0.5 * g * 5).toFixed(1)} m/s</strong></code>.</li>
+            <li>Figyelj arra, hogy a pálya csúcsmagassága <code>y<sub>max</sub> = y<sub>0</sub> + v<sub>y</sub>² / (2g)</code> nagyobb legyen, mint a hegy csúcsa (${mountain.height} m)!</li>
           </ul>
         `;
       }
